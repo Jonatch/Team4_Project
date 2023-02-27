@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Search {
     String searchPhrase;
+    ArrayList<Course> courseList;
+    ArrayList<Course> filteredCourses;
     ArrayList<String> currentFilters;
 
     public Search() {}
