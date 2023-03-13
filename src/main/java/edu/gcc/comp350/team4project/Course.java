@@ -1,7 +1,10 @@
 package edu.gcc.comp350.team4project;
 
-import java.sql.Time;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalTime;
 
+record TimeInfo(DayOfWeek[] days, LocalTime startTime, LocalTime endTime) {}
 public class Course {
     private String name;
     private int refNum;
@@ -9,8 +12,7 @@ public class Course {
     private String professor;
     private String location;
     private String description;
-    private Time time;
-    private String days;
+    private TimeInfo timeInfo;
 
     public Course() {
     }
@@ -63,23 +65,37 @@ public class Course {
         this.description = description;
     }
 
-    public Time getTime() {
-        return time;
+    public TimeInfo getTimeInfo(){
+        return this.timeInfo;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setTimeInfo(TimeInfo timeInfo){
+        this.timeInfo = timeInfo;
     }
 
-    public String getDays() {
-        return days;
+    public LocalTime[] getTime() {
+        return new LocalTime[]{LocalTime.now()};
     }
 
-    public void setDays(String days) {
-        this.days = days;
+
+    public DayOfWeek[] getDays() {
+        return new DayOfWeek[]{DayOfWeek.MONDAY};
     }
 
-    public boolean checkCourseConflict(Course course){
+    @Override //this needs verified
+    public boolean equals(Object o) {
+        return true;
+        //compare based only on ref number
+    }
+
+    @Override //assumes unique refNum
+    public int hashCode() {
+        return refNum;
+    }
+    public boolean doesCourseConflict(Course course){
         return true;
     }
+
+    @Override
+    public String toString(){return "";}
 }
