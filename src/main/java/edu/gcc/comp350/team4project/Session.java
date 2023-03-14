@@ -92,10 +92,16 @@ public class Session {
                     String[] tempTime = data[11].split(":");
                     int hour = 0;
                     int min = 0;
-                    if (tempTime[2].charAt(3)== 'A') {
+                    if (tempTime[2].charAt(3)== 'A') {//these convert the time to 24 hour time
                         hour = Integer.parseInt(tempTime[0]);
+                        if(hour == 12){
+                            hour = 0;
+                        }
                     } else if (tempTime[2].charAt(3) == 'P') {
-                        hour = Integer.parseInt(tempTime[0]) + 12;
+                        hour = Integer.parseInt(tempTime[0]);
+                        if(hour!=12){
+                            hour = hour + 12;
+                        }
                     }
                     min = Integer.parseInt(tempTime[1]);
                     startTime = LocalTime.of(hour, min);
@@ -107,10 +113,16 @@ public class Session {
                     int min = 0;
 
 
-                    if (tempTime[2].charAt(3) == 'A') {
+                    if (tempTime[2].charAt(3) == 'A') { //these convert the time to 24 hour time
                         hour = Integer.parseInt(tempTime[0]);
+                        if(hour == 12){
+                            hour = 0;
+                        }
                     } else if (tempTime[2].charAt(3) == 'P') {
-                        hour = Integer.parseInt(tempTime[0]) + 12;
+                        hour = Integer.parseInt(tempTime[0]);
+                        if(hour!=12){
+                            hour = hour + 12;
+                        }
                     }
                     min = Integer.parseInt(tempTime[1]);
                     endTime = LocalTime.of(hour, min);
