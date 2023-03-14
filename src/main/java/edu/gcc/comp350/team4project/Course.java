@@ -3,18 +3,31 @@ package edu.gcc.comp350.team4project;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
-record TimeInfo(DayOfWeek[] days, LocalTime startTime, LocalTime endTime) {}
-public class Course {
+record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {}
+
+record DepartmentInfo(String department, String courseLevel, char section){}
+public class Course{
     private String name;
+    private DepartmentInfo departmentInfo;
     private int refNum;
     private int credits;
     private String professor;
-    private String location;
+    private Semester semester;
     private String description;
     private TimeInfo timeInfo;
 
-    public Course() {
+    public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
+        this.name = name;
+        this.refNum = refNum;
+        this.credits = credits;
+        this.professor = professor;
+        this.description = description;
+        this.semester = semester;
+        this.timeInfo = new TimeInfo(days,startTime,endTime);
+        this.departmentInfo = new DepartmentInfo(department,courseLevel,section);
     }
 
     public String getName() {
@@ -49,14 +62,6 @@ public class Course {
         this.professor = professor;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -73,13 +78,19 @@ public class Course {
         this.timeInfo = timeInfo;
     }
 
-    public LocalTime[] getTime() {
-        return new LocalTime[]{LocalTime.now()};
+    public ArrayList<LocalTime> getTime() {
+        try {
+            return new ArrayList<>(List.of(this.timeInfo.startTime(), this.timeInfo.endTime()));
+        }catch(Exception e){
+            return new ArrayList<>();
+        }
+    }
+    public ArrayList<DayOfWeek> getDays() {
+        return this.timeInfo.days();
     }
 
-
-    public DayOfWeek[] getDays() {
-        return new DayOfWeek[]{DayOfWeek.MONDAY};
+    public String getDepartmentName(){
+        return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section();
     }
 
     @Override //this needs verified
@@ -97,5 +108,7 @@ public class Course {
     }
 
     @Override
-    public String toString(){return "";}
+    public String toString(){
+        return "Name: " + name + " DepInfo: " + departmentInfo + " TimeInfo: " + timeInfo + " Semester: "+ semester + " Credits: " + credits + " Prof: "+ professor + " ref: " + refNum + " Description: " + description;
+    }
 }
