@@ -6,7 +6,21 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {}
+record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
+    public boolean doesOverLap(TimeInfo timeInfo){ //needs extensive testing
+        boolean flag = false;
+        for(DayOfWeek day : this.days){
+            for(DayOfWeek checkDay : timeInfo.days){
+                if(day.equals(checkDay)){
+                    if (!((timeInfo.startTime.isAfter(this.endTime))||(timeInfo.endTime.isBefore(this.startTime)))){
+                        flag = true;
+                    }
+                }
+            }
+        }
+        return flag;
+    }
+}
 
 record DepartmentInfo(String department, String courseLevel, char section){}
 public class Course{
@@ -33,50 +47,46 @@ public class Course{
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    public Semester getSemester(){return this.semester;};
     public int getRefNum() {
         return refNum;
     }
 
-    public void setRefNum(int refNum) {
-        this.refNum = refNum;
-    }
+//    public void setRefNum(int refNum) {
+//        this.refNum = refNum;
+//    }
 
     public int getCredits() {
         return credits;
     }
 
-    public void setCredits(int credits) {
-        this.credits = credits;
-    }
+//    public void setCredits(int credits) {
+//        this.credits = credits;
+//    }
 
     public String getProfessor() {
         return professor;
     }
 
-    public void setProfessor(String professor) {
-        this.professor = professor;
-    }
+//    public void setProfessor(String professor) {
+//        this.professor = professor;
+//    }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
 
     public TimeInfo getTimeInfo(){
         return this.timeInfo;
     }
 
-    public void setTimeInfo(TimeInfo timeInfo){
-        this.timeInfo = timeInfo;
-    }
+//    public void setTimeInfo(TimeInfo timeInfo){
+//        this.timeInfo = timeInfo;
+//    }
 
     public ArrayList<LocalTime> getTime() {
         try {
@@ -93,19 +103,34 @@ public class Course{
         return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section();
     }
 
-    @Override //this needs verified
+    @Override
     public boolean equals(Object o) {
-        return true;
-        //compare based only on ref number
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+
+        return this.refNum == course.refNum;
     }
 
-    @Override //assumes unique refNum
+    @Override
     public int hashCode() {
         return refNum;
     }
+
     public boolean doesCourseConflict(Course course){
-        return true;
+        if(this.equals(course)){
+            return true;
+        }
+
+        if(this.timeInfo.doesOverLap(course.timeInfo)){
+            return true;
+        }
+
+        return false;
     }
+
 
     @Override
     public String toString(){
