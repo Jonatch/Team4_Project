@@ -105,13 +105,16 @@ public class Schedule {
         }
         return sb.toString();
     }
-    public String toCalenderView(){
-        return courses.toString();
-
+    public void toCalenderView() {
+        System.out.println("Day     Sunday     Monday     Tuesday     Wednesday     Thursday     Friday     Saturday");
+        System.out.println("Times of Day");
     }
 
-    public String toTableView(){
-        return "String";
+
+    public String toTableView() {
+
+        return courses.toString();
     }
 
 }
+
