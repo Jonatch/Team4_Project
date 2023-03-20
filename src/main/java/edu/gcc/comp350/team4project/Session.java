@@ -6,23 +6,145 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Session {
     private static User currentUser;
     private static Search searchBox;
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
+    private static Scanner input;
+
 
     public static void main(String[] args) throws IOException {
         createSession();
-        searchBox = new Search(totalCourses);
-        searchBox.filterByPhrase("i");
-
+        //TODO: after, figure out where to close Scanner
     }
 
     public static void createSession() throws IOException {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
+        searchBox = new Search(totalCourses);
+        menuLoop();
+    }
+
+    private static void menuLoop() {
+        input = new Scanner(System.in);
+        mainMenu();
+        String command = input.nextLine().toLowerCase();
+        while (!command.equals("exit")) {
+            //login
+            if (command.equals("u") || command.equals("g")) {
+                if (command.equals("u")) logInUser();
+                else System.out.println("logged in as a guest");
+                loggedInMenu();
+                command = input.nextLine().toLowerCase();
+                while (!command.equals("exit") || !command.equals("b")) {
+                    if (command.equals("ns")) createNewSchedule();
+                    else if (command.equals("ds")) {
+                        //delete a schedule
+                    }
+                    else if (command.equals("b")) logOutUser();
+
+                    else if (command.equals("exit")) endSession();
+
+                    else if (command.equals("c")) {
+                        selectSchedule();
+                        scheduleMenu();
+                        command = input.nextLine().toLowerCase();
+                        while (!command.equals("se") || !command.equals("e")) {
+                            if (command.equals("f")) {
+                                //choose a filter
+                            }
+                            else if (command.equals("s")) {
+                                search();
+                            }
+                            else if (command.equals("r")) {
+                                //remove a class
+                            }
+                            else if (command.equals("v")) {
+                                //view schedule
+                            }
+                            else invalidArgument();
+
+                            scheduleMenu();
+                            command = input.nextLine().toLowerCase();
+                        }
+                        if (command.equals("se")) {
+
+                        }
+                        else endSession();
+                    }
+                    else invalidArgument();
+                }
+            }
+            //make new account
+            else if (command.equals("n")) createNewUser();
+
+            //invalid argument
+            else invalidArgument();
+            mainMenu();
+            command = input.nextLine().toLowerCase();
+        }
+        endSession();
+    }
+
+    private static void createNewSchedule() {
+
+    }
+
+    private static void mainMenu() {
+        System.out.println("""
+                Type 'u' to login as a user
+                Type 'g' to login as a guest
+                Type 'n' to create a new account
+                Type 'exit' to exit the program
+                """);
+    }
+
+    private static void loggedInMenu() {
+        System.out.println("""
+                        Type 'ns' to create a new schedule
+                        Type 'ds' to delete a schedule
+                        Type 'c' to select a schedule to use
+                        Type 'b' to go logout
+                        Type 'exit' to exit the program
+                        """);
+    }
+    private static void scheduleMenu() {
+        System.out.println("""
+                            Type 'f' to apply or remove a filter
+                            Type 's' to search for a class by a phrase
+                            Type 'c' to view credit count
+                            Type 'r' to remove a course
+                            Type 'v' to see your schedule
+                            Type 'se' to save and exit
+                            Type 'exit' to exit the program
+                            """);
+    }
+
+    private static void invalidArgument() {
+        System.out.println("Invalid argument!");
+    }
+
+    private static void selectSchedule() {
+        System.out.println("selecting a schedule");
+    }
+
+    private static void search() {
+        input = new Scanner(System.in);
+
+        System.out.print("Please enter a search phrase: ");
+        String searchPhrase = input.nextLine();
+
+        searchBox.filterByPhrase(searchPhrase.toUpperCase());
+        System.out.println("Here is a list of all courses that contain '" + searchPhrase + "':");
+        if (searchBox.getFilteredCourses().size() > 0) {
+            for (Course c: searchBox.getFilteredCourses())
+                System.out.println("\t" + c.getName());
+        }
+        else System.out.println("No courses found!");
+        System.out.println();
     }
 
     public static void importCoursesFromCSV() throws IOException {
@@ -30,14 +152,6 @@ public class Session {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
             br.readLine();
-
-            /*
-            I'm not sure what is best practice, but the ide gets mad about us reassigning the variables multiple times
-            I figure maybe one try catch within the loop to work on all assignments to variables might be good but then
-            we lose some specificity in error catching I think, but I figure since we know that the csv file
-            contains all the data it shouldn't be an issue, idk
-             */
-
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
                 String courseName, departmentName, courseLevel, professorName;
@@ -147,18 +261,21 @@ public class Session {
         }
     }
 
-    public void logInUser(){
-
+    private static void logInUser() {
+        System.out.println("logging in");
     }
 
-    public void endSession(){
-
+    private static void endSession() {
+        System.out.println("quitting session");
+        System.exit(0);
     }
 
-    public void logOutUser(){}
+    private static void logOutUser(){
+        System.out.println("logged out");
+    }
 
-    public void menuLoop(){}
-
-    public void createNewUser(){}
+    private static void createNewUser(){
+        System.out.println("creating new user");
+    }
 
 }
