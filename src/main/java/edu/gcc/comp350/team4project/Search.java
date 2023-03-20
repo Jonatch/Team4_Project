@@ -65,11 +65,4 @@ public class Search {
         return filteredCourses;
     }
 
-    @Override
-    public String toString() {
-        /*
-        I forgot what we said the toString for this class was going to do, is it necessary?
-         */
-        return "";
-    }
 }
