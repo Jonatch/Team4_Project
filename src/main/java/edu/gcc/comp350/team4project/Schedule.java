@@ -106,7 +106,8 @@ public class Schedule {
         return sb.toString();
     }
     public String toCalenderView(){
-        return "String";
+        return courses.toString();
+
     }
 
     public String toTableView(){
