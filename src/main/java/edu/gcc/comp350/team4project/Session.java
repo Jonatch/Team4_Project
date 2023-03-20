@@ -25,7 +25,7 @@ public class Session {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
-        menuLoop();
+//        menuLoop();
     }
 
     private static void menuLoop() {
