@@ -1,11 +1,11 @@
 package edu.gcc.comp350.team4project;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Search {
-    String searchPhrase;
-    ArrayList<Course> courseList;
-    ArrayList<Course> filteredCourses;
+    private ArrayList<Course> courseList;
+    private ArrayList<Course> filteredCourses;
     ArrayList<String> currentFilters;
 
     public Search(ArrayList<Course> courseList) {
@@ -14,7 +14,7 @@ public class Search {
         that don't fit the filters, that would probably make the process more efficient and make implementing multiple
         filters easier
         */
-        filteredCourses = new ArrayList<>();
+        filteredCourses = new ArrayList<>(courseList);
         this.courseList = courseList;
     }
 
@@ -39,13 +39,12 @@ public class Search {
     }
 
     public void filterByPhrase(String searchPhrase) {
-        /*
-        currently this works for a super basic search, a way to make it pretty complicated would be to have suggested
-        courses whenever you typed a letter in, I was thinking a way to do that would be to have a txt file with all
-        class names and have a search tree or something like that.
-         */
-        for (Course c: courseList) {
-            if (c.getName().contains(searchPhrase.toUpperCase())) filteredCourses.add(c);
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course course = iterator.next();
+            if (!course.getName().contains(searchPhrase.toUpperCase())) {
+                iterator.remove();
+            }
         }
     }
 
