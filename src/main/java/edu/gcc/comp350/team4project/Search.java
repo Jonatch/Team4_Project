@@ -31,7 +31,12 @@ public class Search {
     }
 
     public void filterByProf(String profName) {
-
+        for (Course c: filteredCourses){
+            if (!profName.equals(c.getProfessor())) {
+                filteredCourses.remove(c);
+            }
+        }
+        currentFilters.add("professor");
     }
 
     public void filterByLevel(int level) {
