@@ -1,40 +1,37 @@
 package edu.gcc.comp350.team4project;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class User {
-    private String name;
-    private ArrayList<String> majors;
+    private String username;
     private String year;
-    private ArrayList<String> minors;
-    private String email;
     private String password;
     private boolean isGuest;
     private ArrayList<Schedule> schedules;
     private static final int MAX_SCHEDULES = 5;
+    private static ArrayList<String> usernames = new ArrayList<String>();
+    private static HashMap<String, String> login = new HashMap<String, String>();
+    private static ArrayList<User> users = new ArrayList<User>();
 
 
-    public User(String name) {
-
+    public User(String username, String year, String password, boolean isGuest) throws Exception {
+        if (usernames.contains(username)) {
+            throw new Exception("Username already exists.");
+        }
+        this.username = username;
+        this.year = year;
+        this.password = password;
+        this.isGuest = isGuest;
+        this.schedules = new ArrayList<Schedule>();
+        usernames.add(username);
+        login.put(username, password);
+        users.add(this);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ArrayList<String> getMajors() {
-        return majors;
-    }
-
-    public void addMajor(String major) {
-
-    }
-    public void removeMajor(String major) {
-
+    public String getUsername() {
+        return username;
     }
 
     public String getYear() {
@@ -43,25 +40,6 @@ public class User {
 
     public void setYear(String year) {
         this.year = year;
-    }
-
-    public ArrayList<String> getMinors() {
-        return minors;
-    }
-
-    public void addMinor(String minor) {
-
-    }
-    public void removeMinor(String minor) {
-
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
@@ -76,9 +54,6 @@ public class User {
         return isGuest;
     }
 
-    public void setGuest(boolean guest) {
-        isGuest = guest;
-    }
 
     public ArrayList<Schedule> getSchedules() {
         return schedules;
@@ -89,6 +64,54 @@ public class User {
     }
     public void removeSchedule(Schedule schedule) {
 
+    }
+
+    //basic login function that does minimal authentication
+    public static User login(String username, String password) throws Exception {
+        if (!authenticate(username, password)) {
+            throw new Exception("Invalid username or password.");
+        }
+        User user = getUserByUsername(username);
+        user.isGuest = false;
+        return user;
+    }
+
+    //helper function for the authentication function to find a user
+    private static User getUserByUsername(String username) {
+        // loop through the ArrayList of users and return the user with the matching username
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null; // no user with the matching username was found
+    }
+
+    //authentication function used to see if a username is taken
+    private static boolean authenticate(String username, String password) {
+        String storedPassword = login.get(username);
+        if (storedPassword == null) {
+            return false; // no such user exists
+        }
+        return storedPassword.equals(password);
+    }
+
+    //a basic registration function that allows a user to register as a user
+    public static void register(String username, String year, String password) throws Exception {
+        // Check if the username is already taken
+        if (usernames.contains(username)) {
+            System.out.println("Username is already taken.");
+            return;
+        }
+
+        // Create a new user object with the given parameters
+        User newUser = new User(username, year, password, false);
+
+        // Add the new user to the list of users
+        users.add(newUser);
+
+        // Output a message to confirm registration
+        System.out.println("Registration successful.");
     }
 
     @Override
