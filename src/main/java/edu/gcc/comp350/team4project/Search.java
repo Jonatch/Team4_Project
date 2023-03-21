@@ -47,14 +47,14 @@ public class Search {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
             Course course = iterator.next();
-            if (!course.getName().contains(searchPhrase.toUpperCase())) {
-                iterator.remove();
-            }
+            if (!course.getName().contains(searchPhrase.toUpperCase())) iterator.remove();
         }
+        currentFilters.add("phrase");
     }
 
     public void removeAllFilters() {
-
+        filteredCourses.clear();
+        filteredCourses.addAll(courseList);
     }
 
     public void removeSpecificFilter(String filter) {
