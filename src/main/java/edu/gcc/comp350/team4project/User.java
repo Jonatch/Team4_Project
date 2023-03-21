@@ -59,11 +59,13 @@ public class User {
         return schedules;
     }
 
-    public void addSchedule(Schedule schedule) {
-
+    public void addSchedule(String scheduleName, Semester semester) {
+        Schedule schedule = new Schedule(scheduleName, semester);
+        schedules.add(schedule);
     }
-    public void removeSchedule(Schedule schedule) {
 
+    public void removeSchedule(int index) {
+        schedules.remove(index);
     }
 
     //basic login function that does minimal authentication
@@ -88,7 +90,7 @@ public class User {
     }
 
     //authentication function used to see if a username is taken
-    private static boolean authenticate(String username, String password) {
+    static boolean authenticate(String username, String password) {
         String storedPassword = login.get(username);
         if (storedPassword == null) {
             return false; // no such user exists
