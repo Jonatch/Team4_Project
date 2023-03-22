@@ -30,105 +30,151 @@ public class Session {
 
     private static void menuLoop() {
         input = new Scanner(System.in);
+        boolean isLoggedIn, isScheduling;
         mainMenu();
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
-            //login
             if (command.equals("u") || command.equals("g")) {
                 if (command.equals("u")) logInUser();
                 else System.out.println("logged in as a guest");
-                loggedInMenu();
-                command = input.nextLine().toLowerCase();
-                while (!command.equals("exit") || !command.equals("b")) {
-                    if (command.equals("ns")) createNewSchedule();
-                    else if (command.equals("ds")) {
-                        //delete a schedule
-                    }
-                    else if (command.equals("b")) logOutUser();
-
-                    else if (command.equals("exit")) endSession();
-
-                    else if (command.equals("c")) {
-                        selectSchedule();
-                        scheduleMenu();
-                        command = input.nextLine().toLowerCase();
-                        while (!command.equals("se") || !command.equals("e")) {
-                            if (command.equals("f")) {
-                                //choose a filter
-                            }
-                            else if (command.equals("s")) {
-                                search();
-                            }
-                            else if (command.equals("r")) {
-                                //remove a class
-                            }
-                            else if (command.equals("v")) {
-                                //view schedule
-                            }
-                            else invalidArgument();
-
+                isLoggedIn = true;
+                while (isLoggedIn) {
+                    loggedInMenu();
+                    command = input.nextLine().toLowerCase();
+                    switch (command) {
+                        case "ns" -> System.out.println("create new schedule not implemented"); //TODO: create new schedule
+                        case "ds" -> System.out.println("delete schedule not implemented"); //TODO: delete a schedule
+                        case "b" -> {
+                            isLoggedIn = false;
+                            logOutUser();
+                        } //TODO: logout from account
+                        case "exit" -> {
+                            isLoggedIn = false;
+                            endSession();
+                        } //exit the program
+                        case "ss" -> {//TODO: test, selecting schedule
+                            isScheduling = true;
+                            selectSchedule(); //TODO: needs to be implemented
                             scheduleMenu();
                             command = input.nextLine().toLowerCase();
+                            while (isScheduling) {
+                                switch (command) {
+                                    case "f" -> filter(); //TODO: make filter method in this class
+                                    case "s" -> search(); //TODO: test, should work
+                                    case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
+                                    case "v" -> System.out.println("view schedule not implemented"); //TODO: view schedule
+                                    case "se" -> {
+                                        isScheduling = false;
+                                        System.out.println("save and exit not implemented");
+                                        endSession();
+                                    } //TODO: implement save and exit
+                                    case "b" -> {
+                                        isScheduling = false;
+                                        continue;
+                                    }
+                                    case "exit" -> endSession();
+                                    default -> invalidArgument();
+                                }
+                                scheduleMenu();
+                                command = input.nextLine().toLowerCase();
+                            }
                         }
-                        if (command.equals("se")) {
-
-                        }
-                        else endSession();
+                        default -> invalidArgument();
                     }
-                    else invalidArgument();
                 }
             }
-            //make new account
-            else if (command.equals("n")) createNewUser();
-
-            //invalid argument
-            else invalidArgument();
+            else if (command.equals("n")) createNewUser(); //make new account
+            else invalidArgument(); //invalid argument
             mainMenu();
             command = input.nextLine().toLowerCase();
         }
         endSession();
     }
 
-    private static void createNewSchedule() {
+    private static void filter() {
+        input = new Scanner(System.in);
+        String filterType;
+        boolean isFiltering = true;
 
-    }
-
-    private static void mainMenu() {
-        System.out.println("""
-                Type 'u' to login as a user
-                Type 'g' to login as a guest
-                Type 'n' to create a new account
-                Type 'exit' to exit the program
+        while (isFiltering) {
+            System.out.println("""
+                Type dept to filter by department
+                Type time to filter by time
+                Type days to filter by days
+                Type lvl to filter by level
+                Type ra to filter by remove all filters
+                Type b to go back
+                Type 'exit' to close the program
                 """);
+            filterType = input.nextLine().toLowerCase();
+            switch (filterType) {
+                case "dept" -> filterDept(); //TODO: filter by department
+                case "time" -> filterTime(); //TODO: filter by time
+                case "days" -> filterDays(); //TODO: filter by days
+                case "lvl" -> filterLevel(); //TODO: filter by level
+                case "ra" -> searchBox.removeAllFilters(); //removes all filters
+                case "b" -> isFiltering = false; //TODO: go back
+                case "exit" -> endSession();
+                default -> invalidArgument();
+            }
+        }
     }
 
-    private static void loggedInMenu() {
-        System.out.println("""
-                        Type 'ns' to create a new schedule
-                        Type 'ds' to delete a schedule
-                        Type 'c' to select a schedule to use
-                        Type 'b' to go logout
-                        Type 'exit' to exit the program
-                        """);
-    }
-    private static void scheduleMenu() {
-        System.out.println("""
-                            Type 'f' to apply or remove a filter
-                            Type 's' to search for a class by a phrase
-                            Type 'c' to view credit count
-                            Type 'r' to remove a course
-                            Type 'v' to see your schedule
-                            Type 'se' to save and exit
-                            Type 'exit' to exit the program
-                            """);
+    private static void filterDept() {
+        input = new Scanner(System.in);
+        String department;
+        boolean isFiltering = true;
+
+        while (isFiltering) {
+            System.out.println("""
+                Please enter the department you would like to to filter by:
+                i.e: COMP - remove all non-computer science courses
+                Type 'b' to go back
+                Type 'exit' to terminate the program
+                """);
+            department = input.nextLine();
+            switch (department) {
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
+                default -> searchBox.filterByDept(department); //TODO: possible to call invalid department, fix in method is probably easier
+            }
+        }
     }
 
-    private static void invalidArgument() {
-        System.out.println("Invalid argument!");
+    private static void filterTime() {
+        //TODO: figure this out
     }
 
-    private static void selectSchedule() {
-        System.out.println("selecting a schedule");
+    private static void filterDays() {
+        //TODO: figure this out
+    }
+
+    private static void filterLevel() { //TODO: needs testing
+        input = new Scanner(System.in);
+        char level;
+        boolean isFiltering = true;
+
+        while (isFiltering) {
+            System.out.println("""
+                    Please enter the level you would like to filter by:
+                    1 - 100 level classes
+                    2 - 200 level classes
+                    3 - 300 level classes
+                    4 - 400 level classes
+                    Type 'b' to go back
+                    Type 'exit' to terminate the program
+                    """);
+            level = input.nextLine().charAt(0);
+            switch (level) {
+                case '1' -> searchBox.filterByLevel(100);
+                case '2' -> searchBox.filterByLevel(200);
+                case '3' -> searchBox.filterByLevel(300);
+                case '4' -> searchBox.filterByLevel(400);
+                case 'b' -> isFiltering = false;
+                case 'e' -> endSession();
+                default -> invalidArgument();
+            }
+        }
     }
 
     private static void search() {
@@ -266,16 +312,50 @@ public class Session {
     }
 
     private static void endSession() {
-        System.out.println("quitting session");
+        System.out.println("terminating program");
         System.exit(0);
     }
 
-    private static void logOutUser(){
-        System.out.println("logged out");
+    private static void logOutUser() { System.out.println("logging out"); }
+
+    private static void createNewSchedule() { System.out.println("new schedule created"); }
+
+    private static void mainMenu() {
+        System.out.println("""
+                Type 'u' to login as a user
+                Type 'g' to login as a guest
+                Type 'n' to create a new account
+                Type 'exit' to terminate the program
+                """);
     }
 
-    private static void createNewUser(){
-        System.out.println("creating new user");
+    private static void loggedInMenu() {
+        System.out.println("""
+                        Type 'ns' to create a new schedule
+                        Type 'ds' to delete a schedule
+                        Type 'ss' to select a schedule to use
+                        Type 'b' to go logout
+                        Type 'exit' to terminate the program
+                        """);
     }
+
+    private static void scheduleMenu() {
+        System.out.println("""
+                            Type 'f' to apply or remove a filter
+                            Type 's' to search for a class by a phrase
+                            Type 'c' to view credit count
+                            Type 'r' to remove a course
+                            Type 'v' to see your schedule
+                            Type 'b' to go back
+                            Type 'se' to save and exit
+                            Type 'exit' to terminate the program
+                            """);
+    }
+
+    private static void invalidArgument() { System.out.println("Invalid argument!"); }
+
+    private static void selectSchedule() { System.out.println("selecting a schedule"); }
+
+    private static void createNewUser() { System.out.println("creating new user"); }
 
 }
