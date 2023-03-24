@@ -9,6 +9,16 @@ public class Schedule {
     private ArrayList<Course> courses;
     private int totalCredits;
 
+    private static final int ROWS = 32;
+    private static final int COLS = 6;
+    private static final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+    private static final String[] TIMES = {"8:00", "8:15", "8:30", "8:45", "9:00", "9:15", "9:30",
+            "9:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00",
+            "12:15", "12:30", "12:45", "1:00", "1:15", "1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00",
+            "3:15", "3:30", "3:45"};
+
+    private static final String[][] schedule = new String[ROWS][COLS];
+
     public Schedule(String scheduleName, Semester semester) {
         this.scheduleName = scheduleName;
         this.semester = semester;
@@ -23,11 +33,7 @@ public class Schedule {
         this.courses = new ArrayList<>();
 
         this.addCourses(courses);
-
-
-
     }
-
 
     public String getScheduleName() {
         return scheduleName;
@@ -106,14 +112,26 @@ public class Schedule {
         return sb.toString();
     }
     public void toCalenderView() {
-        System.out.println("Day     Sunday     Monday     Tuesday     Wednesday     Thursday     Friday     Saturday");
-        System.out.println("Times of Day");
+        //set the top row to the days of the week
+        for (int col = 1; col < COLS; col++) {
+            schedule[0][col] = DAYS[col-1];
+        }
+
+        //set the left column to the time slots
+        for (int row = 1; row < ROWS; row++) {
+            schedule[row][0] = TIMES[row-1];
+        }
+        // Fill in the rest of the schedule with empty cells
+        for (int row = 1; row < ROWS; row++) {
+            for (int col = 1; col < COLS; col++) {
+                schedule[row][col] = "";
+            }
+        }
     }
 
 
-    public String toTableView() {
-
-        return courses.toString();
+    public void toTableView() {
+        System.out.println(this);
     }
 
 }
