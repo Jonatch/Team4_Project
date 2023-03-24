@@ -27,11 +27,19 @@ public class Search {
     }
 
     public void filterByDept(String dept) {
-
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
+            if (!c.getDepartmentName().equals(dept)){
+                filteredCourses.remove(c);
+            }
+        }
     }
 
     public void filterByProf(String profName) {
-        for (Course c: filteredCourses){
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
             if (!profName.equals(c.getProfessor())) {
                 filteredCourses.remove(c);
             }
