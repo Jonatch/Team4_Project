@@ -1,7 +1,10 @@
 package edu.gcc.comp350.team4project;
 
+import java.sql.Array;
 import java.sql.SQLOutput;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Schedule {
     private String scheduleName;
@@ -9,15 +12,7 @@ public class Schedule {
     private ArrayList<Course> courses;
     private int totalCredits;
 
-    private static final int ROWS = 32;
-    private static final int COLS = 6;
-    private static final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-    private static final String[] TIMES = {"8:00", "8:15", "8:30", "8:45", "9:00", "9:15", "9:30",
-            "9:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00",
-            "12:15", "12:30", "12:45", "1:00", "1:15", "1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00",
-            "3:15", "3:30", "3:45"};
 
-    private static final String[][] schedule = new String[ROWS][COLS];
 
     public Schedule(String scheduleName, Semester semester) {
         this.scheduleName = scheduleName;
@@ -112,6 +107,17 @@ public class Schedule {
         return sb.toString();
     }
     public void toCalenderView() {
+        final int ROWS = 53;
+        final int COLS = 6;
+        final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+        final ArrayList<LocalTime> TIMES = new ArrayList<>();
+        LocalTime l = LocalTime.of(8, 00);
+        for (int i = 0; i < 53; i++) {
+            TIMES.add(l);
+            l = l.plusMinutes(15);
+        }
+        final String[][] schedule = new String[ROWS][COLS];
+
         //set the top row to the days of the week
         for (int col = 1; col < COLS; col++) {
             schedule[0][col] = DAYS[col-1];
@@ -119,14 +125,113 @@ public class Schedule {
 
         //set the left column to the time slots
         for (int row = 1; row < ROWS; row++) {
-            schedule[row][0] = TIMES[row-1];
+            String s = TIMES.get(row-1).toString();
+            schedule[row][0] = s;
         }
-        // Fill in the rest of the schedule with empty cells
+
         for (int row = 1; row < ROWS; row++) {
             for (int col = 1; col < COLS; col++) {
-                schedule[row][col] = "";
+                schedule[row][col] = "OPEN";
             }
         }
+
+        for (Course course : courses){
+            LocalTime sTime = course.getTimeInfo().startTime();
+            LocalTime eTime = course.getTimeInfo().endTime();
+            String days = course.getDays().toString();
+            if (days.contains("MONDAY")) {
+                int timeslot = 0;
+                for (LocalTime t : TIMES) {
+                    if (sTime.equals(t)) {
+                        schedule[timeslot+1][1] = course.getDepartmentInfo().department() +
+                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                        t = t.plusMinutes(15);
+                        timeslot++;
+                        while (eTime.isAfter(t)) {
+                            schedule[timeslot+1][1] = course.getDepartmentInfo().department() +
+                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                            t = t.plusMinutes(15);
+                            timeslot++;
+                        }
+                    }
+                    timeslot++;
+                }
+            }
+            if (days.contains("TUESDAY")) {
+                int timeslot = 0;
+                for (LocalTime t : TIMES) {
+                    if (sTime.equals(t)) {
+                        schedule[timeslot+1][2] = course.getDepartmentInfo().department() +
+                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                        t = t.plusMinutes(15);
+                        timeslot++;
+                        while (eTime.isAfter(t)) {
+                            schedule[timeslot+1][2] = course.getDepartmentInfo().department() +
+                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                            t = t.plusMinutes(15);
+                            timeslot++;
+                        }
+                    }
+                    timeslot++;
+                }
+            }
+            if (days.contains("WEDNESDAY")) {
+                int timeslot = 0;
+                for (LocalTime t : TIMES) {
+                    if (sTime.equals(t)) {
+                        schedule[timeslot+1][3] = course.getDepartmentInfo().department() +
+                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                        t = t.plusMinutes(15);
+                        timeslot++;
+                        while (eTime.isAfter(t)) {
+                            schedule[timeslot+1][3] = course.getDepartmentInfo().department() +
+                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                            t = t.plusMinutes(15);
+                            timeslot++;
+                        }
+                    }
+                    timeslot++;
+                }
+            }
+            if (days.contains("THURSDAY")) {
+                int timeslot = 0;
+                for (LocalTime t : TIMES) {
+                    if (sTime.equals(t)) {
+                        schedule[timeslot+1][4] = course.getDepartmentInfo().department() +
+                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                        t = t.plusMinutes(15);
+                        timeslot++;
+                        while (eTime.isAfter(t)) {
+                            schedule[timeslot+1][4] = course.getDepartmentInfo().department() +
+                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                            t = t.plusMinutes(15);
+                            timeslot++;
+                        }
+                    }
+                    timeslot++;
+                }
+            }
+            if (days.contains("FRIDAY")) {
+                int timeslot = 0;
+                for (LocalTime t : TIMES) {
+                    if (sTime.equals(t)) {
+                        schedule[timeslot+1][5] = course.getDepartmentInfo().department() +
+                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                        t = t.plusMinutes(15);
+                        timeslot++;
+                        while (eTime.isAfter(t)) {
+                            schedule[timeslot+1][5] = course.getDepartmentInfo().department() +
+                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                            t = t.plusMinutes(15);
+                            timeslot++;
+                        }
+                    }
+                    timeslot++;
+                }
+            }
+        }
+        System.out.println(Arrays.deepToString(schedule).replace("], ", "]\n"));        // Fill in the rest of the schedule with empty cells
+
     }
 
 
