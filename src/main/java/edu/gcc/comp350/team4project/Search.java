@@ -30,7 +30,7 @@ public class Search {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
             Course c = iterator.next();
-            if (!c.getDepartmentName().equals(dept)){
+            if (!c.getDepartmentInfo().department().equals(dept)){
                 filteredCourses.remove(c);
             }
         }

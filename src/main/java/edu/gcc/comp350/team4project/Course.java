@@ -134,6 +134,6 @@ public class Course{
 
     @Override
     public String toString(){
-        return "Name: " + name + " DepInfo: " + departmentInfo + " TimeInfo: " + timeInfo + " Semester: "+ semester + " Credits: " + credits + " Prof: "+ professor + " ref: " + refNum + " Description: " + description + "\n";
+        return "Name: " + name + " " + departmentInfo + " " + timeInfo + " Semester: "+ semester + " Credits: " + credits + " Prof: "+ professor + " ref: " + refNum + " Description: " + description + "\n";
     }
 }
