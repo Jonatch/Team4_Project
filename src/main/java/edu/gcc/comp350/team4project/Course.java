@@ -99,8 +99,8 @@ public class Course{
         return this.timeInfo.days();
     }
 
-    public String getDepartmentName(){
-        return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section();
+    public DepartmentInfo getDepartmentInfo(){
+        return this.departmentInfo;
     }
 
     @Override
