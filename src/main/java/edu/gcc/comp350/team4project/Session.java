@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Session {
@@ -25,7 +26,7 @@ public class Session {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
-//        menuLoop();
+        menuLoop();
     }
 
     private static void menuLoop() {
@@ -98,12 +99,12 @@ public class Session {
 
         while (isFiltering) {
             System.out.println("""
-                Type dept to filter by department
-                Type time to filter by time
-                Type days to filter by days
-                Type lvl to filter by level
-                Type ra to filter by remove all filters
-                Type b to go back
+                Type 'dept' to filter by department
+                Type 'time' to filter by time
+                Type 'days' to filter by days
+                Type 'lvl' to filter by level
+                Type 'ra' to filter by remove all filters
+                Type 'b' to go back
                 Type 'exit' to close the program
                 """);
             filterType = input.nextLine().toLowerCase();
@@ -121,22 +122,36 @@ public class Session {
     }
 
     private static void filterDept() {
-        input = new Scanner(System.in);
-        String department;
+        HashSet<String> departments = new HashSet<>();
         boolean isFiltering = true;
+        input = new Scanner(System.in);
+        String command;
+
+        for (Course c: searchBox.getFilteredCourses())
+            departments.add(c.getDepartmentInfo().department()); //TODO: TEST, IT SHOULD WORK THO
 
         while (isFiltering) {
             System.out.println("""
-                Please enter the department you would like to to filter by:
-                i.e: COMP - remove all non-computer science courses
+                Type 's' to see departments that can be filtered
+                Type <department> to filter by that department
                 Type 'b' to go back
                 Type 'exit' to terminate the program
                 """);
-            department = input.nextLine();
-            switch (department) {
+            command = input.nextLine().toLowerCase();
+            switch (command) {
+                case "s" -> {
+                    System.out.println("Here is a list of all departments: ");
+                    for (String s: departments) System.out.println(s);
+                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
-                default -> searchBox.filterByDept(department); //TODO: possible to call invalid department, fix in method is probably easier
+                default -> {
+                    if (departments.contains(command.toUpperCase())) {
+                        searchBox.filterByDept(command.toUpperCase());
+                        isFiltering = false;
+                    }
+                    else invalidArgument();
+                }
             }
         }
     }
@@ -179,8 +194,7 @@ public class Session {
 
     private static void search() {
         input = new Scanner(System.in);
-
-        System.out.print("Please enter a search phrase: ");
+        System.out.println("Please enter a search phrase:");
         String searchPhrase = input.nextLine();
 
         searchBox.filterByPhrase(searchPhrase.toUpperCase());

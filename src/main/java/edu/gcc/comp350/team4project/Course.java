@@ -4,21 +4,21 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
     public boolean doesOverLap(TimeInfo timeInfo){ //needs extensive testing
-        boolean flag = false;
-        for(DayOfWeek day : this.days){
-            for(DayOfWeek checkDay : timeInfo.days){
-                if(day.equals(checkDay)){
-                    if (!((timeInfo.startTime.isAfter(this.endTime))||(timeInfo.endTime.isBefore(this.startTime)))){
-                        flag = true;
-                    }
-                }
+        Set<DayOfWeek> commonDays = new HashSet<>(this.days);
+        commonDays.retainAll(timeInfo.days);
+
+        for (DayOfWeek day: commonDays) {
+            if (!(timeInfo.startTime.isAfter(this.endTime) || timeInfo.endTime.isBefore(this.startTime))) {
+                return true;
             }
         }
-        return flag;
+        return false;
     }
 }
 
@@ -99,8 +99,8 @@ public class Course{
         return this.timeInfo.days();
     }
 
-    public String getDepartmentName(){
-        return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section();
+    public DepartmentInfo getDepartmentInfo(){
+        return this.departmentInfo;
     }
 
     @Override
@@ -134,6 +134,6 @@ public class Course{
 
     @Override
     public String toString(){
-        return "Name: " + name + " DepInfo: " + departmentInfo + " TimeInfo: " + timeInfo + " Semester: "+ semester + " Credits: " + credits + " Prof: "+ professor + " ref: " + refNum + " Description: " + description;
+        return "\nName: " + name + ", " + departmentInfo + ", " + timeInfo + ", Semester: "+ semester + ", Credits: " + credits + ", Professor: " + professor + ", Reference Number: " + refNum + ", Description: " + description;
     }
 }

@@ -11,7 +11,7 @@ public class User {
     private boolean isGuest;
     private ArrayList<Schedule> schedules;
     private static final int MAX_SCHEDULES = 5;
-    private static ArrayList<String> usernames = new ArrayList<String>();
+    private static ArrayList<String> usernames = new ArrayList<String>(); //why does User class save usernames?
     private static HashMap<String, String> login = new HashMap<String, String>();
     private static ArrayList<User> users = new ArrayList<User>();
 
@@ -59,9 +59,14 @@ public class User {
         return schedules;
     }
 
-    public void addSchedule(String scheduleName, Semester semester) {
-        Schedule schedule = new Schedule(scheduleName, semester);
-        schedules.add(schedule);
+    public void saveScheduleToUser(Schedule newSchedule) throws Exception{ //Shouldn't this just pass in a schedule? and be called save schedule?
+        schedules.add(newSchedule);
+        if(newSchedule.getTotalCredits()<12){
+            throw new Exception("Warning: Schedule is less than 12 credits");
+        }
+        if(newSchedule.getTotalCredits()>17){
+            throw new Exception("Warning: Schedule is greater than 17 credits");
+        }
     }
 
     public void removeSchedule(int index) {
@@ -102,7 +107,7 @@ public class User {
     public static void register(String username, String year, String password) throws Exception {
         // Check if the username is already taken
         if (usernames.contains(username)) {
-            System.out.println("Username is already taken.");
+            System.out.println("Username is already taken."); //these exeptions?
             return;
         }
 
