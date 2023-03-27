@@ -17,18 +17,23 @@ public class User {
 
 
     public User(String username, String year, String password, boolean isGuest) throws Exception {
-        if (usernames.contains(username)) {
-            throw new Exception("Username already exists.");
+        try {
+            if (usernames.contains(username)) {
+                throw new Exception("Username already exists.");
+            }
+            this.username = username;
+            this.year = year;
+            this.password = password;
+            this.isGuest = isGuest;
+            this.schedules = new ArrayList<Schedule>();
+            usernames.add(username);
+            login.put(username, password);
+            users.add(this);
+        } catch (Exception e) {
+            System.out.println("Error creating user: " + e.getMessage());
         }
-        this.username = username;
-        this.year = year;
-        this.password = password;
-        this.isGuest = isGuest;
-        this.schedules = new ArrayList<Schedule>();
-        usernames.add(username);
-        login.put(username, password);
-        users.add(this);
     }
+
 
     public String getUsername() {
         return username;
@@ -62,10 +67,10 @@ public class User {
     public void saveScheduleToUser(Schedule newSchedule) throws Exception{ //Shouldn't this just pass in a schedule? and be called save schedule?
         schedules.add(newSchedule);
         if(newSchedule.getTotalCredits()<12){
-            throw new Exception("Warning: Schedule is less than 12 credits");
+//            throw new Exception("Warning: Schedule is less than 12 credits");
         }
         if(newSchedule.getTotalCredits()>17){
-            throw new Exception("Warning: Schedule is greater than 17 credits");
+//            throw new Exception("Warning: Schedule is greater than 17 credits");
         }
     }
 
