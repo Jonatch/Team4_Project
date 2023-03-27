@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -15,29 +16,40 @@ public class Session {
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
     private static Scanner input;
+    private static ArrayList<String> usernames = new ArrayList<String>(); //why does User class save usernames?
+    private static HashMap<String, String> login = new HashMap<String, String>();
+    private static ArrayList<User> users = new ArrayList<User>();
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         createSession();
         //TODO: after, figure out where to close Scanner
     }
 
-    public static void createSession() throws IOException {
+    public static void createSession() throws Exception {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
+//        StoreContents.createNewDatabase("team4_project.db");
+//        StoreContents.drop();
+//        StoreContents.createNewTable();
         menuLoop();
     }
 
-    private static void menuLoop() {
+    private static void menuLoop() throws Exception {
         input = new Scanner(System.in);
         boolean isLoggedIn, isScheduling;
         mainMenu();
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
             if (command.equals("u") || command.equals("g")) {
-                if (command.equals("u")) logInUser();
-                else System.out.println("logged in as a guest");
+                if (command.equals("u")) {
+                    logInUser();
+                }
+                else {
+                    currentUser = new User("","guest","guest",true);
+                    System.out.println("Logged in as a guest");
+                }
                 isLoggedIn = true;
                 while (isLoggedIn) {
                     loggedInMenu();
@@ -64,7 +76,7 @@ public class Session {
                                     }
                                 }
                                 tempSchedule = new Schedule(name, sem);
-                                System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester() + "semester)");
+                                System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester() + " semester)");
 
                             }
                             else{
@@ -360,7 +372,81 @@ public class Session {
     }
 
     private static void logInUser() {
-        System.out.println("logging in");
+        while(true) {
+            input = new Scanner(System.in);
+            System.out.println("Enter username:");
+            String name = input.nextLine().toLowerCase();
+            System.out.println("Enter passowrd");
+            String password = input.nextLine().toLowerCase();
+            if (usernames.contains(name) || login.get(name).equals(password)) {
+                System.out.println("Log in successful!");
+                for (User user : users) {
+                    if (user.getUsername().equals(name)) {
+                       currentUser = user;
+                    }
+                }
+                break;
+            }
+            System.out.println("Log in details do not match any users");
+        }
+    }
+
+    private static void createNewUser() {
+        input = new Scanner(System.in);
+        System.out.println("Creating new user!");
+        String name = "";
+        String year = "";
+        String password = "";
+
+        while(true){
+            System.out.println("Enter  username (less than 20 characters: ");
+            name = input.nextLine().toLowerCase();
+            if (usernames.contains(name)) {
+                System.out.println("Username already exists.");//come back
+            }
+            else if(name.length() > 20 || name.length() == 0){
+                System.out.println("Username too long!");
+            }
+            else{
+                break;
+            }
+        }
+        do {
+            System.out.println("Enter  password (less than 20 characters: ");
+            password = input.nextLine().toLowerCase();
+        } while (password.length() > 20 || password.length() == 0);
+
+        while (true) {
+            System.out.println("Enter class year you are scheduling for:");
+            System.out.println("""
+                    'f' for freshman
+                    's' for sophomore
+                    'j' for junior
+                    'e' for senior
+                    """);
+            String in = input.nextLine().toLowerCase();
+            if (in.equals("f")) {
+                year = "freshman";
+                break;
+            }
+            if (in.equals("s")) {
+                year = "sophomore";
+                break;
+            }
+            if (in.equals("j")) {
+                year = "junior";
+                break;
+            }
+            if (in.equals("e")) {
+                year = "senior";
+                break;
+            }
+        }
+        currentUser = new User(name, year, password, false);
+        System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
+        usernames.add(name);
+        login.put(name, password);
+        users.add(currentUser);
     }
 
     private static void endSession() {
@@ -407,7 +493,5 @@ public class Session {
     private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
     private static void selectSchedule() { System.out.println("selecting a schedule"); }
-
-    private static void createNewUser() { System.out.println("creating new user"); }
 
 }
