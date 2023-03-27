@@ -9,11 +9,7 @@ public class Search {
     ArrayList<String> currentFilters;
 
     public Search(ArrayList<Course> courseList) {
-        /*
-        I'm thinking that it might be a good idea to make filteredCourses hold all classes to begin and remove classes
-        that don't fit the filters, that would probably make the process more efficient and make implementing multiple
-        filters easier
-        */
+        currentFilters = new ArrayList<>();
         filteredCourses = new ArrayList<>(courseList);
         this.courseList = courseList;
     }
@@ -29,26 +25,29 @@ public class Search {
     public void filterByDept(String dept) {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
-            Course c = iterator.next();
-            if (!c.getDepartmentInfo().department().equals(dept)){
-                filteredCourses.remove(c);
-            }
+            Course course = iterator.next();
+            if (!course.getDepartmentInfo().department().equals(dept)) iterator.remove();
         }
+        currentFilters.add("department");
     }
 
     public void filterByProf(String profName) {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
             Course c = iterator.next();
-            if (!profName.equals(c.getProfessor())) {
-                filteredCourses.remove(c);
+            if (!profName.equals(c.getProfessor())) { //needs to be iterator.remove() or will cause bugs, still needs to be tested
+                iterator.remove();
             }
         }
         currentFilters.add("professor");
     }
 
     public void filterByLevel(int level) {
-
+        /*
+        TODO: THIS NEEDS TO BE IMPLEMENTED SO THAT ALL COURSES WITH THAT LEVEL ARE SHOWN
+        TODO: i.e.: if level == 100, then all 100 level courses are kept like 101, 160, 180, etc...
+        I (Ammiel) can do this when I get a chance
+         */
     }
 
     public void filterByPhrase(String searchPhrase) {
@@ -71,6 +70,10 @@ public class Search {
 
     public ArrayList<Course> getFilteredCourses() {
         return filteredCourses;
+    }
+
+    public void setFilteredCourses(ArrayList<Course> courseList) {
+        this.filteredCourses = courseList;
     }
 
 }
