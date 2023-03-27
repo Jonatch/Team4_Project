@@ -54,6 +54,10 @@ public class User {
         return isGuest;
     }
 
+    public int getNumMaxSchedules() {
+        return MAX_SCHEDULES;
+    }
+
 
     public ArrayList<Schedule> getSchedules() {
         return schedules;

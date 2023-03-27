@@ -42,8 +42,46 @@ public class Session {
                     loggedInMenu();
                     command = input.nextLine().toLowerCase();
                     switch (command) {
-                        case "ns" -> System.out.println("create new schedule not implemented"); //TODO: create new schedule
-                        case "ds" -> System.out.println("delete schedule not implemented"); //TODO: delete a schedule
+                        case "ns" -> {
+                            if(currentUser.getSchedules().size()<5){
+                                String name = "";
+                                Semester sem;
+                                do {
+                                    System.out.println("Enter schedule name (less than 20 characters: ");
+                                    name = input.nextLine();
+                                } while (name.length() > 20 || name.length() == 0);
+                                while (true) {
+                                    System.out.println("Enter 'f' for fall or 's' for spring");
+                                    String semester = input.nextLine().toLowerCase();
+                                    if (semester.equals("f")) {
+                                        sem = Semester.FALL;
+                                        break;
+                                    }
+                                    if (semester.equals("s")) {
+                                        sem = Semester.SPRING;
+                                        break;
+                                    }
+                                }
+                                tempSchedule = new Schedule(name, sem);
+                                System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester() + "semester)");
+
+                            }
+                            else{
+                                System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " allowed. Try deleting one");
+                            }
+
+                        }
+                        case "ds" -> {
+                            if(currentUser.getSchedules().size()>0){
+                                System.out.println("Pick a schedule to delete: ");
+                                for(int i = 0; i<currentUser.getSchedules().size();i++){
+                                    System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
+                                }
+                            }
+                            else{
+                                System.out.println("No saved schedules to delete!");
+                            }
+                        }
                         case "b" -> {
                             isLoggedIn = false;
                             logOutUser();
