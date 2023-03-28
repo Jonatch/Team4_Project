@@ -2,12 +2,32 @@ package edu.gcc.comp350.team4project;
 
 
 import java.sql.*;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class StoreContents {
+public class DatabaseController {
+    //private static ArrayList<String> usernames = new ArrayList<String>(); //why does User class save usernames?
+    //private static HashMap<String, String> login = new HashMap<String, String>();
+    //private static ArrayList<User> users = new ArrayList<User>();
+
+    public static boolean authenticateUser(String name,String password){
+        return true;
+    }
+
+    public static boolean checkIfUserExists(String name){
+        return false;
+    }
+
+
+    public static User pullUser(String name){
+        return new User("DybasJW20", "Junior", "testpass", false);
+    }
+
+    public static void updateUser(User user){
+
+    }
+
+
+
     /**
      * @param fileName the database file name
      */
@@ -64,7 +84,7 @@ public class StoreContents {
 
 
 
-    public void insert(String username, String year, String password, ArrayList<Schedule> schedules) {
+    public void insertNewUser(String username, String year, String password, ArrayList<Schedule> schedules) {
         String sql = "INSERT INTO Users(username,year,password,schedules) VALUES(?,?,?,?)";
         String stringSchedules = "";
         for (Schedule sched : schedules){
