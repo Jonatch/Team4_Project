@@ -23,7 +23,7 @@ class Filter{
 }
 
 public class Search {
-    private ArrayList<Course> courseList;
+    private final ArrayList<Course> courseList;
     private ArrayList<Course> filteredCourses;
     ArrayList<Filter> currentFilters;
 
