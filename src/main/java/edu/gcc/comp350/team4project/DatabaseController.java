@@ -2,17 +2,14 @@ package edu.gcc.comp350.team4project;
 
 
 import java.sql.*;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
-public class StoreContents {
+public class DatabaseController {
 
     public static boolean authenticateUser(String name, String password) {
         String sql = "SELECT username, password from Users WHERE username = ?";
-        try (Connection conn = StoreContents.connect();
+        try (Connection conn = DatabaseController.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, name);
@@ -43,8 +40,8 @@ public class StoreContents {
         String username = "", year = "", password = "", schedules = "";
         String schedName = "";
 
-        try (Connection conn = StoreContents.connect();
-        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseController.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, name);
 
@@ -78,7 +75,7 @@ public class StoreContents {
             stringSchedules += temp;
         }
 
-        try (Connection conn = StoreContents.connect();
+        try (Connection conn = DatabaseController.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, stringSchedules);
@@ -155,7 +152,7 @@ public class StoreContents {
             stringSchedules += temp;
         }
 
-        try (Connection conn = StoreContents.connect();
+        try (Connection conn = DatabaseController.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, year);
