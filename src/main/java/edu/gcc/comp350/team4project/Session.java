@@ -29,9 +29,33 @@ public class Session {
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
         //If uncommented, the following three lines clear the database
-//        DatabaseController.createNewDatabase("team4_project.db");
-//        DatabaseController.drop();
-//        DatabaseController.createNewTable();
+
+
+        Scanner tempS = new Scanner(System.in);
+        while(true){
+            System.out.println("Type 1 to run with existing database.");
+            DatabaseController.printAllUsers();
+            System.out.println("Type 2 to run with a cleared database. WARNING: WILL DELETE ALL STORED USERS");
+            String input = tempS.nextLine();
+            if(input.equals("1")){
+                System.out.println("Running with existing db");
+                break;
+            }
+            else if(input.equals("2")){
+                System.out.println("Running with new db");
+                DatabaseController.createNewDatabase("team4_project.db");
+                DatabaseController.drop();
+                DatabaseController.createNewTable();
+                break;
+            }
+            else{
+                System.out.println("bad input try again");
+            }
+        }
+
+
+
+
 
         menuLoop();
     }
