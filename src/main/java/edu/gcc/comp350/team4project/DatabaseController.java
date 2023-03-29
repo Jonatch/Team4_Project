@@ -322,13 +322,14 @@ public class DatabaseController {
     }
 
     public static void printAllUsers(){
-        String sql = "SELECT username, password from Users WHERE username = ?";
+        String sql = "SELECT * from Users";
         try (Connection conn = DatabaseController.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            //pstmt.setString(1, name);
 
-            ResultSet rs = pstmt.executeQuery();
+            Statement stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery(sql);
 
             String username = "";
             String pass = "";
