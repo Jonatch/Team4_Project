@@ -1,11 +1,13 @@
 package edu.gcc.comp350.team4project;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -17,80 +19,153 @@ public class Session {
     private static Scanner input;
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         createSession();
         //TODO: after, figure out where to close Scanner
     }
 
-    public static void createSession() throws IOException {
+    public static void createSession() throws Exception {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
+        //create object
         menuLoop();
     }
 
-    private static void menuLoop() {
+    private static void menuLoop() throws Exception {
         input = new Scanner(System.in);
-        boolean isLoggedIn, isScheduling;
+        boolean isLoggedIn=false, isScheduling;
         mainMenu();
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
-            if (command.equals("u") || command.equals("g")) {
-                if (command.equals("u")) logInUser();
-                else System.out.println("logged in as a guest");
+            if (command.equals("u")) {
+                logInUser();
                 isLoggedIn = true;
-                while (isLoggedIn) {
-                    loggedInMenu();
-                    command = input.nextLine().toLowerCase();
-                    switch (command) {
-                        case "ns" -> System.out.println("create new schedule not implemented"); //TODO: create new schedule
-                        case "ds" -> System.out.println("delete schedule not implemented"); //TODO: delete a schedule
-                        case "b" -> {
-                            isLoggedIn = false;
-                            logOutUser();
-                        } //TODO: logout from account
-                        case "exit" -> {
-                            isLoggedIn = false;
-                            endSession();
-                        } //exit the program
-                        case "ss" -> {//TODO: test, selecting schedule
-                            isScheduling = true;
-                            selectSchedule(); //TODO: needs to be implemented
+            }
+            else if (command.equals("n")) {
+                createNewUser();
+                isLoggedIn = true;//make new account
+            }
+            else if(command.equals("g")){
+                currentUser = new User("","","",true);
+                System.out.println("Logged in as a guest");
+                isLoggedIn = true;
+            }
+            else{
+                invalidArgument();
+            }
+
+
+
+            while (isLoggedIn) {
+                loggedInMenu();
+                command = input.nextLine().toLowerCase();
+                switch (command) {
+                    case "ns" -> {
+                        if(currentUser.getSchedules().size()<5){
+                            String name = "";
+                            Semester sem;
+                            do {
+                                System.out.println("Enter schedule name (less than 20 characters: ");
+                                name = input.nextLine();
+                            } while (name.length() > 20 || name.length() == 0);
+                            while (true) {
+                                System.out.println("Enter 'f' for fall or 's' for spring");
+                                String semester = input.nextLine().toLowerCase();
+                                if (semester.equals("f")) {
+                                    sem = Semester.FALL;
+                                    break;
+                                }
+                                if (semester.equals("s")) {
+                                    sem = Semester.SPRING;
+                                    break;
+                                }
+                            }
+                            tempSchedule = new Schedule(name, sem);
+                            System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester() + " semester)");
+
+                        }
+                        else{
+                            System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " allowed. Try deleting one");
+                        }
+
+                        isScheduling = true;
+                        scheduleMenu();
+                        command = input.nextLine().toLowerCase();
+                        while (isScheduling) {
+                            switch (command) {
+                                case "f" -> filter(); //TODO: make filter method in this class
+                                case "s" -> search(); //TODO: test, should work
+                                case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
+                                case "v" -> System.out.println("view schedule not implemented"); //TODO: view schedule
+                                case "se" -> {
+                                    isScheduling = false;
+                                    System.out.println("save and exit not implemented");
+                                } //TODO: implement save and exit
+                                case "exit" -> endSession();
+                                default -> invalidArgument();
+                            }
                             scheduleMenu();
                             command = input.nextLine().toLowerCase();
-                            while (isScheduling) {
-                                switch (command) {
-                                    case "f" -> filter(); //TODO: make filter method in this class
-                                    case "s" -> search(); //TODO: test, should work
-                                    case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-                                    case "v" -> System.out.println("view schedule not implemented"); //TODO: view schedule
-                                    case "se" -> {
-                                        isScheduling = false;
-                                        System.out.println("save and exit not implemented");
-                                        endSession();
-                                    } //TODO: implement save and exit
-                                    case "b" -> {
-                                        isScheduling = false;
-                                        continue;
-                                    }
-                                    case "exit" -> endSession();
-                                    default -> invalidArgument();
-                                }
-                                scheduleMenu();
-                                command = input.nextLine().toLowerCase();
+                        }
+
+
+                    }
+                    case "ds" -> {
+                        if(currentUser.getSchedules().size()>0){
+                            System.out.println("Pick a schedule to delete: ");
+                            for(int i = 0; i<currentUser.getSchedules().size();i++){
+                                System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
                             }
                         }
-                        default -> invalidArgument();
+                        else{
+                            System.out.println("No saved schedules to delete!");
+                        }
                     }
+                    case "b" -> {
+                        isLoggedIn = false;
+                        logOutUser();
+                    } //TODO: logout from account
+                    case "exit" -> {
+                        isLoggedIn = false;
+                        endSession();
+                    } //exit the program
+                    case "ss" -> {//TODO: test, selecting schedule
+                        isScheduling = true;
+                        selectSchedule(); //TODO: needs to be implemented
+                        scheduleMenu();
+                        command = input.nextLine().toLowerCase();
+                        while (isScheduling) {
+                            switch (command) {
+                                case "f" -> filter(); //TODO: make filter method in this class
+                                case "s" -> search(); //TODO: test, should work
+                                case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
+                                case "v" -> System.out.println("view schedule not implemented"); //TODO: view schedule
+                                case "se" -> {
+                                    isScheduling = false;
+                                    System.out.println("save and exit not implemented");
+                                    endSession();
+                                } //TODO: implement save and exit
+                                case "b" -> {
+                                    isScheduling = false;
+                                    continue;
+                                }
+                                case "exit" -> endSession();
+                                default -> invalidArgument();
+                            }
+                            scheduleMenu();
+                            command = input.nextLine().toLowerCase();
+                        }
+                    }
+                    default -> invalidArgument();
                 }
             }
-            else if (command.equals("n")) createNewUser(); //make new account
-            else invalidArgument(); //invalid argument
             mainMenu();
             command = input.nextLine().toLowerCase();
         }
         endSession();
     }
+
 
     private static void filter() {
         input = new Scanner(System.in);
@@ -322,7 +397,79 @@ public class Session {
     }
 
     private static void logInUser() {
-        System.out.println("logging in");
+        while(true) {
+            input = new Scanner(System.in);
+            System.out.println("Enter username:");
+            String name = input.nextLine().toLowerCase();
+            System.out.println("Enter passowrd");
+            String password = input.nextLine().toLowerCase();
+            if (DatabaseController.authenticateUser(name,password)) {
+                System.out.println("Log in successful!");
+                currentUser = DatabaseController.pullUser(name);
+                break;
+            }
+            System.out.println("Log in details do not match any stored users");
+        }
+    }
+    private static void logOutUser() {
+        System.out.println("Logging out!");
+        DatabaseController.updateUser(currentUser);
+        currentUser = null;
+    }
+
+    private static void createNewUser() {
+        input = new Scanner(System.in);
+        System.out.println("Creating new user!");
+        String name = "";
+        String year = "";
+        String password = "";
+
+        while(true){
+            System.out.println("Enter  username (less than 20 characters: ");
+            name = input.nextLine().toLowerCase();
+            if (DatabaseController.checkIfUserExists(name)) {
+                System.out.println("Username already exists.");//come back
+            }
+            else if(name.length() > 20 || name.length() == 0){
+                System.out.println("Username too long!");
+            }
+            else{
+                break;
+            }
+        }
+        do {
+            System.out.println("Enter  password (less than 20 characters: ");
+            password = input.nextLine().toLowerCase();
+        } while (password.length() > 20 || password.length() == 0);
+
+        while (true) {
+            System.out.println("Enter class year you are scheduling for:");
+            System.out.println("""
+                    'f' for freshman
+                    's' for sophomore
+                    'j' for junior
+                    'e' for senior
+                    """);
+            String in = input.nextLine().toLowerCase();
+            if (in.equals("f")) {
+                year = "freshman";
+                break;
+            }
+            if (in.equals("s")) {
+                year = "sophomore";
+                break;
+            }
+            if (in.equals("j")) {
+                year = "junior";
+                break;
+            }
+            if (in.equals("e")) {
+                year = "senior";
+                break;
+            }
+        }
+        currentUser = new User(name, year, password, false);
+        System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
     }
 
     private static void endSession() {
@@ -330,7 +477,6 @@ public class Session {
         System.exit(0);
     }
 
-    private static void logOutUser() { System.out.println("logging out"); }
 
     private static void createNewSchedule() { System.out.println("new schedule created"); }
 
@@ -369,7 +515,5 @@ public class Session {
     private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
     private static void selectSchedule() { System.out.println("selecting a schedule"); }
-
-    private static void createNewUser() { System.out.println("creating new user"); }
 
 }

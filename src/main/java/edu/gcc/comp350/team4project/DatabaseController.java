@@ -34,7 +34,6 @@ public class DatabaseController {
     }
 
 
-
     public static void pullUser(String name){
         String sql = "SELECT * FROM Users WHERE username = ?";
         String username = "", year = "", password = "", schedules = "";
@@ -106,7 +105,7 @@ public class DatabaseController {
             System.out.println(e.getMessage());
         }
     }
-
+    
     private static Connection connect() {
         // SQLite connection string
         String url = "jdbc:sqlite:C://sqlite/db/team4_project.db";
