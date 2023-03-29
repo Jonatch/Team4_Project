@@ -168,7 +168,6 @@ public class Session {
 
 
     private static void filter() {
-        input = new Scanner(System.in);
         String filterType;
         boolean isFiltering = true;
 
@@ -199,7 +198,6 @@ public class Session {
     private static void filterDept() {
         HashSet<String> departments = new HashSet<>();
         boolean isFiltering = true;
-        input = new Scanner(System.in);
         String command;
 
         for (Course c: searchBox.getFilteredCourses())
@@ -239,36 +237,36 @@ public class Session {
         //TODO: figure this out
     }
 
-    private static void filterLevel() { //TODO: needs testing
-        input = new Scanner(System.in);
-        char level;
+    private static void filterLevel() {
+        String level;
         boolean isFiltering = true;
 
         while (isFiltering) {
             System.out.println("""
                     Please enter the level you would like to filter by:
-                    1 - 100 level classes
-                    2 - 200 level classes
-                    3 - 300 level classes
-                    4 - 400 level classes
+                    '1' - 100 level classes
+                    '2' - 200 level classes
+                    '3' - 300 level classes
+                    '4' - 400 level classes
                     Type 'b' to go back
                     Type 'exit' to terminate the program
                     """);
-            level = input.nextLine().charAt(0);
+            level = input.nextLine();
             switch (level) {
-                case '1' -> searchBox.filterByLevel(100);
-                case '2' -> searchBox.filterByLevel(200);
-                case '3' -> searchBox.filterByLevel(300);
-                case '4' -> searchBox.filterByLevel(400);
-                case 'b' -> isFiltering = false;
-                case 'e' -> endSession();
+                //TODO: PROBABLY CHANGE TO STRING SO THAT THERE ISNT ACCIDENTAL INPUTS
+                case "1" -> searchBox.filterByLevel("1");
+                case "2" -> searchBox.filterByLevel("2");
+                case "3" -> searchBox.filterByLevel("3");
+                case "4" -> searchBox.filterByLevel("4");
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
                 default -> invalidArgument();
             }
         }
     }
 
     private static void search() {
-        input = new Scanner(System.in);
+        searchBox.removeSpecificFilter("search");
         System.out.println("Please enter a search phrase:");
         String searchPhrase = input.nextLine();
 
@@ -276,7 +274,7 @@ public class Session {
         System.out.println("Here is a list of all courses that contain '" + searchPhrase + "':");
         if (searchBox.getFilteredCourses().size() > 0) {
             for (Course c: searchBox.getFilteredCourses())
-                System.out.println("\t" + c.getName());
+                System.out.println("\t" + c.getName() + " " + c.getDepartmentInfo().courseLevel() + " " + c.getDepartmentInfo().section());
         }
         else System.out.println("No courses found!");
         System.out.println();
