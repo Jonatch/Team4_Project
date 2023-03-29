@@ -128,11 +128,21 @@ public class Session {
                                 case "f" -> filter(); //TODO: make filter method in this class
                                 case "s" -> search(); //TODO: test, should work
                                 case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-                                case "v" -> System.out.println("view schedule not implemented"); //TODO: view schedule
+                                case "vc" -> {
+                                    System.out.println(tempSchedule.toCalenderView());
+                                }
+                                case "vt" -> {
+                                    System.out.println(tempSchedule);
+                                }
                                 case "se" -> {
                                     isScheduling = false;
                                     System.out.println("save and exit not implemented");
+                                    endSession();
                                 } //TODO: implement save and exit
+                                case "b" -> {
+                                    isScheduling = false;
+                                    continue;
+                                }
                                 case "exit" -> endSession();
                                 default -> invalidArgument();
                             }
@@ -171,7 +181,12 @@ public class Session {
                                 case "f" -> filter(); //TODO: make filter method in this class
                                 case "s" -> search(); //TODO: test, should work
                                 case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-                                case "v" -> System.out.println("view schedule not implemented"); //TODO: view schedule
+                                case "vc" -> {
+                                    System.out.println(tempSchedule.toCalenderView());
+                                }
+                                case "vt" -> {
+                                    System.out.println(tempSchedule);
+                                }
                                 case "se" -> {
                                     isScheduling = false;
                                     System.out.println("save and exit not implemented");
@@ -535,14 +550,15 @@ public class Session {
         System.out.println("""
                             Type 'f' to apply or remove a filter
                             Type 's' to search for a class by a phrase
-                            Type 'c' to view credit count
                             Type 'r' to remove a course
-                            Type 'v' to see your schedule
-                            Type 'b' to go back
+                            Type 'vc' to see your schedule as a calendar
+                            Type 'vt' to see your schedule as a table
                             Type 'se' to save and exit
                             Type 'exit' to terminate the program
                             """);
     }
+
+
 
     private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
