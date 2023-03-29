@@ -104,7 +104,18 @@ public class User {
 
     @Override
     public String toString(){
-        return "string";
+        StringBuilder sb = new StringBuilder();
+        sb.append("USER:\n");
+        sb.append("--Username: " + this.username + " ");
+        sb.append("Password: " + this.password + " ");
+        sb.append("Year: " + this.year + " ");
+        sb.append("Guest?: " + this.isGuest + "\n");
+        sb.append("     Schedules:\n");
+        for(Schedule s : schedules){
+            sb.append("     --");
+            sb.append(s);
+        }
+        return sb.toString();
     }
 
     @Override

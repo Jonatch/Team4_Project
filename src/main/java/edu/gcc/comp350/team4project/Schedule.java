@@ -97,12 +97,12 @@ public class Schedule {
     }
     public String toString(){
             StringBuilder sb = new StringBuilder();
-            sb.append("Schedule Name: " + this.scheduleName);
-            sb.append("\n"+ "Semester: " + semester);
-            sb.append("\n"+ "Courses: ");
-
+            sb.append("NAME: " + this.scheduleName + " ");
+            sb.append("SEMESTER: " + this.semester+ " ");
+            sb.append("CREDITS: " + this.totalCredits + "\n");
+            sb.append("     COURSES: "+ "\n");
         for(Course course : this.courses){
-            sb.append("\n" + course.toString());
+            sb.append("         --"+ course.toString()+"\n");
         }
         return sb.toString();
     }

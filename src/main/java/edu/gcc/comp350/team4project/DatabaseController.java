@@ -3,7 +3,10 @@ package edu.gcc.comp350.team4project;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.time.*;
 
 public class DatabaseController {
 
@@ -33,11 +36,40 @@ public class DatabaseController {
         return false;
     }
 
+    public static boolean checkIfUserInDB(String name){
+        String sql = "SELECT username, password from Users WHERE username = ?";
+        try (Connection conn = DatabaseController.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-    public static void pullUser(String name){
+            pstmt.setString(1, name);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            String username = "";
+            //String pass = "";
+            while (rs.next()) {
+                username = rs.getString("username");
+                //pass = rs.getString("password");
+            }
+
+            if (username.equals(name)) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+
+    }
+
+    public static User pullUser(String name){
+
+
         String sql = "SELECT * FROM Users WHERE username = ?";
         String username = "", year = "", password = "", schedules = "";
         String schedName = "";
+        User pulledUser = null;
 
         try (Connection conn = DatabaseController.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -51,27 +83,109 @@ public class DatabaseController {
                  password = rs.getString("password");
                 schedules = rs.getString("schedules");
             }
-            User pulledUser = new User(username, year, password, false);
+            pulledUser = new User(username, year, password, false);
             Scanner sc = new Scanner(schedules);
-            //TODO: Loop through sc to find + create the schedule and course info
+            boolean newS = false;
+            while(sc.hasNext()){
+                Schedule tempS = null;
+                if(sc.nextLine().equals("SCHEDULE")){
+                    newS = true;
+                    Scanner sSc = new Scanner(sc.nextLine());
+                    sSc.useDelimiter(",");
+                    String scheduleName = sSc.next();
+                    Semester scheduleSemester = Semester.valueOf(sSc.next());
+                    tempS = new Schedule(scheduleName,scheduleSemester);
+                }
+                if (sc.nextLine().equals("COURSES")){
+                    while(true) {
+                        Scanner cSc = new Scanner(sc.nextLine());
+                        //cSc.useDelimiter("(,\\s*|\\s+)");
+                        cSc.useDelimiter(",");
+                        //int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime
+                        int refNum = Integer.parseInt(cSc.next());
+                        String department = cSc.next();
+                        Semester semester = Semester.valueOf(cSc.next());
+                        String courseLevel = cSc.next();
+                        char section = cSc.next().charAt(0);
+                        String courseName = cSc.next();
+                        int credits = Integer.parseInt(cSc.next());
+                        String professor = cSc.next();
+                        String description = cSc.next();
+                        LocalTime startTime = LocalTime.parse(cSc.next());
+                        LocalTime endTime = LocalTime.parse(cSc.next());
+                        ArrayList<DayOfWeek> days = new ArrayList<>();
+                        while (cSc.hasNext()) {
+                            days.add(DayOfWeek.valueOf(cSc.next()));
+                        }
+
+                        Course tempC = new Course(refNum, department, semester, courseLevel, section, courseName, credits, professor, description, days, startTime, endTime);
+                        assert tempS != null;
+                        tempS.addCourse(tempC);
+                        if (sc.nextLine().equals("+")){
+                            break;
+                        }
+                    }
+                }
+                pulledUser.saveScheduleToUser(tempS);
+            }
 
 
 
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return pulledUser;
     }
 
     public static void updateUser(User user){
         String sql = "UPDATE Users SET schedules = ? WHERE username = ?";
 
         String stringSchedules = "";
-        for (Schedule sched : user.getSchedules()){
-            String temp = sched + "\n\n";
-            stringSchedules += temp;
+        for (Schedule sched : user.getSchedules()) {
+//            String temp = sched + "\n\n";
+//            stringSchedules += temp;
+            StringBuilder sb = new StringBuilder();
+            sb.append("SCHEDULE");
+            sb.append("\n");
+            sb.append(sched.getScheduleName());
+            sb.append(",");
+            sb.append(sched.getSemester());
+            sb.append("\n");
+            //public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
+            for (Course course : sched.getCourses()) {
+                sb.append("COURSES");
+                sb.append("\n");
+                sb.append(course.getRefNum());
+                sb.append(",");
+                sb.append(course.getDepartmentInfo().department());
+                sb.append(",");
+                sb.append(course.getSemester());
+                sb.append(",");
+                sb.append(course.getDepartmentInfo().courseLevel());
+                sb.append(",");
+                sb.append(course.getDepartmentInfo().section());
+                sb.append(",");
+                sb.append(course.getName());
+                sb.append(",");
+                sb.append(course.getCredits());
+                sb.append(",");
+                sb.append(course.getProfessor());
+                sb.append(",");
+                sb.append(course.getDescription());
+                sb.append(",");
+                sb.append((course.getTimeInfo().startTime()));
+                sb.append(",");
+                sb.append(course.getTimeInfo().endTime());
+                for (DayOfWeek d : course.getTimeInfo().days()) {
+                    sb.append(",");
+                    sb.append(d);
+                }
+                sb.append("\n");
+            }
+            sb.append("+\n");
+            stringSchedules += sb.toString();
         }
 
         try (Connection conn = DatabaseController.connect();
@@ -143,12 +257,56 @@ public class DatabaseController {
 
 
 
-    public static void insert(String username, String year, String password, ArrayList<Schedule> schedules) {
+    public static void insert(User user) {
+        String username = user.getUsername();
+        String year = user.getYear();
+        String password = user.getPassword();
+        ArrayList<Schedule> schedules = user.getSchedules();
         String sql = "INSERT INTO Users(username,year,password,schedules) VALUES(?,?,?,?)";
         String stringSchedules = "";
         for (Schedule sched : schedules){
-            String temp = sched + "\n\n";
-            stringSchedules += temp;
+//            String temp = sched + "\n\n";
+//            stringSchedules += temp;
+            StringBuilder sb = new StringBuilder();
+            sb.append("SCHEDULE");
+            sb.append("\n");
+            sb.append(sched.getScheduleName());
+            sb.append(",");
+            sb.append(sched.getSemester());
+            sb.append("\n");
+            //public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
+            for(Course course : sched.getCourses()){
+                sb.append("COURSES");
+                sb.append("\n");
+                sb.append(course.getRefNum());
+                sb.append(",");
+                sb.append(course.getDepartmentInfo().department());
+                sb.append(",");
+                sb.append(course.getSemester());
+                sb.append(",");
+                sb.append(course.getDepartmentInfo().courseLevel());
+                sb.append(",");
+                sb.append(course.getDepartmentInfo().section());
+                sb.append(",");
+                sb.append(course.getName());
+                sb.append(",");
+                sb.append(course.getCredits());
+                sb.append(",");
+                sb.append(course.getProfessor());
+                sb.append(",");
+                sb.append(course.getDescription());
+                sb.append(",");
+                sb.append((course.getTimeInfo().startTime()));
+                sb.append(",");
+                sb.append(course.getTimeInfo().endTime());
+                for(DayOfWeek d : course.getTimeInfo().days()){
+                    sb.append(",");
+                    sb.append(d);
+                }
+                sb.append("\n");
+            }
+            sb.append("+\n");
+            stringSchedules+=sb.toString();
         }
 
         try (Connection conn = DatabaseController.connect();
@@ -163,6 +321,28 @@ public class DatabaseController {
         }
     }
 
+    public static void printAllUsers(){
+        String sql = "SELECT * from Users";
+        try (Connection conn = DatabaseController.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+
+            Statement stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            String username = "";
+            String pass = "";
+            while (rs.next()) {
+                username = rs.getString("username");
+                pass = rs.getString("password");
+                System.out.println("USERNAME: " + username + " PASSWORD: " + pass);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     public static void drop(){
         String url = "jdbc:sqlite:C://sqlite/db/team4_project.db";
 
@@ -197,25 +377,45 @@ public class DatabaseController {
 //        createNewDatabase("team4_project.db");
 //        drop();
 //        createNewTable();
-//        StoreContents users = new StoreContents();
 //        User jonah = new User("DybasJW20", "Junior", "testpass", false);
-//        Schedule test = new Schedule("newer_test_sched", Semester.SPRING);
+//        Schedule test = new Schedule("newer test sched", Semester.FALL);
 //        Schedule test_2 = new Schedule("test_sched2", Semester.SPRING);
-//        test.addCourse(test3);
-//        test.addCourse(test4);
+//        test.addCourse(test1);
+//        test.addCourse(test2);
 //        test_2.addCourse(test3);
 //        test_2.addCourse(test4);
-
-//        System.out.println(jonah.getSchedules());
+//
 //        jonah.saveScheduleToUser(test);
-//        users.updateUser(jonah);
-//        users.insert(jonah.getUsername(), "Junior", "testpass", jonah.getSchedules());
-//        pullUser(jonah.getUsername());
-//        updateUser(jonah);
-//        if (users.authenticateUser("DybasJW20", "testpass") == true) {
+//        jonah.saveScheduleToUser(test_2);
+//
+//
+////        DatabaseController.updateUser(jonah);
+//        DatabaseController.insert(jonah);
+//
+//        if (DatabaseController.authenticateUser("DybasJW20", "testpass")) {
 //            System.out.println("Autheticated!");
 //        }else{
 //            System.out.println("Failed to authenticate");
 //        }
+//
+//        System.out.println(jonah);
+//        User returnUser = pullUser("DybasJW20");
+//        System.out.println("-----------------------------------------");
+//        System.out.println(returnUser);
+//        System.out.println("-----------------------------------------");
+//        returnUser.removeSchedule(1);
+//        Schedule test_3 = new Schedule("test_sched3", Semester.FALL);
+//        test_3.addCourse(test1);
+//        test_3.addCourse(test2);
+//        returnUser.saveScheduleToUser(test_3);
+//        updateUser(returnUser);
+//        System.out.println(pullUser("DybasJW20"));
+//
+//
+
+
+
+
+
     }
 }

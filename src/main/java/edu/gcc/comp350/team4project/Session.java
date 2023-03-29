@@ -28,7 +28,11 @@ public class Session {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
-        //create object
+        //If uncommented, the following three lines clear the database
+//        DatabaseController.createNewDatabase("team4_project.db");
+//        DatabaseController.drop();
+//        DatabaseController.createNewTable();
+
         menuLoop();
     }
 
@@ -50,6 +54,9 @@ public class Session {
                 currentUser = new User("","","",true);
                 System.out.println("Logged in as a guest");
                 isLoggedIn = true;
+            }
+            else if (command.equals("v")){
+                DatabaseController.printAllUsers();
             }
             else{
                 invalidArgument();
@@ -399,7 +406,7 @@ public class Session {
             input = new Scanner(System.in);
             System.out.println("Enter username:");
             String name = input.nextLine().toLowerCase();
-            System.out.println("Enter passowrd");
+            System.out.println("Enter password");
             String password = input.nextLine().toLowerCase();
             if (DatabaseController.authenticateUser(name,password)) {
                 System.out.println("Log in successful!");
@@ -422,16 +429,17 @@ public class Session {
         String year = "";
         String password = "";
 
-        while(true){
+
+        while (true) {
             System.out.println("Enter  username (less than 20 characters: ");
             name = input.nextLine().toLowerCase();
-            if (DatabaseController.checkIfUserExists(name)) {
-                System.out.println("Username already exists.");//come back
-            }
-            else if(name.length() > 20 || name.length() == 0){
+            if (name.length() > 20 || name.length() == 0) {
                 System.out.println("Username too long!");
             }
-            else{
+            else if (DatabaseController.checkIfUserInDB(name)) {//
+                System.out.println("Username already exists. Try again");
+            }
+            else {
                 break;
             }
         }
@@ -439,6 +447,7 @@ public class Session {
             System.out.println("Enter  password (less than 20 characters: ");
             password = input.nextLine().toLowerCase();
         } while (password.length() > 20 || password.length() == 0);
+
 
         while (true) {
             System.out.println("Enter class year you are scheduling for:");
@@ -467,6 +476,7 @@ public class Session {
             }
         }
         currentUser = new User(name, year, password, false);
+        DatabaseController.insert(currentUser);
         System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
     }
 
