@@ -106,7 +106,7 @@ public class Schedule {
         }
         return sb.toString();
     }
-    public void toCalenderView() {
+    public String toCalenderView() {
         final int ROWS = 53;
         final int COLS = 6;
         final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
@@ -230,13 +230,13 @@ public class Schedule {
                 }
             }
         }
-        System.out.println(Arrays.deepToString(schedule).replace("], ", "]\n"));        // Fill in the rest of the schedule with empty cells
+        //System.out.println(Arrays.deepToString(schedule).replace("], ", "]\n"));        // Fill in the rest of the schedule with empty cells
 
+        return Arrays.deepToString(schedule).replace("], ", "]\n");
     }
 
 
     public void toTableView() {
-        System.out.println(this);
     }
 
 }
