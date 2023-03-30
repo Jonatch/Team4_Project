@@ -229,12 +229,12 @@ public class Session {
                 """);
             filterType = input.nextLine().toLowerCase();
             switch (filterType) {
-                case "dept" -> filterDept(); //TODO: filter by department
-                case "time" -> filterTime(); //TODO: filter by time
-                case "days" -> filterDays(); //TODO: filter by days
-                case "lvl" -> filterLevel(); //TODO: filter by level
+                case "dept" -> filterDept();
+                case "time" -> filterTime();
+                case "days" -> filterDays();
+                case "lvl" -> filterLevel();
                 case "ra" -> searchBox.removeAllFilters(); //removes all filters
-                case "b" -> isFiltering = false; //TODO: go back
+                case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();
             }
@@ -280,7 +280,37 @@ public class Session {
     }
 
     private static void filterDays() {
-        //TODO: figure this out
+        HashSet<DayOfWeek> setOfDays = new HashSet<>();
+        boolean isFiltering = true;
+        String days;
+        while (isFiltering) {
+            System.out.println("""
+                Enter the day you would like to filter by
+                'm' - Monday
+                't' - Tuesday
+                'w' - Wednesday
+                'r' - Thursday
+                'f' - Friday
+                Type 'd' if you are done adding days to filter by
+                Type 'b' to go back
+                Type 'exit' to terminate the program
+                """);
+            days = input.nextLine().toLowerCase();
+            switch (days) {
+                case "m" -> setOfDays.add(DayOfWeek.MONDAY);
+                case "t" -> setOfDays.add(DayOfWeek.TUESDAY);
+                case "w" -> setOfDays.add(DayOfWeek.WEDNESDAY);
+                case "r" -> setOfDays.add(DayOfWeek.THURSDAY);
+                case "f" -> setOfDays.add(DayOfWeek.FRIDAY);
+                case "d" -> {
+                    isFiltering = false;
+                    searchBox.filterByDays(new ArrayList<>(setOfDays));
+                }
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
+                default -> invalidArgument();
+            }
+        }
     }
 
     private static void filterLevel() {

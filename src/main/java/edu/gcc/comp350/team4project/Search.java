@@ -100,8 +100,7 @@ public class Search {
         while(iterator.hasNext()){
             Filter f = iterator.next();
             if(f.getType().equals(filter)){
-                currentFilters.remove(f);
-                //TODO: i think iterator.remove(); is better here
+                iterator.remove();
             }
         }
         for (Filter f : currentFilters){
