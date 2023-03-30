@@ -71,8 +71,7 @@ public class Session {
                 isLoggedIn = true;
             }
             else if (command.equals("n")) {
-                createNewUser();
-                isLoggedIn = true;//make new account
+                if (createNewUser()) isLoggedIn = true;//make new account
             }
             else if(command.equals("g")){
                 currentUser = new User("","","",true);
@@ -85,8 +84,6 @@ public class Session {
             else{
                 invalidArgument();
             }
-
-
 
             while (isLoggedIn) {
                 loggedInMenu();
@@ -540,62 +537,71 @@ public class Session {
         currentUser = null;
     }
 
-    private static void createNewUser() {
-        input = new Scanner(System.in);
+    private static boolean createNewUser() {
         System.out.println("Creating new user!");
-        String name = "";
-        String year = "";
-        String password = "";
-
+        String name, password, year = "";
 
         while (true) {
-            System.out.println("Enter  username (less than 20 characters: ");
+            System.out.println("""
+                    Max characters allowed: 20
+                    Min characters allowed: 5
+                    No whitespace allowed
+                    Type 'b' to go back to login
+                    Type 'exit' to exit
+                    Enter a username:
+                    """);
             name = input.nextLine().toLowerCase();
-            if (name.length() > 20 || name.length() == 0) {
-                System.out.println("Username too long!");
-            }
-            else if (DatabaseController.checkIfUserInDB(name)) {//
-                System.out.println("Username already exists. Try again");
-            }
-            else {
-                break;
-            }
+            if (name.equals("b")) return false;
+            else if (name.equals("exit")) endSession();
+            else if (name.length() > 20) System.out.println("Username is too long, must be less then 20 characters!");
+            else if (name.length() < 5) System.out.println("Username is too short, 5 characters is the minimum!");
+            else if (name.matches(".*\\s+.*")) System.out.println("Username cannot contain whitespace");
+            else if (DatabaseController.checkIfUserInDB(name)) System.out.println("Username already exists. Try again");
+            else break;
         }
-        do {
-            System.out.println("Enter  password (less than 20 characters: ");
-            password = input.nextLine().toLowerCase();
-        } while (password.length() > 20 || password.length() == 0);
-
-
         while (true) {
+            System.out.println("""
+                    Max characters allowed: 20
+                    No whitespace allowed
+                    Type 'b' to go back to login
+                    Type 'exit' to exit
+                    Enter a password:
+                    """);
+            password = input.nextLine().toLowerCase();
+            if (password.equals("b")) return false;
+            else if (password.equals("exit")) endSession();
+            else if (password.matches(".*\\s+.*")) System.out.println("Password cannot contain whitespace");
+            else if (password.length() > 20) System.out.println("Password is too long");
+            else break;
+        }
+
+        while (!year.equals("freshman") && !year.equals("sophomore") && !year.equals("junior") && !year.equals("senior")) {
             System.out.println("Enter class year you are scheduling for:");
             System.out.println("""
                     'f' for freshman
                     's' for sophomore
                     'j' for junior
                     'e' for senior
+                    Type 'b' to go back to login
+                    Type 'exit' to quit the program
                     """);
-            String in = input.nextLine().toLowerCase();
-            if (in.equals("f")) {
-                year = "freshman";
-                break;
-            }
-            if (in.equals("s")) {
-                year = "sophomore";
-                break;
-            }
-            if (in.equals("j")) {
-                year = "junior";
-                break;
-            }
-            if (in.equals("e")) {
-                year = "senior";
-                break;
+            String command = input.nextLine().toLowerCase();
+
+            switch (command) {
+                case "b" -> {
+                    return false;
+                }
+                case "exit" -> endSession();
+                case "f" -> year = "freshman";
+                case "s" -> year = "sophomore";
+                case "j" -> year = "junior";
+                case "e" -> year = "senior";
+                default -> invalidArgument();
             }
         }
-        currentUser = new User(name, year, password, false);
-        DatabaseController.insert(currentUser);
+        DatabaseController.insert(new User(name, year, password, false));
         System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
+        return true;
     }
 
     private static void endSession() {
