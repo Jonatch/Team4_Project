@@ -126,7 +126,9 @@ public class DatabaseController {
                         }
                     }
                 }
-                pulledUser.saveScheduleToUser(tempS);
+                try {
+                    pulledUser.saveScheduleToUser(tempS);
+                }catch(Exception ignored){}
             }
 
 

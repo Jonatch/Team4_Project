@@ -11,9 +11,6 @@ public class User {
     private boolean isGuest;
     private ArrayList<Schedule> schedules;
     private static final int MAX_SCHEDULES = 5;
-//    private static ArrayList<String> usernames = new ArrayList<String>(); //why does User class save usernames?
-//    private static HashMap<String, String> login = new HashMap<String, String>();
-//    private static ArrayList<User> users = new ArrayList<User>();
 
 
     public User(String username, String year, String password, boolean isGuest) {
@@ -21,7 +18,7 @@ public class User {
         this.year = year;
         this.password = password;
         this.isGuest = isGuest;
-        this.schedules = new ArrayList<Schedule>();
+        this.schedules = new ArrayList<>();
     }
 
 
@@ -58,13 +55,13 @@ public class User {
         return schedules;
     }
 
-    public void saveScheduleToUser(Schedule newSchedule) throws Exception{ //Shouldn't this just pass in a schedule? and be called save schedule?
+    public void saveScheduleToUser(Schedule newSchedule) throws Exception { //Shouldn't this just pass in a schedule? and be called save schedule?
         schedules.add(newSchedule);
-        if(newSchedule.getTotalCredits()<12){
-//            throw new Exception("Warning: Schedule is less than 12 credits");
+        if (newSchedule.getTotalCredits() < 12) {
+            throw new Exception("Warning: Schedule is less than 12 credits");
         }
-        if(newSchedule.getTotalCredits()>17){
-//            throw new Exception("Warning: Schedule is greater than 17 credits");
+        if (newSchedule.getTotalCredits() > 17) {
+            throw new Exception("Warning: Schedule is greater than 17 credits");
         }
     }
 
@@ -72,38 +69,8 @@ public class User {
         schedules.remove(index);
     }
 
-    //basic login function that does minimal authentication
-//    public static User login(String username, String password) throws Exception {
-//        if (!authenticate(username, password)) {
-//            throw new Exception("Invalid username or password.");
-//        }
-//        User user = getUserByUsername(username);
-//        user.isGuest = false;
-//        return user;
-//    }
-//
-//    //helper function for the authentication function to find a user
-//    private static User getUserByUsername(String username) {
-//        // loop through the ArrayList of users and return the user with the matching username
-//        for (User user : users) {
-//            if (user.getUsername().equals(username)) {
-//                return user;
-//            }
-//        }
-//        return null; // no user with the matching username was found
-//    }
-//
-//    //authentication function used to see if a username is taken
-//    static boolean authenticate(String username, String password) {
-//        String storedPassword = login.get(username);
-//        if (storedPassword == null) {
-//            return false; // no such user exists
-//        }
-//        return storedPassword.equals(password);
-//    }
-
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("USER:\n");
         sb.append("--Username: " + this.username + " ");
@@ -111,15 +78,10 @@ public class User {
         sb.append("Year: " + this.year + " ");
         sb.append("Guest?: " + this.isGuest + "\n");
         sb.append("     Schedules:\n");
-        for(Schedule s : schedules){
+        for (Schedule s : schedules) {
             sb.append("     --");
             sb.append(s);
         }
         return sb.toString();
-    }
-
-    @Override
-    public boolean equals(Object user){
-        return true;
     }
 }

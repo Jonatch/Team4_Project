@@ -135,7 +135,11 @@ public class Session {
                                     System.out.println(tempSchedule);
                                 }
                                 case "sb" -> {
-                                    currentUser.saveScheduleToUser(tempSchedule);
+                                    try {
+                                        currentUser.saveScheduleToUser(tempSchedule);
+                                    }catch(Exception e){
+                                        System.out.println(e.getMessage());
+                                    }
                                     isScheduling = false;
                                     continue;
                                 } //TODO: implement save and exit
@@ -208,39 +212,65 @@ public class Session {
                         isLoggedIn = false;
                         endSession();
                     } //exit the program
-                    case "vs" -> {//TODO: test, selecting schedule
-//                        System.out.println("Select a schedule to edit");
-//
-//                        command = input.nextLine().toLowerCase();
-//                        switch (command) {
-//                            case ""
-//
-//                        }
-
-                        isScheduling = true;
-                        scheduleMenu();
-                        command = input.nextLine().toLowerCase();
-                        while (isScheduling) {
-                            switch (command) {
-                                case "f" -> filter(); //TODO: make filter method in this class
-                                case "s" -> search(); //TODO: test, should work
-                                case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-                                case "vc" -> {
-                                    System.out.println(tempSchedule.toCalenderView());
+                    case "vs" -> {
+                       if(currentUser.getSchedules().size()>0){
+                            System.out.println("Pick a schedule to edit: ");
+                            for(int i = 0; i<currentUser.getSchedules().size();i++){
+                                System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
+                            }
+                            String numberToEdit = input.nextLine();
+                            switch (numberToEdit) {
+                                case "1" -> {
+                                    System.out.println("Editing schedule 1");
+                                    tempSchedule = currentUser.getSchedules().get(0);
+                                    currentUser.removeSchedule(0);
+                                    //Open schedule menu
                                 }
-                                case "vt" -> {
-                                    System.out.println(tempSchedule.toTableView());
+                                case "2" -> {
+                                    try {
+                                        System.out.println("Editing schedule 2");
+                                        tempSchedule = currentUser.getSchedules().get(1);
+                                        currentUser.removeSchedule(1);
+                                        //open schedule menu
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
                                 }
-                                case "sb" -> {
-                                    currentUser.saveScheduleToUser(tempSchedule);
-                                    isScheduling = false;
-                                    continue;
-                                } //TODO: implement save and exit
-                                case "exit" -> endSession();
+                                case "3" -> {
+                                    try {
+                                        System.out.println("Editing schedule 3");
+                                        tempSchedule = currentUser.getSchedules().get(2);
+                                        currentUser.removeSchedule(2);
+                                        //open schedule menu
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
+                                case "4" -> {
+                                    try {
+                                        System.out.println("Editing schedule 4");
+                                        tempSchedule = currentUser.getSchedules().get(3);
+                                        currentUser.removeSchedule(3);
+                                        //open schedule menu
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
+                                case "5" -> {
+                                    try {
+                                        System.out.println("Editing schedule 5");
+                                        tempSchedule = currentUser.getSchedules().get(4);
+                                        currentUser.removeSchedule(4);
+                                        //open schedule menu
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
                                 default -> invalidArgument();
                             }
-                            scheduleMenu();
-                            command = input.nextLine().toLowerCase();
+                        }
+                        else{
+                            System.out.println("No saved schedules to delete!");
                         }
                     }
                     default -> invalidArgument();
@@ -626,6 +656,12 @@ public class Session {
                             Type 'sb' to save and go back
                             Type 'exit' to terminate the program
                             """);
+
+
+
+
+
+
     }
 
 
