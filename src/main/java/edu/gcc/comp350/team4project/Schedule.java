@@ -99,7 +99,7 @@ public class Schedule {
         StringBuilder sb = new StringBuilder();
         sb.append("NAME: " + this.scheduleName + " ");
         sb.append("SEMESTER: " + this.semester.toString().toLowerCase()+ " ");
-        sb.append("CREDITS: " + this.totalCredits + "\n");
+        sb.append("CREDITS: " + this.totalCredits);
         return sb.toString();
     }
     public String toCalenderView() {
