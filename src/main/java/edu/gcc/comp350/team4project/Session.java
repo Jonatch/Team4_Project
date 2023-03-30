@@ -121,33 +121,12 @@ public class Session {
                         }
 
                         isScheduling = true;
-                        scheduleMenu();
-                        command = input.nextLine().toLowerCase();
+
                         while (isScheduling) {
-                            switch (command) {
-                                case "f" -> filter(); //TODO: make filter method in this class
-                                case "s" -> search(); //TODO: test, should work
-                                case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-                                case "vc" -> {
-                                    System.out.println(tempSchedule.toCalenderView());
-                                }
-                                case "vt" -> {
-                                    System.out.println(tempSchedule);
-                                }
-                                case "sb" -> {
-                                    try {
-                                        currentUser.saveScheduleToUser(tempSchedule);
-                                    }catch(Exception e){
-                                        System.out.println(e.getMessage());
-                                    }
-                                    isScheduling = false;
-                                    continue;
-                                } //TODO: implement save and exit
-                                case "exit" -> endSession();
-                                default -> invalidArgument();
-                            }
-                            scheduleMenu();
-                            command = input.nextLine().toLowerCase();
+                            isScheduling = scheduleMenu();
+
+//                            scheduleMenu();
+//                            command = input.nextLine().toLowerCase();
                         }
 
 
@@ -646,7 +625,7 @@ public class Session {
                         """);
     }
 
-    private static void scheduleMenu() {
+    private static boolean scheduleMenu() {
         System.out.println("""
                             Type 'f' to apply or remove a filter
                             Type 's' to search for a class by a phrase
@@ -658,10 +637,31 @@ public class Session {
                             """);
 
 
+        String command = input.nextLine().toLowerCase();
+        switch (command) {
+            case "f" -> filter(); //TODO: make filter method in this class
+            case "s" -> search(); //TODO: test, should work
+            case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
+            case "vc" -> {
+                System.out.println(tempSchedule.toCalenderView());
+            }
+            case "vt" -> {
+                System.out.println(tempSchedule);
+            }
+            case "sb" -> {
+                try {
+                    currentUser.saveScheduleToUser(tempSchedule);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                }
+                return false;
+            } //TODO: implement save and exit
+            case "exit" -> endSession();
+            default -> invalidArgument();
+        }
 
 
-
-
+        return true;
     }
 
 
