@@ -189,7 +189,7 @@ public class Session {
                         endSession();
                     } //exit the program
                     case "vs" -> {
-                       if(currentUser.getSchedules().size()>0){
+                        if(currentUser.getSchedules().size()>0) {
                             System.out.println("Pick a schedule to edit: ");
                             for(int i = 0; i<currentUser.getSchedules().size();i++){
                                 System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
@@ -258,6 +258,20 @@ public class Session {
         endSession();
     }
 
+    private static void editSchedules() {
+        if (currentUser.getSchedules().size() > 0) {
+            for (int i = 0; i < currentUser.getSchedules().size(); i++) {
+                System.out.println((i + 1) + ": " + currentUser.getSchedules().get(i));
+            }
+        }
+        else {
+            System.out.println("No schedules have been made");
+        }
+    }
+
+    private static void editSpecificSchedule() {
+
+    }
 
     private static void filter() {
         String filterType;
