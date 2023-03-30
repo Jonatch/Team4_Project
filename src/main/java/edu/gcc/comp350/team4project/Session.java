@@ -71,8 +71,7 @@ public class Session {
                 isLoggedIn = true;
             }
             else if (command.equals("n")) {
-                createNewUser();
-                isLoggedIn = true;//make new account
+                if (createNewUser()) isLoggedIn = true;//make new account
             }
             else if(command.equals("g")){
                 currentUser = new User("","","",true);
@@ -85,8 +84,6 @@ public class Session {
             else{
                 invalidArgument();
             }
-
-
 
             while (isLoggedIn) {
                 loggedInMenu();
@@ -277,7 +274,6 @@ public class Session {
 
 
     private static void filter() {
-        input = new Scanner(System.in);
         String filterType;
         boolean isFiltering = true;
 
@@ -293,12 +289,12 @@ public class Session {
                 """);
             filterType = input.nextLine().toLowerCase();
             switch (filterType) {
-                case "dept" -> filterDept(); //TODO: filter by department
-                case "time" -> filterTime(); //TODO: filter by time
-                case "days" -> filterDays(); //TODO: filter by days
-                case "lvl" -> filterLevel(); //TODO: filter by level
+                case "dept" -> filterDept();
+                case "time" -> filterTime();
+                case "days" -> filterDays();
+                case "lvl" -> filterLevel();
                 case "ra" -> searchBox.removeAllFilters(); //removes all filters
-                case "b" -> isFiltering = false; //TODO: go back
+                case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();
             }
@@ -308,7 +304,6 @@ public class Session {
     private static void filterDept() {
         HashSet<String> departments = new HashSet<>();
         boolean isFiltering = true;
-        input = new Scanner(System.in);
         String command;
 
         for (Course c: searchBox.getFilteredCourses())
@@ -345,39 +340,69 @@ public class Session {
     }
 
     private static void filterDays() {
-        //TODO: figure this out
+        HashSet<DayOfWeek> setOfDays = new HashSet<>();
+        boolean isFiltering = true;
+        String days;
+        while (isFiltering) {
+            System.out.println("""
+                Enter the day you would like to filter by
+                'm' - Monday
+                't' - Tuesday
+                'w' - Wednesday
+                'r' - Thursday
+                'f' - Friday
+                Type 'd' if you are done adding days to filter by
+                Type 'b' to go back
+                Type 'exit' to terminate the program
+                """);
+            days = input.nextLine().toLowerCase();
+            switch (days) {
+                case "m" -> setOfDays.add(DayOfWeek.MONDAY);
+                case "t" -> setOfDays.add(DayOfWeek.TUESDAY);
+                case "w" -> setOfDays.add(DayOfWeek.WEDNESDAY);
+                case "r" -> setOfDays.add(DayOfWeek.THURSDAY);
+                case "f" -> setOfDays.add(DayOfWeek.FRIDAY);
+                case "d" -> {
+                    isFiltering = false;
+                    searchBox.filterByDays(new ArrayList<>(setOfDays));
+                }
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
+                default -> invalidArgument();
+            }
+        }
     }
 
-    private static void filterLevel() { //TODO: needs testing
-        input = new Scanner(System.in);
-        char level;
+    private static void filterLevel() {
+        String level;
         boolean isFiltering = true;
 
         while (isFiltering) {
             System.out.println("""
                     Please enter the level you would like to filter by:
-                    1 - 100 level classes
-                    2 - 200 level classes
-                    3 - 300 level classes
-                    4 - 400 level classes
+                    '1' - 100 level classes
+                    '2' - 200 level classes
+                    '3' - 300 level classes
+                    '4' - 400 level classes
                     Type 'b' to go back
                     Type 'exit' to terminate the program
                     """);
-            level = input.nextLine().charAt(0);
+            level = input.nextLine();
             switch (level) {
-                case '1' -> searchBox.filterByLevel(100);
-                case '2' -> searchBox.filterByLevel(200);
-                case '3' -> searchBox.filterByLevel(300);
-                case '4' -> searchBox.filterByLevel(400);
-                case 'b' -> isFiltering = false;
-                case 'e' -> endSession();
+                //TODO: PROBABLY CHANGE TO STRING SO THAT THERE ISNT ACCIDENTAL INPUTS
+                case "1" -> searchBox.filterByLevel("1");
+                case "2" -> searchBox.filterByLevel("2");
+                case "3" -> searchBox.filterByLevel("3");
+                case "4" -> searchBox.filterByLevel("4");
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
                 default -> invalidArgument();
             }
         }
     }
 
     private static void search() {
-        input = new Scanner(System.in);
+        searchBox.removeSpecificFilter("search");
         System.out.println("Please enter a search phrase:");
         String searchPhrase = input.nextLine();
 
@@ -385,7 +410,7 @@ public class Session {
         System.out.println("Here is a list of all courses that contain '" + searchPhrase + "':");
         if (searchBox.getFilteredCourses().size() > 0) {
             for (Course c: searchBox.getFilteredCourses())
-                System.out.println("\t" + c.getName());
+                System.out.println("\t" + c.getName() + " " + c.getDepartmentInfo().courseLevel() + " " + c.getDepartmentInfo().section());
         }
         else System.out.println("No courses found!");
         System.out.println();
@@ -526,62 +551,71 @@ public class Session {
         currentUser = null;
     }
 
-    private static void createNewUser() {
-        input = new Scanner(System.in);
+    private static boolean createNewUser() {
         System.out.println("Creating new user!");
-        String name = "";
-        String year = "";
-        String password = "";
-
+        String name, password, year = "";
 
         while (true) {
-            System.out.println("Enter  username (less than 20 characters: ");
+            System.out.println("""
+                    Max characters allowed: 20
+                    Min characters allowed: 5
+                    No whitespace allowed
+                    Type 'b' to go back to login
+                    Type 'exit' to exit
+                    Enter a username:
+                    """);
             name = input.nextLine().toLowerCase();
-            if (name.length() > 20 || name.length() == 0) {
-                System.out.println("Username too long!");
-            }
-            else if (DatabaseController.checkIfUserInDB(name)) {//
-                System.out.println("Username already exists. Try again");
-            }
-            else {
-                break;
-            }
+            if (name.equals("b")) return false;
+            else if (name.equals("exit")) endSession();
+            else if (name.length() > 20) System.out.println("Username is too long, must be less then 20 characters!");
+            else if (name.length() < 5) System.out.println("Username is too short, 5 characters is the minimum!");
+            else if (name.matches(".*\\s+.*")) System.out.println("Username cannot contain whitespace");
+            else if (DatabaseController.checkIfUserInDB(name)) System.out.println("Username already exists. Try again");
+            else break;
         }
-        do {
-            System.out.println("Enter  password (less than 20 characters: ");
-            password = input.nextLine().toLowerCase();
-        } while (password.length() > 20 || password.length() == 0);
-
-
         while (true) {
+            System.out.println("""
+                    Max characters allowed: 20
+                    No whitespace allowed
+                    Type 'b' to go back to login
+                    Type 'exit' to exit
+                    Enter a password:
+                    """);
+            password = input.nextLine().toLowerCase();
+            if (password.equals("b")) return false;
+            else if (password.equals("exit")) endSession();
+            else if (password.matches(".*\\s+.*")) System.out.println("Password cannot contain whitespace");
+            else if (password.length() > 20) System.out.println("Password is too long");
+            else break;
+        }
+
+        while (!year.equals("freshman") && !year.equals("sophomore") && !year.equals("junior") && !year.equals("senior")) {
             System.out.println("Enter class year you are scheduling for:");
             System.out.println("""
                     'f' for freshman
                     's' for sophomore
                     'j' for junior
                     'e' for senior
+                    Type 'b' to go back to login
+                    Type 'exit' to quit the program
                     """);
-            String in = input.nextLine().toLowerCase();
-            if (in.equals("f")) {
-                year = "freshman";
-                break;
-            }
-            if (in.equals("s")) {
-                year = "sophomore";
-                break;
-            }
-            if (in.equals("j")) {
-                year = "junior";
-                break;
-            }
-            if (in.equals("e")) {
-                year = "senior";
-                break;
+            String command = input.nextLine().toLowerCase();
+
+            switch (command) {
+                case "b" -> {
+                    return false;
+                }
+                case "exit" -> endSession();
+                case "f" -> year = "freshman";
+                case "s" -> year = "sophomore";
+                case "j" -> year = "junior";
+                case "e" -> year = "senior";
+                default -> invalidArgument();
             }
         }
-        currentUser = new User(name, year, password, false);
-        DatabaseController.insert(currentUser);
+        DatabaseController.insert(new User(name, year, password, false));
         System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
+        return true;
     }
 
     private static void endSession() {

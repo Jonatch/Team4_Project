@@ -5,23 +5,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-class Filter{
-    private String type;
-    private Object value;
-
-    public Filter(String type, Object value){
-        this.type = type;
-        this.value = value;
-    }
-
-    public String getType(){
-        return type;
-    }
-    public Object getValue(){
-        return value;
-    }
-}
-
 public class Search {
     private final ArrayList<Course> courseList;
     private ArrayList<Course> filteredCourses;
@@ -38,7 +21,7 @@ public class Search {
         while (iterator.hasNext()) {
             Course c = iterator.next();
             if (!start_times.contains(c.getTimeInfo().startTime())){
-                filteredCourses.remove(c);
+                iterator.remove();
             }
         }
         //Saving the filter used
@@ -52,11 +35,10 @@ public class Search {
             Course c = iterator.next();
             for (int i = 0; i < days.size(); i++){
                 if (!c.getDays().contains(days.get(i))){
-                    filteredCourses.remove(c);
+                    iterator.remove();
                 }
             }
         }
-        //Saving the filter used
         Filter currentfilter = new Filter("days", days);
         currentFilters.add(currentfilter);
 
@@ -88,17 +70,14 @@ public class Search {
         currentFilters.add(currentfilter);
     }
 
-    public void filterByLevel(int level) {
-
-        //Saving the filter used
-        Filter currentfilter = new Filter("phrase", level);
+    public void filterByLevel(String level) {
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
+            if (c.getDepartmentInfo().courseLevel().charAt(0) != (level.charAt(0))) iterator.remove();
+        }
+        Filter currentfilter = new Filter("level: ", level);
         currentFilters.add(currentfilter);
-
-        /*
-        TODO: THIS NEEDS TO BE IMPLEMENTED SO THAT ALL COURSES WITH THAT LEVEL ARE SHOWN
-        TODO: i.e.: if level == 100, then all 100 level courses are kept like 101, 160, 180, etc...
-        I (Ammiel) can do this when I get a chance
-         */
     }
 
     public void filterByPhrase(String searchPhrase) {
@@ -107,7 +86,6 @@ public class Search {
             Course course = iterator.next();
             if (!course.getName().contains(searchPhrase.toUpperCase())) iterator.remove();
         }
-        //Saving the filter used
         Filter currentfilter = new Filter("phrase", searchPhrase);
         currentFilters.add(currentfilter);
     }
@@ -122,7 +100,7 @@ public class Search {
         while(iterator.hasNext()){
             Filter f = iterator.next();
             if(f.getType().equals(filter)){
-                currentFilters.remove(f);
+                iterator.remove();
             }
         }
         for (Filter f : currentFilters){
@@ -139,7 +117,7 @@ public class Search {
                 filterByProf((String)f.getValue());
             }
             if (f.getType().equals("level")){
-                filterByLevel((int)f.getValue());
+                filterByLevel((String)f.getValue());
             }
             if (f.getType().equals("phrase")){
                 filterByPhrase((String)f.getValue());
@@ -155,4 +133,21 @@ public class Search {
         this.filteredCourses = courseList;
     }
 
+}
+
+class Filter{
+    private String type;
+    private Object value;
+
+    public Filter(String type, Object value){
+        this.type = type;
+        this.value = value;
+    }
+
+    public String getType(){
+        return type;
+    }
+    public Object getValue(){
+        return value;
+    }
 }
