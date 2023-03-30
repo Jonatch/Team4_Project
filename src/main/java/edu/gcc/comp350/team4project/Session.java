@@ -134,15 +134,11 @@ public class Session {
                                 case "vt" -> {
                                     System.out.println(tempSchedule);
                                 }
-                                case "se" -> {
-                                    isScheduling = false;
-                                    System.out.println("save and exit not implemented");
-                                    endSession();
-                                } //TODO: implement save and exit
-                                case "b" -> {
+                                case "sb" -> {
+                                    currentUser.saveScheduleToUser(tempSchedule);
                                     isScheduling = false;
                                     continue;
-                                }
+                                } //TODO: implement save and exit
                                 case "exit" -> endSession();
                                 default -> invalidArgument();
                             }
@@ -153,10 +149,51 @@ public class Session {
 
                     }
                     case "ds" -> {
+
                         if(currentUser.getSchedules().size()>0){
                             System.out.println("Pick a schedule to delete: ");
                             for(int i = 0; i<currentUser.getSchedules().size();i++){
                                 System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
+                            }
+                            String numberToDelete = input.nextLine();
+                            switch (numberToDelete) {
+                                case "1" -> {
+                                    currentUser.removeSchedule(0);
+                                    System.out.println("Schedule deleted!");
+                                }
+                                case "2" -> {
+                                    try {
+                                        currentUser.removeSchedule(1);
+                                        System.out.println("Schedule deleted!");
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
+                                case "3" -> {
+                                    try {
+                                        currentUser.removeSchedule(2);
+                                        System.out.println("Schedule deleted!");
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
+                                case "4" -> {
+                                    try {
+                                        currentUser.removeSchedule(3);
+                                        System.out.println("Schedule deleted!");
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
+                                case "5" -> {
+                                    try {
+                                        currentUser.removeSchedule(4);
+                                        System.out.println("Schedule deleted!");
+                                    } catch (Exception ignored) {
+                                        invalidArgument();
+                                    }
+                                }
+                                default -> invalidArgument();
                             }
                         }
                         else{
@@ -166,14 +203,21 @@ public class Session {
                     case "b" -> {
                         isLoggedIn = false;
                         logOutUser();
-                    } //TODO: logout from account
+                    }
                     case "exit" -> {
                         isLoggedIn = false;
                         endSession();
                     } //exit the program
-                    case "ss" -> {//TODO: test, selecting schedule
+                    case "vs" -> {//TODO: test, selecting schedule
+//                        System.out.println("Select a schedule to edit");
+//
+//                        command = input.nextLine().toLowerCase();
+//                        switch (command) {
+//                            case ""
+//
+//                        }
+
                         isScheduling = true;
-                        selectSchedule(); //TODO: needs to be implemented
                         scheduleMenu();
                         command = input.nextLine().toLowerCase();
                         while (isScheduling) {
@@ -185,17 +229,13 @@ public class Session {
                                     System.out.println(tempSchedule.toCalenderView());
                                 }
                                 case "vt" -> {
-                                    System.out.println(tempSchedule);
+                                    System.out.println(tempSchedule.toTableView());
                                 }
-                                case "se" -> {
-                                    isScheduling = false;
-                                    System.out.println("save and exit not implemented");
-                                    endSession();
-                                } //TODO: implement save and exit
-                                case "b" -> {
+                                case "sb" -> {
+                                    currentUser.saveScheduleToUser(tempSchedule);
                                     isScheduling = false;
                                     continue;
-                                }
+                                } //TODO: implement save and exit
                                 case "exit" -> endSession();
                                 default -> invalidArgument();
                             }
@@ -542,7 +582,7 @@ public class Session {
         System.out.println("""
                         Type 'ns' to create a new schedule
                         Type 'ds' to delete a schedule
-                        Type 'ss' to select a schedule to use
+                        Type 'vs' to view saved schedule or edit 
                         Type 'b' to go logout
                         Type 'exit' to terminate the program
                         """);
@@ -555,7 +595,7 @@ public class Session {
                             Type 'r' to remove a course
                             Type 'vc' to see your schedule as a calendar
                             Type 'vt' to see your schedule as a table
-                            Type 'se' to save and exit
+                            Type 'sb' to save and go back
                             Type 'exit' to terminate the program
                             """);
     }
@@ -564,6 +604,5 @@ public class Session {
 
     private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
-    private static void selectSchedule() { System.out.println("selecting a schedule"); }
 
 }
