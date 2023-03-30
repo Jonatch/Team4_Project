@@ -111,19 +111,15 @@ public class Session {
                             }
                             tempSchedule = new Schedule(name, sem);
                             System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester() + " semester)");
+                            isScheduling = true;
+                            while (isScheduling) {
+                                isScheduling = scheduleMenu();
+                            }
 
                         }
                         else{
-                            System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " allowed. Try deleting one");
-                        }
+                            System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " schedules allowed. Try deleting one");
 
-                        isScheduling = true;
-
-                        while (isScheduling) {
-                            isScheduling = scheduleMenu();
-
-//                            scheduleMenu();
-//                            command = input.nextLine().toLowerCase();
                         }
 
 
@@ -180,34 +176,33 @@ public class Session {
                             System.out.println("No saved schedules to delete!");
                         }
                     }
-                    case "b" -> {
-                        isLoggedIn = false;
-                        logOutUser();
-                    }
-                    case "exit" -> {
-                        isLoggedIn = false;
-                        endSession();
-                    } //exit the program
                     case "vs" -> {
-                        if(currentUser.getSchedules().size()>0) {
+                        if(currentUser.getSchedules().size()>0){
                             System.out.println("Pick a schedule to edit: ");
                             for(int i = 0; i<currentUser.getSchedules().size();i++){
                                 System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
                             }
+                            System.out.println("\nType 'b' to go back");
                             String numberToEdit = input.nextLine();
                             switch (numberToEdit) {
                                 case "1" -> {
                                     System.out.println("Editing schedule 1");
                                     tempSchedule = currentUser.getSchedules().get(0);
                                     currentUser.removeSchedule(0);
-                                    //Open schedule menu
+                                    isScheduling = true;
+                                    while (isScheduling) {
+                                        isScheduling = scheduleMenu();
+                                    }
                                 }
                                 case "2" -> {
                                     try {
                                         System.out.println("Editing schedule 2");
                                         tempSchedule = currentUser.getSchedules().get(1);
                                         currentUser.removeSchedule(1);
-                                        //open schedule menu
+                                        isScheduling = true;
+                                        while (isScheduling) {
+                                            isScheduling = scheduleMenu();
+                                        }
                                     } catch (Exception ignored) {
                                         invalidArgument();
                                     }
@@ -217,7 +212,10 @@ public class Session {
                                         System.out.println("Editing schedule 3");
                                         tempSchedule = currentUser.getSchedules().get(2);
                                         currentUser.removeSchedule(2);
-                                        //open schedule menu
+                                        isScheduling = true;
+                                        while (isScheduling) {
+                                            isScheduling = scheduleMenu();
+                                        }
                                     } catch (Exception ignored) {
                                         invalidArgument();
                                     }
@@ -227,7 +225,10 @@ public class Session {
                                         System.out.println("Editing schedule 4");
                                         tempSchedule = currentUser.getSchedules().get(3);
                                         currentUser.removeSchedule(3);
-                                        //open schedule menu
+                                        isScheduling = true;
+                                        while (isScheduling) {
+                                            isScheduling = scheduleMenu();
+                                        }
                                     } catch (Exception ignored) {
                                         invalidArgument();
                                     }
@@ -237,18 +238,31 @@ public class Session {
                                         System.out.println("Editing schedule 5");
                                         tempSchedule = currentUser.getSchedules().get(4);
                                         currentUser.removeSchedule(4);
-                                        //open schedule menu
+                                        isScheduling = true;
+                                        while (isScheduling) {
+                                            isScheduling = scheduleMenu();
+                                        }
                                     } catch (Exception ignored) {
                                         invalidArgument();
                                     }
+                                }
+                                case "b" -> {
                                 }
                                 default -> invalidArgument();
                             }
                         }
                         else{
-                            System.out.println("No saved schedules to delete!");
+                            System.out.println("No saved schedules to edit!");
                         }
                     }
+                    case "b" -> {
+                        isLoggedIn = false;
+                        logOutUser();
+                    }
+                    case "exit" -> {
+                        isLoggedIn = false;
+                        endSession();
+                    } //exit the program
                     default -> invalidArgument();
                 }
             }
@@ -258,20 +272,6 @@ public class Session {
         endSession();
     }
 
-    private static void editSchedules() {
-        if (currentUser.getSchedules().size() > 0) {
-            for (int i = 0; i < currentUser.getSchedules().size(); i++) {
-                System.out.println((i + 1) + ": " + currentUser.getSchedules().get(i));
-            }
-        }
-        else {
-            System.out.println("No schedules have been made");
-        }
-    }
-
-    private static void editSpecificSchedule() {
-
-    }
 
     private static void filter() {
         String filterType;
