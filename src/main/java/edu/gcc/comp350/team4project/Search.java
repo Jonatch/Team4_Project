@@ -142,6 +142,14 @@ public class Search {
         }
     }
 
+    public String getCurrentSearchPhrase(){
+        for(Filter f : currentFilters){
+            if(f.getType().equals("phrase")){
+                return (String) f.getValue();
+            }
+        }
+        return "-none-";
+    }
     public ArrayList<Course> getFilteredCourses() {
         return filteredCourses;
     }
