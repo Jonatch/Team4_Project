@@ -21,6 +21,7 @@ public class Session {
 
     public static void main(String[] args) throws Exception {
         createSession();
+
         //TODO: after, figure out where to close Scanner
     }
 
@@ -28,6 +29,7 @@ public class Session {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
         searchBox = new Search(totalCourses);
+
         //If uncommented, the following three lines clear the database
 
 
