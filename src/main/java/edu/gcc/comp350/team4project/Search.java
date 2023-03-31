@@ -8,7 +8,7 @@ import java.util.Iterator;
 public class Search {
     private final ArrayList<Course> courseList;
     private ArrayList<Course> filteredCourses;
-    ArrayList<Filter> currentFilters;
+    private ArrayList<Filter> currentFilters;
 
     public Search(ArrayList<Course> courseList, Semester semester) {
         currentFilters = new ArrayList<>();
@@ -116,13 +116,14 @@ public class Search {
         Iterator<Filter> iterator = currentFilters.iterator();
         while(iterator.hasNext()){
             Filter f = iterator.next();
-            if(f.getType().equals(filter)){
+            if(f.getType().equals(filter)) {
                 currentFilters.remove(f);
+                break;
             }
         }
         for (Filter f : currentFilters){
             if (f.getType().equals("time")){
-                filterByTime((ArrayList<LocalTime>)f.getValue());
+                filterByTime((ArrayList<LocalTime>) f.getValue());
             }
             if (f.getType().equals("days")){
                 filterByDays((ArrayList<DayOfWeek>) f.getValue());
@@ -137,7 +138,7 @@ public class Search {
                 filterByLevel((String)f.getValue());
             }
             if (f.getType().equals("phrase")){
-                filterByPhrase((String)f.getValue());
+                filterByPhrase((String) f.getValue());
             }
         }
     }
