@@ -407,18 +407,43 @@ public class Session {
     }
 
     private static void search() {
-        searchBox.removeSpecificFilter("search");
-        System.out.println("Please enter a search phrase:");
-        String searchPhrase = input.nextLine();
+        String command;
+        boolean isSearching = true;
 
-        searchBox.filterByPhrase(searchPhrase.toUpperCase());
-        System.out.println("Here is a list of all courses that contain '" + searchPhrase + "':");
-        if (searchBox.getFilteredCourses().size() > 0) {
-            for (Course c: searchBox.getFilteredCourses())
-                System.out.println("\t" + c.getName() + " " + c.getDepartmentInfo().courseLevel() + " " + c.getDepartmentInfo().section());
+        while (isSearching) {
+            System.out.println("CURRENT SEARCH QUERY: " + searchBox.getCurrentSearchPhrase());
+            System.out.println("""
+                    Type 's' to create new course name search query
+                    Type 'c' to clear current search query
+                    Type 'b' to go back
+                    """);
+            command = input.nextLine().toLowerCase();
+            switch (command) {
+                case "s" -> {
+                    String nextCommand;
+                    boolean isSearchingPhrase = true;
+                    while (isSearchingPhrase) {
+                        System.out.println("""
+                            Enter the course name you want to search for or 'b' to go back
+                            """);
+                        nextCommand = input.nextLine().toLowerCase();
+                        if(nextCommand.equals("b")){
+                            isSearchingPhrase=false;
+                        }
+                        else{
+                            searchBox.filterByPhrase(nextCommand);
+                            isSearchingPhrase=false;
+                        }
+                    }
+                }
+                case "c" -> {searchBox.removeSpecificFilter("search");
+                    System.out.println("Clearing search phrase");isSearching = false;}
+                case "b" -> isSearching = false;
+                default -> invalidArgument();
+            }
+
+
         }
-        else System.out.println("No courses found!");
-        System.out.println();
     }
 
 
@@ -558,7 +583,7 @@ public class Session {
             case "a" -> addCourseMenu();
             case "r" -> System.out.println("remove class not implemented");
             case "vc" -> System.out.println(tempSchedule.toCalenderView());
-            case "vt" -> System.out.println(tempSchedule);
+            case "vt" -> System.out.println(tempSchedule.toTableView());
             case "sb" -> {
                 try {
                     currentUser.saveScheduleToUser(tempSchedule);
@@ -573,28 +598,27 @@ public class Session {
         return true;
     }
 
-    private static void addByReference() throws Exception {
-        while (true) {
-            System.out.println("""
-                    Enter a reference number:
-                    Type '-1' to go stop adding by reference number
-                    """);
-            int refNum = input.nextInt();
-            if (refNum <= 0) break;
-            else {
-                Course c = searchBox.searchForRefNum(refNum);
-                if (c != null) tempSchedule.addCourse(c);
-                else System.out.println("Reference number not found");
-            }
-        }
-        input.nextLine();
-    }
+//    private static void addByReference() throws Exception {
+//        while (true) {
+//            System.out.println("""
+//                    Enter a reference number:
+//                    Type '-1' to go stop adding by reference number
+//                    """);
+//            int refNum = input.nextInt();
+//            if (refNum <= 0) break;
+//            else {
+//                Course c = searchBox.searchForRefNum(refNum);
+//                if (c != null) tempSchedule.addCourse(c);
+//                else System.out.println("Reference number not found");
+//            }
+//        }
+//        input.nextLine();
+//    }
 
     private static void addCourseMenu() throws Exception {
         searchBox = new Search(totalCourses, tempSchedule.getSemester());
-        for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
-
         while (true) {
+            for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
             System.out.println("""
                 Type 'r' to add a course by its reference number
                 Type 'f' to apply or remove a filter
@@ -602,11 +626,36 @@ public class Session {
                 Type 'b' to go back
                 """);
             String command = input.nextLine().toLowerCase();
-            if (command.equals("r")) addByReference();
-            else if (command.equals("f")) filter();
+            //if (command.equals("r")) addByReference();
+            if (command.equals("f")) filter();
             else if (command.equals("s")) search();
             else if (command.equals("b")) break;
-            else invalidArgument();
+            else {
+                int commandInt = -100;
+                try{
+                    commandInt = Integer.parseInt(command);
+                    boolean flag = false;
+                    for(Course c : searchBox.getFilteredCourses()){
+                        if(c.getRefNum() == commandInt){
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag){
+                        Course c = searchBox.searchForRefNum(commandInt);
+                        if (c != null) {
+                            tempSchedule.addCourse(c);
+                            System.out.println("Course: " + c.getName() + " added!");
+                            break;
+                        }
+                    }
+                    else{
+                        System.out.println("Not a valid refnum!");
+                    }
+                }catch(Exception ignored){
+                    invalidArgument();
+                }
+            }
         }
     }
 

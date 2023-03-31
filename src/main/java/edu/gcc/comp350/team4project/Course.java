@@ -135,6 +135,6 @@ public class Course{
     @Override
     public String toString(){
         //return "REFNUM: " + refNum + ", " + departmentInfo + ", " + timeInfo + ", SEMESTER: "+ semester + ", CREDITS: " + credits + ", PROF: " + professor + ", NAME: " + name + ", DESCRIPTION: " + description;
-        return "REFNUM: " + refNum + ", DEPARTMENT_INFO: " + departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + ", NAME: " + name + ", SEMESTER: "+ semester.toString().toLowerCase() +", TIME: " + timeInfo.startTime() + "-" + timeInfo.endTime() + ", PROF: " + professor + ", CREDITS: " + credits + ", DESCRIPTION: "+ description ;
+        return "REFNUM: " + refNum + ", DEPARTMENT_INFO: " + departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + ", NAME: " + name + ", SEMESTER: "+ semester.toString().toLowerCase() +", DAYS: " + timeInfo.days() + ", TIME: " + timeInfo.startTime() + "-" + timeInfo.endTime() + ", PROF: " + professor + ", CREDITS: " + credits + ", DESCRIPTION: "+ description ;
     }
 }
