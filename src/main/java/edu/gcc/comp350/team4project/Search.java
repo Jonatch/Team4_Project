@@ -10,12 +10,22 @@ public class Search {
     private ArrayList<Course> filteredCourses;
     ArrayList<Filter> currentFilters;
 
-    public Search(ArrayList<Course> courseList) {
+    public Search(ArrayList<Course> courseList, Semester semester) {
         currentFilters = new ArrayList<>();
         filteredCourses = new ArrayList<>(courseList);
         this.courseList = courseList;
+        filterBySemester(semester);
     }
 
+    private void filterBySemester(Semester s) {
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
+            if (!c.getSemester().equals(s)){
+                iterator.remove();
+            }
+        }
+    }
     public void filterByTime(ArrayList<LocalTime> start_times) {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
@@ -95,6 +105,13 @@ public class Search {
         filteredCourses.addAll(courseList);
     }
 
+    public Course searchForRefNum(int refNum) {
+        for (Course c: courseList) {
+            if (c.getRefNum() == refNum) return c;
+        }
+        return null;
+    }
+
     public void removeSpecificFilter(String filter) {
         Iterator<Filter> iterator = currentFilters.iterator();
         while(iterator.hasNext()){
@@ -127,6 +144,10 @@ public class Search {
 
     public ArrayList<Course> getFilteredCourses() {
         return filteredCourses;
+    }
+
+    public ArrayList<Filter> getCurrentFilters() {
+        return currentFilters;
     }
 
     public void setFilteredCourses(ArrayList<Course> courseList) {

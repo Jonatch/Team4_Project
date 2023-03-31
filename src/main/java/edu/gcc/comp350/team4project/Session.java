@@ -27,8 +27,8 @@ public class Session {
     public static void createSession() throws Exception {
         totalCourses = new ArrayList<>();
         importCoursesFromCSV();
-        searchBox = new Search(totalCourses);
         //If uncommented, the following three lines clear the database
+
 
 
         Scanner tempS = new Scanner(System.in);
@@ -52,11 +52,6 @@ public class Session {
                 System.out.println("bad input try again");
             }
         }
-
-
-
-
-
         menuLoop();
     }
 
@@ -272,20 +267,25 @@ public class Session {
         endSession();
     }
 
-
     private static void filter() {
         String filterType;
         boolean isFiltering = true;
 
         while (isFiltering) {
+            if (searchBox.getCurrentFilters().size() > 0) {
+                System.out.println("These are the different filters you have added: ");
+                for (Filter f: searchBox.getCurrentFilters()) System.out.println(f.getType() + ": " + f.getValue());
+            }
+            else System.out.println("You have not added any filters yet");
+
             System.out.println("""
                 Type 'dept' to filter by department
                 Type 'time' to filter by time
                 Type 'days' to filter by days
                 Type 'lvl' to filter by level
+                Type 'r' to remove a specific filter
                 Type 'ra' to filter by remove all filters
                 Type 'b' to go back
-                Type 'exit' to close the program
                 """);
             filterType = input.nextLine().toLowerCase();
             switch (filterType) {
@@ -293,12 +293,18 @@ public class Session {
                 case "time" -> filterTime();
                 case "days" -> filterDays();
                 case "lvl" -> filterLevel();
+                case "r" -> removeSpecificFilter();
                 case "ra" -> searchBox.removeAllFilters(); //removes all filters
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();
             }
         }
+    }
+
+    private static void removeSpecificFilter() {
+        //TODO: FINISH THIS HELPER METHOD
+        System.out.println("Not yet implemented!");
     }
 
     private static void filterDept() {
@@ -618,11 +624,6 @@ public class Session {
         return true;
     }
 
-    private static void endSession() {
-        System.out.println("terminating program");
-        System.exit(0);
-    }
-
 
     private static void createNewSchedule() { System.out.println("new schedule created"); }
 
@@ -639,16 +640,15 @@ public class Session {
         System.out.println("""
                         Type 'ns' to create a new schedule
                         Type 'ds' to delete a schedule
-                        Type 'vs' to view saved schedule or edit 
+                        Type 'vs' to view saved schedule or edit
                         Type 'b' to go logout
                         Type 'exit' to terminate the program
                         """);
     }
 
-    private static boolean scheduleMenu() {
+    private static boolean scheduleMenu() throws Exception {
         System.out.println("""
-                            Type 'f' to apply or remove a filter
-                            Type 's' to search for a class by a phrase
+                            Type 'a' to add courses
                             Type 'r' to remove a course
                             Type 'vc' to see your schedule as a calendar
                             Type 'vt' to see your schedule as a table
@@ -659,15 +659,10 @@ public class Session {
 
         String command = input.nextLine().toLowerCase();
         switch (command) {
-            case "f" -> filter(); //TODO: make filter method in this class
-            case "s" -> search(); //TODO: test, should work
-            case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-            case "vc" -> {
-                System.out.println(tempSchedule.toCalenderView());
-            }
-            case "vt" -> {
-                System.out.println(tempSchedule);
-            }
+            case "a" -> addCourseMenu();
+            case "r" -> System.out.println("remove class not implemented");
+            case "vc" -> System.out.println(tempSchedule.toCalenderView());
+            case "vt" -> System.out.println(tempSchedule);
             case "sb" -> {
                 try {
                     currentUser.saveScheduleToUser(tempSchedule);
@@ -675,18 +670,55 @@ public class Session {
                     System.out.println(e.getMessage());
                 }
                 return false;
-            } //TODO: implement save and exit
+            }
             case "exit" -> endSession();
             default -> invalidArgument();
         }
-
-
         return true;
     }
 
+    private static void addByReference() throws Exception {
+        while (true) {
+            System.out.println("""
+                    Enter a reference number:
+                    Type '-1' to go stop adding by reference number
+                    """);
+            int refNum = input.nextInt();
+            if (refNum <= 0) break;
+            else {
+                Course c = searchBox.searchForRefNum(refNum);
+                if (c != null) tempSchedule.addCourse(c);
+                else System.out.println("Reference number not found");
+            }
+        }
+        input.nextLine();
+    }
 
+    private static void addCourseMenu() throws Exception {
+        searchBox = new Search(totalCourses, tempSchedule.getSemester());
+        for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
+
+        while (true) {
+            System.out.println("""
+                Type 'r' to add a course by its reference number
+                Type 'f' to apply or remove a filter
+                Type 's' to search for a class by its name
+                Type 'b' to go back
+                """);
+            String command = input.nextLine().toLowerCase();
+            if (command.equals("r")) addByReference();
+            else if (command.equals("f")) filter();
+            else if (command.equals("s")) search();
+            else if (command.equals("b")) break;
+            else invalidArgument();
+        }
+    }
 
     private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
+    private static void endSession() {
+        System.out.println("terminating program");
+        System.exit(0);
+    }
 
 }
