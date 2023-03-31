@@ -26,12 +26,30 @@ public class Session {
 
     public static void createSession() throws Exception {
         totalCourses = new ArrayList<>();
-        importCoursesFromCSV();
-        //If uncommented, the following three lines clear the database
 
-
-
+        String longCSV = "large_courses.csv";
+        String shortCSV = "small_courses.csv";
         Scanner tempS = new Scanner(System.in);
+        while(true){
+            System.out.println("Type 1 to run with small list of courses");
+            System.out.println(shortCSV);
+            System.out.println("Type 2 to run with total list of courses");
+            System.out.println(longCSV);
+            String input = tempS.nextLine();
+            if(input.equals("1")){
+                importCoursesFromCSV(shortCSV);
+                break;
+            }
+            else if(input.equals("2")){
+                importCoursesFromCSV(longCSV);
+                break;
+            }
+            else{
+                System.out.println("bad input try again");
+            }
+        }
+
+
         while(true){
             System.out.println("Type 1 to run with existing database.");
             DatabaseController.printAllUsers();
@@ -52,6 +70,8 @@ public class Session {
                 System.out.println("bad input try again");
             }
         }
+
+                //If uncommented, the following three lines clear the database
         menuLoop();
     }
 
@@ -104,7 +124,7 @@ public class Session {
                                 }
                             }
                             tempSchedule = new Schedule(name, sem);
-                            System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester() + " semester)");
+                            System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester().toString().toLowerCase() + " semester)");
                             isScheduling = true;
                             while (isScheduling) {
                                 isScheduling = scheduleMenu();
@@ -272,10 +292,10 @@ public class Session {
 
         while (isFiltering) {
             if (searchBox.getCurrentFilters().size() > 0) {
-                System.out.println("These are the different filters you have added: ");
+                System.out.println("CURRENT APPLIED FILTERS: ");
                 for (Filter f: searchBox.getCurrentFilters()) System.out.println(f.getType() + ": " + f.getValue());
             }
-            else System.out.println("You have not added any filters yet");
+            else System.out.println("CURRENT APPLIED FILTERS: -none-");
 
             System.out.println("""
                 Type 'dept' to filter by department
@@ -302,8 +322,40 @@ public class Session {
     }
 
     private static void removeSpecificFilter() {
-        //TODO: FINISH THIS HELPER METHOD
-        System.out.println("Not yet implemented!");
+        if(searchBox.getCurrentFilters().size()>0){
+            while(true){
+                System.out.println("Enter the filter number to remove it or 'b' to go back");
+                System.out.println("CURRENT FILTERS:");
+                for(int i = 0;i<searchBox.getCurrentFilters().size();i++){
+                    System.out.println("[" + (i+1) + "] TYPE: " + searchBox.getCurrentFilters().get(i).getType() + " VALUE: " + searchBox.getCurrentFilters().get(i).getValue());
+                }
+
+                String command = input.nextLine();
+                if(command.equals("b")){
+                    break;
+                }
+                try{
+                    int temp = Integer.parseInt(command);
+                    if(temp >0 && temp <= searchBox.getCurrentFilters().size()){
+                        String filter = searchBox.getCurrentFilters().get(temp-1).getType();
+                        searchBox.removeSpecificFilter(filter);
+                        break;
+                    }
+                    else{
+                        System.out.println("Enter a valid number to remove");
+                    }
+                }catch(Exception ignored){
+                    invalidArgument();
+                }
+
+
+            }
+        }
+        else{
+            System.out.println("No current filters applied");
+        }
+
+
     }
 
     private static void filterDept() {
@@ -315,18 +367,19 @@ public class Session {
             departments.add(c.getDepartmentInfo().department()); //TODO: TEST, IT SHOULD WORK THO
 
         while (isFiltering) {
+            System.out.println("FILTERABLE DEPARTMENTS: ");
+            for (String s: departments) System.out.println(s);
             System.out.println("""
-                Type 's' to see departments that can be filtered
                 Type <department> to filter by that department
                 Type 'b' to go back
                 Type 'exit' to terminate the program
                 """);
             command = input.nextLine().toLowerCase();
             switch (command) {
-                case "s" -> {
-                    System.out.println("Here is a list of all departments: ");
-                    for (String s: departments) System.out.println(s);
-                }
+//                case "s" -> {
+//                    System.out.println("Here is a list of all departments: ");
+//                    for (String s: departments) System.out.println(s);
+//                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> {
@@ -413,33 +466,28 @@ public class Session {
         while (isSearching) {
             System.out.println("CURRENT SEARCH QUERY: " + searchBox.getCurrentSearchPhrase());
             System.out.println("""
-                    Type 's' to create new course name search query
+                    Enter a new search query (will clear any previous query)
                     Type 'c' to clear current search query
                     Type 'b' to go back
                     """);
             command = input.nextLine().toLowerCase();
-            switch (command) {
-                case "s" -> {
-                    String nextCommand;
-                    boolean isSearchingPhrase = true;
-                    while (isSearchingPhrase) {
-                        System.out.println("""
-                            Enter the course name you want to search for or 'b' to go back
-                            """);
-                        nextCommand = input.nextLine().toLowerCase();
-                        if(nextCommand.equals("b")){
-                            isSearchingPhrase=false;
-                        }
-                        else{
-                            searchBox.filterByPhrase(nextCommand);
-                            isSearchingPhrase=false;
-                        }
-                    }
+
+            if(command.equals("c")){
+                searchBox.removeSpecificFilter("phrase");
+                System.out.println("Clearing search phrase");isSearching = false;
+            }
+            else if (command.equals("b")){
+                isSearching = false;
+            }
+            else{
+                if(command.length()>30){
+                    System.out.println("Too long of a search term");
                 }
-                case "c" -> {searchBox.removeSpecificFilter("search");
-                    System.out.println("Clearing search phrase");isSearching = false;}
-                case "b" -> isSearching = false;
-                default -> invalidArgument();
+                else{
+                    searchBox.removeSpecificFilter("phrase");
+                    searchBox.filterByPhrase(command);
+                    isSearching = false;
+                }
             }
 
 
@@ -540,7 +588,8 @@ public class Session {
                 default -> invalidArgument();
             }
         }
-        DatabaseController.insert(new User(name, year, password, false));
+        currentUser = new User(name, year, password, false);
+        DatabaseController.insert(currentUser);
         System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
         return true;
     }
@@ -618,11 +667,12 @@ public class Session {
     private static void addCourseMenu() throws Exception {
         searchBox = new Search(totalCourses, tempSchedule.getSemester());
         while (true) {
+            System.out.println("COURSES (WITH ANY SEARCH OR FILTERS APPLIED):");
             for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
             System.out.println("""
-                Type a valid course refnum from the above list to add
+                Type <REFNUM> to add the course with that reference number
+                Type 's' to apply or remove a search query
                 Type 'f' to apply or remove a filter
-                Type 's' to search for a class by its name
                 Type 'b' to go back
                 """);
             String command = input.nextLine().toLowerCase();
@@ -668,8 +718,8 @@ public class Session {
     }
 
 
-    public static void importCoursesFromCSV() throws IOException {
-        String csvFile = "src/main/java/edu/gcc/comp350/team4project/edited_data_2.csv";
+    public static void importCoursesFromCSV(String ext) throws IOException {
+        String csvFile =  "src/main/java/edu/gcc/comp350/team4project/" + ext;
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
             br.readLine();
