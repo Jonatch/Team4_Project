@@ -67,8 +67,7 @@ public class Session {
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
             if (command.equals("u")) {
-                logInUser();
-                isLoggedIn = true;
+                if(logInUser()) isLoggedIn = true;
             }
             else if (command.equals("n")) {
                 if (createNewUser()) isLoggedIn = true;//make new account
@@ -94,9 +93,9 @@ public class Session {
                             String name = "";
                             Semester sem;
                             do {
-                                System.out.println("Enter schedule name (less than 20 characters: ");
+                                System.out.println("Enter schedule name (5-20 characters): ");
                                 name = input.nextLine();
-                            } while (name.length() > 20 || name.length() == 0);
+                            } while (name.length() > 20 || name.length() < 5);
                             while (true) {
                                 System.out.println("Enter 'f' for fall or 's' for spring");
                                 String semester = input.nextLine().toLowerCase();
@@ -256,8 +255,8 @@ public class Session {
                         }
                     }
                     case "b" -> {
-                        isLoggedIn = false;
                         logOutUser();
+                        isLoggedIn = false;
                     }
                     case "exit" -> {
                         isLoggedIn = false;
@@ -416,6 +415,175 @@ public class Session {
         System.out.println();
     }
 
+
+    private static boolean logInUser() {
+        while(true) {
+            input = new Scanner(System.in);
+            System.out.println("Enter username or type 'b' to go back:");
+            String name = input.nextLine().toLowerCase();
+            if(name.equals("b")){
+                return false;
+            }
+            System.out.println("Enter password");
+            String password = input.nextLine().toLowerCase();
+            if (DatabaseController.authenticateUser(name,password)) {
+                System.out.println("Log in successful!");
+                currentUser = DatabaseController.pullUser(name);
+                return true;
+            }
+            System.out.println("Log in details do not match any stored users");
+
+        }
+    }
+    private static void logOutUser() {
+        if(currentUser.isGuest()) {
+            System.out.println("Ending guest session");
+
+        }
+        else {
+            System.out.println("Logging out!");
+        }
+        DatabaseController.updateUser(currentUser);
+        currentUser = null;
+    }
+
+    private static boolean createNewUser() {
+        System.out.println("Creating new user!");
+        String name, password, year = "";
+
+        while (true) {
+            System.out.println("""
+                    Max characters allowed: 20
+                    Min characters allowed: 5
+                    No whitespace allowed
+                    Type 'b' to cancel new account creation
+                    Type 'exit' to exit
+                    Enter a username:
+                    """);
+            name = input.nextLine().toLowerCase();
+            if (name.equals("b")) return false;
+            else if (name.equals("exit")) endSession();
+            else if (name.length() > 20) System.out.println("Username is too long, must be less then 20 characters!");
+            else if (name.length() < 5) System.out.println("Username is too short, 5 characters is the minimum!");
+            else if (name.matches(".*\\s+.*")) System.out.println("Username cannot contain whitespace");
+            else if (DatabaseController.checkIfUserInDB(name)) System.out.println("Username already exists. Try again");
+            else break;
+        }
+        while (true) {
+            System.out.println("""
+                    Max characters allowed: 20
+                    No whitespace allowed
+                    Type 'b' to cancel new account creation
+                    Type 'exit' to exit
+                    Enter a password:
+                    """);
+            password = input.nextLine().toLowerCase();
+            if (password.equals("b")) return false;
+            else if (password.equals("exit")) endSession();
+            else if (password.matches(".*\\s+.*")) System.out.println("Password cannot contain whitespace");
+            else if (password.length() > 20) System.out.println("Password is too long");
+            else break;
+        }
+
+        while (!year.equals("freshman") && !year.equals("sophomore") && !year.equals("junior") && !year.equals("senior")) {
+            System.out.println("Enter class year you are scheduling for:");
+            System.out.println("""
+                    'f' for freshman
+                    's' for sophomore
+                    'j' for junior
+                    'e' for senior
+                    Type 'b' to cancel new account creation
+                    Type 'exit' to quit the program
+                    """);
+            String command = input.nextLine().toLowerCase();
+
+            switch (command) {
+                case "b" -> {
+                    return false;
+                }
+                case "exit" -> endSession();
+                case "f" -> year = "freshman";
+                case "s" -> year = "sophomore";
+                case "j" -> year = "junior";
+                case "e" -> year = "senior";
+                default -> invalidArgument();
+            }
+        }
+        DatabaseController.insert(new User(name, year, password, false));
+        System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
+        return true;
+    }
+
+    private static void endSession() {
+        System.out.println("terminating program");
+        System.exit(0);
+    }
+
+
+    private static void createNewSchedule() { System.out.println("new schedule created"); }
+
+    private static void mainMenu() {
+        System.out.println("""
+                Type 'u' to login as a user
+                Type 'g' to login as a guest
+                Type 'n' to create a new account
+                Type 'exit' to terminate the program
+                """);
+    }
+
+    private static void loggedInMenu() {
+        System.out.println("""
+                        Type 'ns' to create a new schedule
+                        Type 'ds' to delete a schedule
+                        Type 'vs' to view saved schedule or edit 
+                        Type 'b' to go logout
+                        Type 'exit' to terminate the program
+                        """);
+    }
+
+    private static boolean scheduleMenu() {
+        System.out.println("""
+                            Type 'f' to apply or remove a filter
+                            Type 's' to search for a class by a phrase
+                            Type 'r' to remove a course
+                            Type 'vc' to see your schedule as a calendar
+                            Type 'vt' to see your schedule as a table
+                            Type 'sb' to save and go back
+                            Type 'exit' to terminate the program
+                            """);
+
+
+        String command = input.nextLine().toLowerCase();
+        switch (command) {
+            case "f" -> filter(); //TODO: make filter method in this class
+            case "s" -> search(); //TODO: test, should work
+            case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
+            case "vc" -> {
+                System.out.println(tempSchedule.toCalenderView());
+            }
+            case "vt" -> {
+                System.out.println(tempSchedule);
+            }
+            case "sb" -> {
+                try {
+                    currentUser.saveScheduleToUser(tempSchedule);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                }
+                return false;
+            } //TODO: implement save and exit
+            case "exit" -> endSession();
+            default -> invalidArgument();
+        }
+
+
+        return true;
+    }
+
+
+
+    private static void invalidArgument() { System.out.println("Invalid argument!"); }
+
     public static void importCoursesFromCSV() throws IOException {
         String csvFile = "src/main/java/edu/gcc/comp350/team4project/edited_data_2.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -529,164 +697,6 @@ public class Session {
             System.out.println("CSV_FILE not found!");
         }
     }
-
-    private static void logInUser() {
-        while(true) {
-            input = new Scanner(System.in);
-            System.out.println("Enter username:");
-            String name = input.nextLine().toLowerCase();
-            System.out.println("Enter password");
-            String password = input.nextLine().toLowerCase();
-            if (DatabaseController.authenticateUser(name,password)) {
-                System.out.println("Log in successful!");
-                currentUser = DatabaseController.pullUser(name);
-                break;
-            }
-            System.out.println("Log in details do not match any stored users");
-        }
-    }
-    private static void logOutUser() {
-        System.out.println("Logging out!");
-        DatabaseController.updateUser(currentUser);
-        currentUser = null;
-    }
-
-    private static boolean createNewUser() {
-        System.out.println("Creating new user!");
-        String name, password, year = "";
-
-        while (true) {
-            System.out.println("""
-                    Max characters allowed: 20
-                    Min characters allowed: 5
-                    No whitespace allowed
-                    Type 'b' to go back to login
-                    Type 'exit' to exit
-                    Enter a username:
-                    """);
-            name = input.nextLine().toLowerCase();
-            if (name.equals("b")) return false;
-            else if (name.equals("exit")) endSession();
-            else if (name.length() > 20) System.out.println("Username is too long, must be less then 20 characters!");
-            else if (name.length() < 5) System.out.println("Username is too short, 5 characters is the minimum!");
-            else if (name.matches(".*\\s+.*")) System.out.println("Username cannot contain whitespace");
-            else if (DatabaseController.checkIfUserInDB(name)) System.out.println("Username already exists. Try again");
-            else break;
-        }
-        while (true) {
-            System.out.println("""
-                    Max characters allowed: 20
-                    No whitespace allowed
-                    Type 'b' to go back to login
-                    Type 'exit' to exit
-                    Enter a password:
-                    """);
-            password = input.nextLine().toLowerCase();
-            if (password.equals("b")) return false;
-            else if (password.equals("exit")) endSession();
-            else if (password.matches(".*\\s+.*")) System.out.println("Password cannot contain whitespace");
-            else if (password.length() > 20) System.out.println("Password is too long");
-            else break;
-        }
-
-        while (!year.equals("freshman") && !year.equals("sophomore") && !year.equals("junior") && !year.equals("senior")) {
-            System.out.println("Enter class year you are scheduling for:");
-            System.out.println("""
-                    'f' for freshman
-                    's' for sophomore
-                    'j' for junior
-                    'e' for senior
-                    Type 'b' to go back to login
-                    Type 'exit' to quit the program
-                    """);
-            String command = input.nextLine().toLowerCase();
-
-            switch (command) {
-                case "b" -> {
-                    return false;
-                }
-                case "exit" -> endSession();
-                case "f" -> year = "freshman";
-                case "s" -> year = "sophomore";
-                case "j" -> year = "junior";
-                case "e" -> year = "senior";
-                default -> invalidArgument();
-            }
-        }
-        DatabaseController.insert(new User(name, year, password, false));
-        System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
-        return true;
-    }
-
-    private static void endSession() {
-        System.out.println("terminating program");
-        System.exit(0);
-    }
-
-
-    private static void createNewSchedule() { System.out.println("new schedule created"); }
-
-    private static void mainMenu() {
-        System.out.println("""
-                Type 'u' to login as a user
-                Type 'g' to login as a guest
-                Type 'n' to create a new account
-                Type 'exit' to terminate the program
-                """);
-    }
-
-    private static void loggedInMenu() {
-        System.out.println("""
-                        Type 'ns' to create a new schedule
-                        Type 'ds' to delete a schedule
-                        Type 'vs' to view saved schedule or edit 
-                        Type 'b' to go logout
-                        Type 'exit' to terminate the program
-                        """);
-    }
-
-    private static boolean scheduleMenu() {
-        System.out.println("""
-                            Type 'f' to apply or remove a filter
-                            Type 's' to search for a class by a phrase
-                            Type 'r' to remove a course
-                            Type 'vc' to see your schedule as a calendar
-                            Type 'vt' to see your schedule as a table
-                            Type 'sb' to save and go back
-                            Type 'exit' to terminate the program
-                            """);
-
-
-        String command = input.nextLine().toLowerCase();
-        switch (command) {
-            case "f" -> filter(); //TODO: make filter method in this class
-            case "s" -> search(); //TODO: test, should work
-            case "r" -> System.out.println("remove class not implemented"); //TODO: remove a class
-            case "vc" -> {
-                System.out.println(tempSchedule.toCalenderView());
-            }
-            case "vt" -> {
-                System.out.println(tempSchedule);
-            }
-            case "sb" -> {
-                try {
-                    currentUser.saveScheduleToUser(tempSchedule);
-                }catch(Exception e){
-                    System.out.println(e.getMessage());
-                }
-                return false;
-            } //TODO: implement save and exit
-            case "exit" -> endSession();
-            default -> invalidArgument();
-        }
-
-
-        return true;
-    }
-
-
-
-    private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
 
 }
