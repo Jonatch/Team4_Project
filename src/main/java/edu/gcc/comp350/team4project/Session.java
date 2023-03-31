@@ -620,7 +620,7 @@ public class Session {
         while (true) {
             for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
             System.out.println("""
-                Type 'r' to add a course by its reference number
+                Type a valid course refnum from the above list to add
                 Type 'f' to apply or remove a filter
                 Type 's' to search for a class by its name
                 Type 'b' to go back
