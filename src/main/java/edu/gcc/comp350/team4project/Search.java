@@ -117,7 +117,7 @@ public class Search {
         while(iterator.hasNext()){
             Filter f = iterator.next();
             if(f.getType().equals(filter)){
-                iterator.remove();
+                currentFilters.remove(f);
             }
         }
         for (Filter f : currentFilters){

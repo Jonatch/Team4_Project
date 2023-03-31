@@ -62,8 +62,7 @@ public class Session {
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
             if (command.equals("u")) {
-                logInUser();
-                isLoggedIn = true;
+                if(logInUser()) isLoggedIn = true;
             }
             else if (command.equals("n")) {
                 if (createNewUser()) isLoggedIn = true;//make new account
@@ -89,9 +88,9 @@ public class Session {
                             String name = "";
                             Semester sem;
                             do {
-                                System.out.println("Enter schedule name (less than 20 characters: ");
+                                System.out.println("Enter schedule name (5-20 characters): ");
                                 name = input.nextLine();
-                            } while (name.length() > 20 || name.length() == 0);
+                            } while (name.length() > 20 || name.length() < 5);
                             while (true) {
                                 System.out.println("Enter 'f' for fall or 's' for spring");
                                 String semester = input.nextLine().toLowerCase();
@@ -251,8 +250,8 @@ public class Session {
                         }
                     }
                     case "b" -> {
-                        isLoggedIn = false;
                         logOutUser();
+                        isLoggedIn = false;
                     }
                     case "exit" -> {
                         isLoggedIn = false;
@@ -422,137 +421,34 @@ public class Session {
         System.out.println();
     }
 
-    public static void importCoursesFromCSV() throws IOException {
-        String csvFile = "src/main/java/edu/gcc/comp350/team4project/edited_data_2.csv";
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            String line;
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                String courseName, departmentName, courseLevel, professorName;
-                StringBuilder description = new StringBuilder();
-                char courseSection = ' ';
-                int refNum = 0, numCredits = 0;
-                Semester semester = null;
-                ArrayList<DayOfWeek> days = new ArrayList<>();
-                LocalTime startTime = null;
-                LocalTime endTime = null;
 
-                try {
-                    if (Integer.parseInt(data[0]) == 10)
-                        semester = Semester.FALL;
-                    else if (Integer.parseInt(data[0]) == 30)
-                        semester = Semester.SPRING;
-                } catch (Exception ignored) {
-
-                }
-
-                departmentName = data[1];
-                courseLevel = data[2];
-
-                try {
-                    courseSection = data[3].charAt(0);
-                } catch (Exception ignored) {
-
-                }
-
-                courseName = data[4];
-
-                try {
-                    numCredits = Integer.parseInt(data[5]);
-                } catch (Exception ignored) {
-
-                }
-
-                if (data[6].equals("M"))
-                    days.add(DayOfWeek.MONDAY);
-
-                if (data[7].equals("T"))
-                    days.add(DayOfWeek.TUESDAY);
-
-                if(data[8].equals("W"))
-                    days.add(DayOfWeek.WEDNESDAY);
-
-                if(data[9].equals("R"))
-                    days.add(DayOfWeek.THURSDAY);
-
-                if(data[10].equals("F"))
-                    days.add(DayOfWeek.FRIDAY);
-
-                try {
-                    String[] tempTime = data[11].split(":");
-                    int min;
-                    int hour = Integer.parseInt(tempTime[0]);
-                    if (tempTime[2].charAt(3)== 'A') {//these convert the time to 24 hour time
-                        if(hour == 12){
-                            hour = 0;
-                        }
-                    } else if (tempTime[2].charAt(3) == 'P') {
-                        if (hour != 12) {
-                            hour += 12;
-                        }
-                    }
-                    min = Integer.parseInt(tempTime[1]);
-                    startTime = LocalTime.of(hour, min);
-                } catch(Exception ignore) {
-                    //
-                }
-
-                try {
-                    String[] tempTime = data[12].split(":");
-                    int hour = Integer.parseInt(tempTime[0]);
-                    int min = 0;
-
-                    if (tempTime[2].charAt(3) == 'A') { //these convert the time to 24 hour time
-                        if(hour == 12)
-                            hour = 0;
-                    }
-                    else if (tempTime[2].charAt(3) == 'P') {
-                        if(hour!=12)
-                            hour += 12;
-                    }
-                    min = Integer.parseInt(tempTime[1]);
-                    endTime = LocalTime.of(hour, min);
-                } catch(Exception ignore) {
-                    //
-                }
-
-                professorName = data[13];
-
-                try {
-                    refNum = Integer.parseInt(data[14]);
-                } catch(Exception ignore) {
-                    //
-                }
-
-                for(int i = 15; i < data.length; i++){
-                    description.append(data[i]).append(" ");
-                }
-
-                totalCourses.add(new Course(refNum,departmentName,semester,courseLevel,courseSection,courseName,numCredits,professorName, description.toString(),days,startTime,endTime));
-            }
-        } catch (IOException ignored) {
-            System.out.println("CSV_FILE not found!");
-        }
-    }
-
-    private static void logInUser() {
+    private static boolean logInUser() {
         while(true) {
             input = new Scanner(System.in);
-            System.out.println("Enter username:");
+            System.out.println("Enter username or type 'b' to go back:");
             String name = input.nextLine().toLowerCase();
+            if(name.equals("b")){
+                return false;
+            }
             System.out.println("Enter password");
             String password = input.nextLine().toLowerCase();
             if (DatabaseController.authenticateUser(name,password)) {
                 System.out.println("Log in successful!");
                 currentUser = DatabaseController.pullUser(name);
-                break;
+                return true;
             }
             System.out.println("Log in details do not match any stored users");
+
         }
     }
     private static void logOutUser() {
-        System.out.println("Logging out!");
+        if(currentUser.isGuest()) {
+            System.out.println("Ending guest session");
+
+        }
+        else {
+            System.out.println("Logging out!");
+        }
         DatabaseController.updateUser(currentUser);
         currentUser = null;
     }
@@ -566,7 +462,7 @@ public class Session {
                     Max characters allowed: 20
                     Min characters allowed: 5
                     No whitespace allowed
-                    Type 'b' to go back to login
+                    Type 'b' to cancel new account creation
                     Type 'exit' to exit
                     Enter a username:
                     """);
@@ -583,7 +479,7 @@ public class Session {
             System.out.println("""
                     Max characters allowed: 20
                     No whitespace allowed
-                    Type 'b' to go back to login
+                    Type 'b' to cancel new account creation
                     Type 'exit' to exit
                     Enter a password:
                     """);
@@ -602,7 +498,7 @@ public class Session {
                     's' for sophomore
                     'j' for junior
                     'e' for senior
-                    Type 'b' to go back to login
+                    Type 'b' to cancel new account creation
                     Type 'exit' to quit the program
                     """);
             String command = input.nextLine().toLowerCase();
@@ -716,9 +612,125 @@ public class Session {
 
     private static void invalidArgument() { System.out.println("Invalid argument!"); }
 
+
     private static void endSession() {
         System.out.println("terminating program");
         System.exit(0);
+    }
+
+
+    public static void importCoursesFromCSV() throws IOException {
+        String csvFile = "src/main/java/edu/gcc/comp350/team4project/edited_data_2.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                String courseName, departmentName, courseLevel, professorName;
+                StringBuilder description = new StringBuilder();
+                char courseSection = ' ';
+                int refNum = 0, numCredits = 0;
+                Semester semester = null;
+                ArrayList<DayOfWeek> days = new ArrayList<>();
+                LocalTime startTime = null;
+                LocalTime endTime = null;
+
+                try {
+                    if (Integer.parseInt(data[0]) == 10)
+                        semester = Semester.FALL;
+                    else if (Integer.parseInt(data[0]) == 30)
+                        semester = Semester.SPRING;
+                } catch (Exception ignored) {
+
+                }
+
+                departmentName = data[1];
+                courseLevel = data[2];
+
+                try {
+                    courseSection = data[3].charAt(0);
+                } catch (Exception ignored) {
+
+                }
+
+                courseName = data[4];
+
+                try {
+                    numCredits = Integer.parseInt(data[5]);
+                } catch (Exception ignored) {
+
+                }
+
+                if (data[6].equals("M"))
+                    days.add(DayOfWeek.MONDAY);
+
+                if (data[7].equals("T"))
+                    days.add(DayOfWeek.TUESDAY);
+
+                if(data[8].equals("W"))
+                    days.add(DayOfWeek.WEDNESDAY);
+
+                if(data[9].equals("R"))
+                    days.add(DayOfWeek.THURSDAY);
+
+                if(data[10].equals("F"))
+                    days.add(DayOfWeek.FRIDAY);
+
+                try {
+                    String[] tempTime = data[11].split(":");
+                    int min;
+                    int hour = Integer.parseInt(tempTime[0]);
+                    if (tempTime[2].charAt(3)== 'A') {//these convert the time to 24 hour time
+                        if(hour == 12){
+                            hour = 0;
+                        }
+                    } else if (tempTime[2].charAt(3) == 'P') {
+                        if (hour != 12) {
+                            hour += 12;
+                        }
+                    }
+                    min = Integer.parseInt(tempTime[1]);
+                    startTime = LocalTime.of(hour, min);
+                } catch(Exception ignore) {
+                    //
+                }
+
+                try {
+                    String[] tempTime = data[12].split(":");
+                    int hour = Integer.parseInt(tempTime[0]);
+                    int min = 0;
+
+                    if (tempTime[2].charAt(3) == 'A') { //these convert the time to 24 hour time
+                        if(hour == 12)
+                            hour = 0;
+                    }
+                    else if (tempTime[2].charAt(3) == 'P') {
+                        if(hour!=12)
+                            hour += 12;
+                    }
+                    min = Integer.parseInt(tempTime[1]);
+                    endTime = LocalTime.of(hour, min);
+                } catch(Exception ignore) {
+                    //
+                }
+
+                professorName = data[13];
+
+                try {
+                    refNum = Integer.parseInt(data[14]);
+                } catch(Exception ignore) {
+                    //
+                }
+
+                for(int i = 15; i < data.length; i++){
+                    description.append(data[i]).append(" ");
+                }
+
+                totalCourses.add(new Course(refNum,departmentName,semester,courseLevel,courseSection,courseName,numCredits,professorName, description.toString(),days,startTime,endTime));
+            }
+        } catch (IOException ignored) {
+            System.out.println("CSV_FILE not found!");
+        }
     }
 
 }

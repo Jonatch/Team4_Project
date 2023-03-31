@@ -97,7 +97,7 @@ public class Schedule {
     }
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("NAME: " + this.scheduleName + " ");
+        sb.append("SCHEDULE_NAME: " + this.scheduleName + " ");
         sb.append("SEMESTER: " + this.semester.toString().toLowerCase()+ " ");
         sb.append("CREDITS: " + this.totalCredits);
         return sb.toString();
@@ -127,9 +127,11 @@ public class Schedule {
 
         for (int row = 1; row < ROWS; row++) {
             for (int col = 1; col < COLS; col++) {
-                schedule[row][col] = "OPEN";
+                schedule[row][col] = "\t\t";
             }
         }
+
+        schedule[0][0] = "\t\t";
 
         for (Course course : courses){
             LocalTime sTime = course.getTimeInfo().startTime();
@@ -228,7 +230,7 @@ public class Schedule {
         }
         //System.out.println(Arrays.deepToString(schedule).replace("], ", "]\n"));        // Fill in the rest of the schedule with empty cells
 
-        return Arrays.deepToString(schedule).replace("], ", "]\n");
+        return this.toString() + "\n" + Arrays.deepToString(schedule).replace("], ", "]\n");
     }
 
 
