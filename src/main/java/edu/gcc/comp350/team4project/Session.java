@@ -1,13 +1,11 @@
 package edu.gcc.comp350.team4project;
 
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -310,7 +308,7 @@ public class Session {
                 case "days" -> filterDays();
                 case "lvl" -> filterLevel();
                 case "r" -> removeSpecificFilter();
-                case "ra" -> searchBox.removeAllFilters(); //removes all filters
+                case "ra" -> searchBox.refreshFilteredCourses(); //removes all filters
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();
@@ -727,6 +725,7 @@ public class Session {
                     }
                     else{
                         System.out.println("Not a valid refnum!");
+                        break;
                     }
                 }catch(Exception ignored){
                     invalidArgument();

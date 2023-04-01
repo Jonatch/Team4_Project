@@ -9,11 +9,13 @@ public class Search {
     private final ArrayList<Course> courseList;
     private ArrayList<Course> filteredCourses;
     private ArrayList<Filter> currentFilters;
+    private Semester semester;
 
     public Search(ArrayList<Course> courseList, Semester semester) {
         currentFilters = new ArrayList<>();
         filteredCourses = new ArrayList<>(courseList);
         this.courseList = courseList;
+        this.semester = semester;
         filterBySemester(semester);
     }
 
@@ -100,9 +102,10 @@ public class Search {
         currentFilters.add(currentfilter);
     }
 
-    public void removeAllFilters() {
+    public void refreshFilteredCourses() {
         filteredCourses.clear();
         filteredCourses.addAll(courseList);
+        filterBySemester(semester);
     }
 
     public Course searchForRefNum(int refNum) {
@@ -121,7 +124,7 @@ public class Search {
                 break;
             }
         }
-        this.removeAllFilters();
+        this.refreshFilteredCourses();
         for (Filter f : currentFilters){
             if (f.getType().equals("time")){
                 filterByTime((ArrayList<LocalTime>) f.getValue());
