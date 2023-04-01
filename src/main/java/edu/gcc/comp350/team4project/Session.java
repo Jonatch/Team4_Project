@@ -70,8 +70,6 @@ public class Session {
                 System.out.println("bad input try again");
             }
         }
-
-                //If uncommented, the following three lines clear the database
         menuLoop();
     }
 
@@ -347,15 +345,11 @@ public class Session {
                 }catch(Exception ignored){
                     invalidArgument();
                 }
-
-
             }
         }
         else{
             System.out.println("No current filters applied");
         }
-
-
     }
 
     private static void filterDept() {
@@ -489,8 +483,6 @@ public class Session {
                     isSearching = false;
                 }
             }
-
-
         }
     }
 
@@ -595,8 +587,6 @@ public class Session {
     }
 
 
-    private static void createNewSchedule() { System.out.println("new schedule created"); }
-
     private static void mainMenu() {
         System.out.println("""
                 Type 'u' to login as a user
@@ -647,22 +637,6 @@ public class Session {
         return true;
     }
 
-//    private static void addByReference() throws Exception {
-//        while (true) {
-//            System.out.println("""
-//                    Enter a reference number:
-//                    Type '-1' to go stop adding by reference number
-//                    """);
-//            int refNum = input.nextInt();
-//            if (refNum <= 0) break;
-//            else {
-//                Course c = searchBox.searchForRefNum(refNum);
-//                if (c != null) tempSchedule.addCourse(c);
-//                else System.out.println("Reference number not found");
-//            }
-//        }
-//        input.nextLine();
-//    }
 
     private static void addCourseMenu() throws Exception {
         searchBox = new Search(totalCourses, tempSchedule.getSemester());
