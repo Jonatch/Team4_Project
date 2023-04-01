@@ -9,11 +9,13 @@ public class Search {
     private final ArrayList<Course> courseList;
     private ArrayList<Course> filteredCourses;
     private ArrayList<Filter> currentFilters;
+    private Semester semester;
 
     public Search(ArrayList<Course> courseList, Semester semester) {
         currentFilters = new ArrayList<>();
         filteredCourses = new ArrayList<>(courseList);
         this.courseList = courseList;
+        this.semester = semester;
         filterBySemester(semester);
     }
 
@@ -103,6 +105,7 @@ public class Search {
     public void refreshFilteredCourses() {
         filteredCourses.clear();
         filteredCourses.addAll(courseList);
+        filterBySemester(semester);
     }
 
     public Course searchForRefNum(int refNum) {
