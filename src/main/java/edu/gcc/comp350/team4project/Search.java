@@ -100,7 +100,7 @@ public class Search {
         currentFilters.add(currentfilter);
     }
 
-    public void removeAllFilters() {
+    public void refreshFilteredCourses() {
         filteredCourses.clear();
         filteredCourses.addAll(courseList);
     }
@@ -121,7 +121,7 @@ public class Search {
                 break;
             }
         }
-        this.removeAllFilters();
+        this.refreshFilteredCourses();
         for (Filter f : currentFilters){
             if (f.getType().equals("time")){
                 filterByTime((ArrayList<LocalTime>) f.getValue());
