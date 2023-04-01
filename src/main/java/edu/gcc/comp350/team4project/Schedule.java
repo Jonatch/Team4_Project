@@ -112,6 +112,13 @@ public class Schedule {
             TIMES.add(l);
             l = l.plusMinutes(15);
         }
+
+        final ArrayList<LocalTime> smallTIMES = new ArrayList<>();
+        LocalTime l2 = LocalTime.of(8, 00);
+        for (int i = 0; i < 159; i++) {
+            smallTIMES.add(l2);
+            l2 = l2.plusMinutes(5);
+        }
         final String[][] schedule = new String[ROWS][COLS];
 
         //set the top row to the days of the week
@@ -139,16 +146,16 @@ public class Schedule {
             String days = course.getDays().toString();
             if (days.contains("MONDAY")) {
                 int timeslot = 0;
-                for (LocalTime t : TIMES) {
+                for (LocalTime t : smallTIMES) {
                     if (sTime.equals(t)) {
-                        schedule[timeslot+1][1] = course.getDepartmentInfo().department() +
+                        schedule[(timeslot/3)+1][1] = course.getDepartmentInfo().department() +
                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(15);
+                        t = t.plusMinutes(5);
                         timeslot++;
                         while (eTime.isAfter(t)) {
-                            schedule[timeslot+1][1] = course.getDepartmentInfo().department() +
+                            schedule[(timeslot/3)+1][1] = course.getDepartmentInfo().department() +
                                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(15);
+                            t = t.plusMinutes(5);
                             timeslot++;
                         }
                     }
@@ -157,16 +164,16 @@ public class Schedule {
             }
             if (days.contains("TUESDAY")) {
                 int timeslot = 0;
-                for (LocalTime t : TIMES) {
+                for (LocalTime t : smallTIMES) {
                     if (sTime.equals(t)) {
-                        schedule[timeslot+1][2] = course.getDepartmentInfo().department() +
+                        schedule[(timeslot/3)+1][2] = course.getDepartmentInfo().department() +
                                 course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(15);
+                        t = t.plusMinutes(5);
                         timeslot++;
                         while (eTime.isAfter(t)) {
-                            schedule[timeslot+1][2] = course.getDepartmentInfo().department() +
+                            schedule[(timeslot/3)+1][2] = course.getDepartmentInfo().department() +
                                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(15);
+                            t = t.plusMinutes(5);
                             timeslot++;
                         }
                     }
@@ -175,16 +182,16 @@ public class Schedule {
             }
             if (days.contains("WEDNESDAY")) {
                 int timeslot = 0;
-                for (LocalTime t : TIMES) {
+                for (LocalTime t : smallTIMES) {
                     if (sTime.equals(t)) {
-                        schedule[timeslot+1][3] = course.getDepartmentInfo().department() +
+                        schedule[(timeslot/3)+1][3] = course.getDepartmentInfo().department() +
                                 course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(15);
+                        t = t.plusMinutes(5);
                         timeslot++;
                         while (eTime.isAfter(t)) {
-                            schedule[timeslot+1][3] = course.getDepartmentInfo().department() +
+                            schedule[(timeslot/3)+1][3] = course.getDepartmentInfo().department() +
                                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(15);
+                            t = t.plusMinutes(5);
                             timeslot++;
                         }
                     }
@@ -193,16 +200,16 @@ public class Schedule {
             }
             if (days.contains("THURSDAY")) {
                 int timeslot = 0;
-                for (LocalTime t : TIMES) {
+                for (LocalTime t : smallTIMES) {
                     if (sTime.equals(t)) {
-                        schedule[timeslot+1][4] = course.getDepartmentInfo().department() +
+                        schedule[(timeslot/3)+1][4] = course.getDepartmentInfo().department() +
                                 course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(15);
+                        t = t.plusMinutes(5);
                         timeslot++;
                         while (eTime.isAfter(t)) {
-                            schedule[timeslot+1][4] = course.getDepartmentInfo().department() +
+                            schedule[(timeslot/3)+1][4] = course.getDepartmentInfo().department() +
                                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(15);
+                            t = t.plusMinutes(5);
                             timeslot++;
                         }
                     }
@@ -211,16 +218,16 @@ public class Schedule {
             }
             if (days.contains("FRIDAY")) {
                 int timeslot = 0;
-                for (LocalTime t : TIMES) {
+                for (LocalTime t : smallTIMES) {
                     if (sTime.equals(t)) {
-                        schedule[timeslot+1][5] = course.getDepartmentInfo().department() +
+                        schedule[(timeslot/3)+1][5] = course.getDepartmentInfo().department() +
                                 course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(15);
+                        t = t.plusMinutes(5);
                         timeslot++;
                         while (eTime.isAfter(t)) {
-                            schedule[timeslot+1][5] = course.getDepartmentInfo().department() +
+                            schedule[(timeslot/3)+1][5] = course.getDepartmentInfo().department() +
                                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(15);
+                            t = t.plusMinutes(5);
                             timeslot++;
                         }
                     }
