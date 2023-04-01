@@ -121,6 +121,7 @@ public class Search {
                 break;
             }
         }
+        this.removeAllFilters();
         for (Filter f : currentFilters){
             if (f.getType().equals("time")){
                 filterByTime((ArrayList<LocalTime>) f.getValue());
