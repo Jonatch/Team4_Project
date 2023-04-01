@@ -727,6 +727,7 @@ public class Session {
                     }
                     else{
                         System.out.println("Not a valid refnum!");
+                        break;
                     }
                 }catch(Exception ignored){
                     invalidArgument();
