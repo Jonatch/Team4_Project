@@ -137,7 +137,6 @@ public class Session {
 
                     }
                     case "ds" -> {
-
                         if(currentUser.getSchedules().size()>0){
                             System.out.println("Pick a schedule to delete: ");
                             for(int i = 0; i<currentUser.getSchedules().size();i++){
@@ -620,7 +619,7 @@ public class Session {
         String command = input.nextLine().toLowerCase();
         switch (command) {
             case "a" -> addCourseMenu();
-            case "r" -> System.out.println("remove class not implemented");
+            case "r" -> removeCourseFromSchedule();
             case "vc" -> System.out.println(tempSchedule.toCalenderView());
             case "vt" -> System.out.println(tempSchedule.toTableView());
             case "sb" -> {
@@ -635,6 +634,54 @@ public class Session {
             default -> invalidArgument();
         }
         return true;
+    }
+
+
+    private static void removeCourseFromSchedule(){
+
+        if(tempSchedule.getCourses().size()>0) {
+            while(true){
+                for (Course c : tempSchedule.getCourses()) System.out.println(c);
+                System.out.println("""
+                        Enter the course REFNUM to remove
+                        Type 'ra' to remove all
+                        Type 'b' to go back
+                        """);
+                String command = input.nextLine().toLowerCase();
+                if (command.equals("ra")){
+                    tempSchedule.removeAllCourses();
+                    System.out.println("Removed all courses!");
+                    break;
+                }
+                else if (command.equals("b")) break;
+                else {
+                    int commandInt = -100;
+                    try {
+                        commandInt = Integer.parseInt(command);
+                        boolean flag = false;
+                        Course tempCourse = null;
+                        for (Course c : tempSchedule.getCourses()) {
+                            if (c.getRefNum() == commandInt) {
+                                flag = true;
+                                tempCourse = c;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            try{
+                                tempSchedule.removeCourse(tempCourse);
+                            }catch(Exception e){
+                                System.out.println(e.getMessage());
+                            }
+                        } else {
+                            System.out.println("Not a valid refnum!");
+                        }
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+            }
+        }
     }
 
 
@@ -668,9 +715,14 @@ public class Session {
                     if(flag){
                         Course c = searchBox.searchForRefNum(commandInt);
                         if (c != null) {
-                            tempSchedule.addCourse(c);
-                            System.out.println("Course: " + c.getName() + " added!");
-                            break;
+                            try {
+                                tempSchedule.addCourse(c);
+                                System.out.println("Course: " + c.getName() + " added!");
+                                break;
+                            }catch(Exception e){
+                                System.out.println(e.getMessage());
+                                break;
+                            }
                         }
                     }
                     else{
