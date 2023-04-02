@@ -29,10 +29,15 @@ public class Search {
         }
     }
     public void filterByTime(ArrayList<LocalTime> times) {
+
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
             Course c = iterator.next();
-            if (!(c.getTimeInfo().startTime().isAfter(times.get(0)) && c.getTimeInfo().endTime().isBefore(times.get(1)))) {
+            try{
+                if (!(c.getTimeInfo().startTime().isAfter(times.get(0)) && c.getTimeInfo().endTime().isBefore(times.get(1)))) {
+                    iterator.remove();
+                }
+            }catch(Exception ignore){
                 iterator.remove();
             }
         }
