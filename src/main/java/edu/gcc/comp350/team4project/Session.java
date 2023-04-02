@@ -4,12 +4,10 @@ import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class Session {
     private static User currentUser;
@@ -395,6 +393,44 @@ public class Session {
 
     private static void filterTime() {
         //TODO: figure this out
+        int startTime = 0;
+        int endTime = 0;
+        ArrayList<LocalTime> startTimes = new ArrayList<LocalTime>();
+        while (true) {
+            System.out.println("""
+                Enter your time range in the form: __-__
+                example: 10-13
+                Note: time is hours 1-24
+                Enter 'b' to go back
+                """);
+            String command = input.nextLine().toLowerCase();
+            if (command.equals("b")) break;
+            else{
+                String[] parts = command.split("-");
+                try{
+                    startTime = Integer.parseInt(parts[0]);
+                    endTime = Integer.parseInt(parts[1]);
+
+                }
+                catch(Exception ignore){
+                    invalidArgument();
+                }
+                if (startTime > 24 || startTime < 1){
+                    System.out.println("Start time ust be between 1 and 24");
+                }
+                if (endTime > 24 || endTime < 1){
+                    System.out.println("End time ust be between 1 and 24");
+                }
+                if(endTime < startTime){
+                    System.out.println("Start time cannot be after the end time");
+                }
+                LocalTime start = LocalTime.of(startTime, 0, 0);
+                LocalTime end = LocalTime.of(endTime, 0, 0);
+                searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
+                break;
+            }
+        }
+
     }
 
     private static void filterDays() {
