@@ -88,6 +88,16 @@ public class Search {
         currentFilters.add(currentfilter);
     }
 
+    public void filterByCredits(String credits) {
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
+            if (c.getDepartmentInfo().courseLevel().charAt(0) != (credits.charAt(0))) iterator.remove();
+        }
+        Filter currentfilter = new Filter("credit", credits);
+        currentFilters.add(currentfilter);
+    }
+
     public void filterByLevel(String level) {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
@@ -112,6 +122,7 @@ public class Search {
         filteredCourses.clear();
         filteredCourses.addAll(courseList);
         filterBySemester(semester);
+        currentFilters.clear();
     }
 
     public Course searchForRefNum(int refNum) {
@@ -152,6 +163,9 @@ public class Search {
                 }
                 if (f.getType().equals("professor")) {
                     filterByProf((String) f.getValue());
+                }
+                if (f.getType().equals("credit")){
+                    filterByCredits((String)f.getValue());
                 }
                 if (f.getType().equals("level")) {
                     filterByLevel((String) f.getValue());

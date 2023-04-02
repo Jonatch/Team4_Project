@@ -3,7 +3,6 @@ package edu.gcc.comp350.team4project;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
@@ -277,6 +276,7 @@ public class Session {
                 Type 'dept' to filter by department
                 Type 'time' to filter by time
                 Type 'days' to filter by days
+                case "cred" -> filterCredits();
                 Type 'lvl' to filter by course level
                 Type 'r' to remove a specific filter
                 Type 'ra' to remove all filters
@@ -287,11 +287,51 @@ public class Session {
                 case "dept" -> filterDept();
                 case "time" -> filterTime();
                 case "days" -> filterDays();
+                case "cred" -> filterCredits();
                 case "lvl" -> filterLevel();
                 case "r" -> removeSpecificFilter();
                 case "ra" -> {
                     searchBox.getFilteredCourses().clear();//removes all filters
                     searchBox.refreshFilteredCourses();//resets filtered courses
+                }
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
+                default -> invalidArgument();
+            }
+        }
+    }
+
+    private static void filterCredits() {
+        searchBox.removeSpecificFilter("credit");
+        String credits;
+        boolean isFiltering = true;
+
+        while (isFiltering) {
+            System.out.println("""
+                    Please enter the level you would like to filter by:
+                    '1' - 1 credit courses
+                    '2' - 2 credit courses
+                    '3' - 3 credit courses
+                    '4' - 4 credit courses
+                    Type 'b' to go back
+                    """);
+            credits = input.nextLine();
+            switch (credits) {
+                case "1" -> {
+                    searchBox.filterByCredits("1");
+                    isFiltering = false;
+                }
+                case "2" -> {
+                    searchBox.filterByCredits("2");
+                    isFiltering = false;
+                }
+                case "3" -> {
+                    searchBox.filterByCredits("3");
+                    isFiltering = false;
+                }
+                case "4" -> {
+                    searchBox.filterByCredits("4");
+                    isFiltering = false;
                 }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
