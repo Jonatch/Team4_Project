@@ -276,7 +276,7 @@ public class Session {
                 Type 'dept' to filter by department
                 Type 'time' to filter by time
                 Type 'days' to filter by days
-                case "cred" -> filterCredits();
+                Type 'cred' to filter by credits
                 Type 'lvl' to filter by course level
                 Type 'r' to remove a specific filter
                 Type 'ra' to remove all filters

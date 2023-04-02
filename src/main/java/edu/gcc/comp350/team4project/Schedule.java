@@ -48,7 +48,10 @@ public class Schedule {
     }
     public void addCourse(Course newCourse) throws Exception{ //not tested
         for(Course course : courses){
-            if(newCourse.doesCourseConflict(course)){
+            if(newCourse.getRefNum()==course.getRefNum()){
+                throw new Exception("Cannot add the same course to a schedule twice");
+            }
+            else if(newCourse.doesCourseConflict(course)){
                 throw new Exception("New course " + newCourse.getName() + " conflicts with already scheduled course " + course.getName());
             }
         }
