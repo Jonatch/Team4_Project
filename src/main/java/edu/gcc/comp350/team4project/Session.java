@@ -27,26 +27,8 @@ public class Session {
         totalCourses = new ArrayList<>();
 
         String longCSV = "large_courses.csv";
-        String shortCSV = "small_courses.csv";
+        importCoursesFromCSV(longCSV);
         Scanner tempS = new Scanner(System.in);
-        while(true){
-            System.out.println("Type 1 to run with small list of courses");
-            System.out.println(shortCSV);
-            System.out.println("Type 2 to run with total list of courses");
-            System.out.println(longCSV);
-            String input = tempS.nextLine();
-            if(input.equals("1")){
-                importCoursesFromCSV(shortCSV);
-                break;
-            }
-            else if(input.equals("2")){
-                importCoursesFromCSV(longCSV);
-                break;
-            }
-            else{
-                System.out.println("bad input try again");
-            }
-        }
 
 
         while(true){

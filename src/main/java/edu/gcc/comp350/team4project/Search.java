@@ -29,6 +29,7 @@ public class Search {
         }
     }
     public void filterByTime(ArrayList<LocalTime> times) {
+
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
             Course c = iterator.next();
