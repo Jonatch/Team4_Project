@@ -1,0 +1,11 @@
+# Team4_Project
+COMP350 ~ TEAM 4 ~ Spring 2023
+
+In order to run this project as intended, follow these steps: 
+
+1. In your C: drive, make a folder called "sqlite"
+2. In the sqlite filer make another folder called "db" 
+
+With this file structure you will be able to use the database functionality as intended. 
+
+The first time the project is ran in intellij, enter option (2)  to create the database file.
