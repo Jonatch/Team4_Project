@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.sql.SQLOutput;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Session {
     private static User currentUser;
@@ -283,7 +280,7 @@ public class Session {
                 Type 'lvl' to filter by course level
                 Type 'r' to remove a specific filter
                 Type 'ra' to remove all filters
-                Type 'b' to go back
+                Type 'b' to go back and view filtered courses
                 """);
             filterType = input.nextLine().toLowerCase();
             switch (filterType) {
@@ -372,10 +369,9 @@ public class Session {
     }
 
     private static void filterTime() {
-        //TODO: figure this out
+        searchBox.removeSpecificFilter("time");
         int startTime = 0;
         int endTime = 0;
-        ArrayList<LocalTime> startTimes = new ArrayList<LocalTime>();
         while (true) {
             System.out.println("""
                 Enter your time range in the form: __-__
@@ -385,6 +381,7 @@ public class Session {
                 """);
             String command = input.nextLine().toLowerCase();
             if (command.equals("b")) break;
+            else if (command.equals("exit")) endSession();
             else{
                 String[] parts = command.split("-");
                 try{
@@ -435,6 +432,7 @@ public class Session {
             if(days.equals("b")){
                 break;
             }
+            if(days.equals("exit")) endSession();
         } while (!days.matches("[mtwrf]{1,5}") || !noDuplicates(days, charSet));
 
         for(char c : charSet){
@@ -751,6 +749,7 @@ public class Session {
             if (command.equals("f")) filter();
             else if (command.equals("s")) search();
             else if (command.equals("b")) break;
+            else if (command.equals("exit")) endSession();
             else {
                 int commandInt = -100;
                 try{
