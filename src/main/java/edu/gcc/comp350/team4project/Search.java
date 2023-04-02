@@ -28,16 +28,16 @@ public class Search {
             }
         }
     }
-    public void filterByTime(ArrayList<LocalTime> start_times) {
+    public void filterByTime(ArrayList<LocalTime> times) {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
             Course c = iterator.next();
-            if (!start_times.contains(c.getTimeInfo().startTime())){
+            if (!(c.getTimeInfo().startTime().isAfter(times.get(0)) && c.getTimeInfo().endTime().isBefore(times.get(1)))) {
                 iterator.remove();
             }
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("time", start_times);
+        Filter currentfilter = new Filter("time", times);
         currentFilters.add(currentfilter);
     }
 
@@ -48,6 +48,7 @@ public class Search {
             for (int i = 0; i < days.size(); i++){
                 if (!c.getDays().contains(days.get(i))){
                     iterator.remove();
+                    break;
                 }
             }
         }
