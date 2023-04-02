@@ -88,7 +88,7 @@ public class Search {
             Course c = iterator.next();
             if (c.getDepartmentInfo().courseLevel().charAt(0) != (level.charAt(0))) iterator.remove();
         }
-        Filter currentfilter = new Filter("level: ", level);
+        Filter currentfilter = new Filter("level", level);
         currentFilters.add(currentfilter);
     }
 
@@ -116,33 +116,43 @@ public class Search {
     }
 
     public void removeSpecificFilter(String filter) {
-        Iterator<Filter> iterator = currentFilters.iterator();
-        while(iterator.hasNext()){
-            Filter f = iterator.next();
-            if(f.getType().equals(filter)) {
-                currentFilters.remove(f);
-                break;
+        boolean containsFilter = false;
+        for(Filter f :currentFilters){
+            if(f.getType().equals(filter)){
+                containsFilter = true;
             }
         }
-        this.refreshFilteredCourses();
-        for (Filter f : currentFilters){
-            if (f.getType().equals("time")){
-                filterByTime((ArrayList<LocalTime>) f.getValue());
+        if(containsFilter){
+            Iterator<Filter> iterator = currentFilters.iterator();
+            while (iterator.hasNext()) {
+                Filter f = iterator.next();
+                if (f.getType().equals(filter)) {
+                    currentFilters.remove(f);
+                    break;
+                }
             }
-            if (f.getType().equals("days")){
-                filterByDays((ArrayList<DayOfWeek>) f.getValue());
-            }
-            if (f.getType().equals("department")){
-                filterByDept((String)f.getValue());
-            }
-            if (f.getType().equals("professor")){
-                filterByProf((String)f.getValue());
-            }
-            if (f.getType().equals("level")){
-                filterByLevel((String)f.getValue());
-            }
-            if (f.getType().equals("phrase")){
-                filterByPhrase((String) f.getValue());
+            ArrayList<Filter> tempList = new ArrayList<>(currentFilters);
+            currentFilters.clear();
+            this.refreshFilteredCourses();
+            for (Filter f : tempList) {
+                if (f.getType().equals("time")) {
+                    filterByTime((ArrayList<LocalTime>) f.getValue());
+                }
+                if (f.getType().equals("days")) {
+                    filterByDays((ArrayList<DayOfWeek>) f.getValue());
+                }
+                if (f.getType().equals("department")) {
+                    filterByDept((String) f.getValue());
+                }
+                if (f.getType().equals("professor")) {
+                    filterByProf((String) f.getValue());
+                }
+                if (f.getType().equals("level")) {
+                    filterByLevel((String) f.getValue());
+                }
+                if (f.getType().equals("phrase")) {
+                    filterByPhrase((String) f.getValue());
+                }
             }
         }
     }
@@ -161,10 +171,6 @@ public class Search {
 
     public ArrayList<Filter> getCurrentFilters() {
         return currentFilters;
-    }
-
-    public void setFilteredCourses(ArrayList<Course> courseList) {
-        this.filteredCourses = courseList;
     }
 
 }

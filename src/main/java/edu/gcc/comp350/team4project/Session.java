@@ -288,7 +288,7 @@ public class Session {
         while (isFiltering) {
             if (searchBox.getCurrentFilters().size() > 0) {
                 System.out.println("CURRENT APPLIED FILTERS: ");
-                for (Filter f: searchBox.getCurrentFilters()) System.out.println(f.getType() + ": " + f.getValue());
+                for (Filter f: searchBox.getCurrentFilters()) System.out.println("-" + f.getType() + ": " + f.getValue() + "-");
             }
             else System.out.println("CURRENT APPLIED FILTERS: -none-");
 
@@ -308,7 +308,10 @@ public class Session {
                 case "days" -> filterDays();
                 case "lvl" -> filterLevel();
                 case "r" -> removeSpecificFilter();
-                case "ra" -> searchBox.refreshFilteredCourses(); //removes all filters
+                case "ra" -> {
+                    searchBox.getFilteredCourses().clear();//removes all filters
+                    searchBox.refreshFilteredCourses();//resets filtered courses
+                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();
@@ -350,6 +353,7 @@ public class Session {
     }
 
     private static void filterDept() {
+        searchBox.removeSpecificFilter("department");
         HashSet<String> departments = new HashSet<>();
         boolean isFiltering = true;
         String command;
@@ -389,6 +393,7 @@ public class Session {
     }
 
     private static void filterDays() {
+        searchBox.removeSpecificFilter("days");
         HashSet<DayOfWeek> setOfDays = new HashSet<>();
         boolean isFiltering = true;
         String days;
@@ -425,6 +430,7 @@ public class Session {
     private static void filterLevel() {
         String level;
         boolean isFiltering = true;
+        searchBox.removeSpecificFilter("level");
 
         while (isFiltering) {
             System.out.println("""
@@ -434,15 +440,25 @@ public class Session {
                     '3' - 300 level classes
                     '4' - 400 level classes
                     Type 'b' to go back
-                    Type 'exit' to terminate the program
                     """);
             level = input.nextLine();
             switch (level) {
-                //TODO: PROBABLY CHANGE TO STRING SO THAT THERE ISNT ACCIDENTAL INPUTS
-                case "1" -> searchBox.filterByLevel("1");
-                case "2" -> searchBox.filterByLevel("2");
-                case "3" -> searchBox.filterByLevel("3");
-                case "4" -> searchBox.filterByLevel("4");
+                case "1" -> {
+                    searchBox.filterByLevel("100");
+                    isFiltering=false;
+                }
+                case "2" -> {
+                    searchBox.filterByLevel("200");
+                    isFiltering=false;
+                }
+                case "3" -> {
+                    searchBox.filterByLevel("300");
+                    isFiltering=false;
+                }
+                case "4" -> {
+                    searchBox.filterByLevel("400");
+                    isFiltering=false;
+                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();
