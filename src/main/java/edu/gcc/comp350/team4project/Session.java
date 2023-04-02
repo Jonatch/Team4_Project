@@ -296,6 +296,7 @@ public class Session {
                 Type 'dept' to filter by department
                 Type 'time' to filter by time
                 Type 'days' to filter by days
+                Type 'cred' to filter by credits
                 Type 'lvl' to filter by level
                 Type 'r' to remove a specific filter
                 Type 'ra' to filter by remove all filters
@@ -306,6 +307,7 @@ public class Session {
                 case "dept" -> filterDept();
                 case "time" -> filterTime();
                 case "days" -> filterDays();
+                case "cred" -> filterCredits();
                 case "lvl" -> filterLevel();
                 case "r" -> removeSpecificFilter();
                 case "ra" -> searchBox.refreshFilteredCourses(); //removes all filters
@@ -355,7 +357,7 @@ public class Session {
         String command;
 
         for (Course c: searchBox.getFilteredCourses())
-            departments.add(c.getDepartmentInfo().department()); //TODO: TEST, IT SHOULD WORK THO
+            departments.add(c.getDepartmentInfo().department());
 
         while (isFiltering) {
             System.out.println("FILTERABLE DEPARTMENTS: ");
@@ -367,10 +369,6 @@ public class Session {
                 """);
             command = input.nextLine().toLowerCase();
             switch (command) {
-//                case "s" -> {
-//                    System.out.println("Here is a list of all departments: ");
-//                    for (String s: departments) System.out.println(s);
-//                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> {
@@ -422,6 +420,45 @@ public class Session {
         }
     }
 
+    private static void filterCredits() {
+        String credits;
+        boolean isFiltering = true;
+
+        while (isFiltering) {
+            System.out.println("""
+                    Please enter the level you would like to filter by:
+                    '1' - 1 credit courses
+                    '2' - 2 credit courses
+                    '3' - 3 credit courses
+                    '4' - 4 credit courses
+                    Type 'b' to go back
+                    Type 'exit' to terminate the program
+                    """);
+            credits = input.nextLine();
+            switch (credits) {
+                case "1" -> {
+                    searchBox.filterByCredits("1");
+                    isFiltering = false;
+                }
+                case "2" -> {
+                    searchBox.filterByCredits("2");
+                    isFiltering = false;
+                }
+                case "3" -> {
+                    searchBox.filterByCredits("3");
+                    isFiltering = false;
+                }
+                case "4" -> {
+                    searchBox.filterByCredits("4");
+                    isFiltering = false;
+                }
+                case "b" -> isFiltering = false;
+                case "exit" -> endSession();
+                default -> invalidArgument();
+            }
+        }
+    }
+
     private static void filterLevel() {
         String level;
         boolean isFiltering = true;
@@ -438,11 +475,22 @@ public class Session {
                     """);
             level = input.nextLine();
             switch (level) {
-                //TODO: PROBABLY CHANGE TO STRING SO THAT THERE ISNT ACCIDENTAL INPUTS
-                case "1" -> searchBox.filterByLevel("1");
-                case "2" -> searchBox.filterByLevel("2");
-                case "3" -> searchBox.filterByLevel("3");
-                case "4" -> searchBox.filterByLevel("4");
+                case "1" -> {
+                    searchBox.filterByLevel("1");
+                    isFiltering = false;
+                }
+                case "2" -> {
+                    searchBox.filterByLevel("2");
+                    isFiltering = false;
+                }
+                case "3" -> {
+                    searchBox.filterByLevel("3");
+                    isFiltering = false;
+                }
+                case "4" -> {
+                    searchBox.filterByLevel("4");
+                    isFiltering = false;
+                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> invalidArgument();

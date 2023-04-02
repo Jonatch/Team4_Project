@@ -56,6 +56,16 @@ public class Search {
 
     }
 
+    public void filterByCredits(String credits) {
+        Iterator<Course> iterator = filteredCourses.iterator();
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
+            if (c.getDepartmentInfo().courseLevel().charAt(0) != (credits.charAt(0))) iterator.remove();
+        }
+        Filter currentfilter = new Filter("credits", credits);
+        currentFilters.add(currentfilter);
+    }
+
     public void filterByDept(String dept) {
         Iterator<Course> iterator = filteredCourses.iterator();
         while (iterator.hasNext()) {
@@ -88,7 +98,7 @@ public class Search {
             Course c = iterator.next();
             if (c.getDepartmentInfo().courseLevel().charAt(0) != (level.charAt(0))) iterator.remove();
         }
-        Filter currentfilter = new Filter("level: ", level);
+        Filter currentfilter = new Filter("level", level);
         currentFilters.add(currentfilter);
     }
 
@@ -105,6 +115,7 @@ public class Search {
     public void refreshFilteredCourses() {
         filteredCourses.clear();
         filteredCourses.addAll(courseList);
+        currentFilters.clear();
         filterBySemester(semester);
     }
 
@@ -141,6 +152,9 @@ public class Search {
             if (f.getType().equals("level")){
                 filterByLevel((String)f.getValue());
             }
+            if (f.getType().equals("credits")){
+                filterByLevel((String)f.getValue());
+            }
             if (f.getType().equals("phrase")){
                 filterByPhrase((String) f.getValue());
             }
@@ -155,6 +169,7 @@ public class Search {
         }
         return "-none-";
     }
+
     public ArrayList<Course> getFilteredCourses() {
         return filteredCourses;
     }
