@@ -103,55 +103,75 @@ public class Schedule {
         return sb.toString();
     }
     public String toCalenderView() {
+
         final int ROWS = 53;
         final int COLS = 6;
-        final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        final ArrayList<LocalTime> TIMES = new ArrayList<>();
+        final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}; // Declare a constant array of days of the week
+        final ArrayList<LocalTime> TIMES = new ArrayList<>(); // Declare an array list to store time slots for the calendar
         LocalTime l = LocalTime.of(8, 00);
-        for (int i = 0; i < 53; i++) {
+        for (int i = 0; i < 53; i++) { // Populate the TIMES array list with time slots
             TIMES.add(l);
             l = l.plusMinutes(15);
         }
 
-        final ArrayList<LocalTime> smallTIMES = new ArrayList<>();
+        final ArrayList<LocalTime> smallTIMES = new ArrayList<>(); // Declare an array list to store smaller time slots for each course
         LocalTime l2 = LocalTime.of(8, 00);
-        for (int i = 0; i < 159; i++) {
+        for (int i = 0; i < 159; i++) { // Populate the smallTIMES array list with smaller time slots
             smallTIMES.add(l2);
             l2 = l2.plusMinutes(5);
         }
-        final String[][] schedule = new String[ROWS][COLS];
+
+        final String[][] schedule = new String[ROWS][COLS]; // Declare a 2D array to represent the schedule
 
         //set the top row to the days of the week
-        for (int col = 1; col < COLS; col++) {
+        for (int col = 1; col < COLS; col++) { // Set the top row of the schedule with the days of the week
             schedule[0][col] = DAYS[col-1];
         }
 
         //set the left column to the time slots
-        for (int row = 1; row < ROWS; row++) {
+        for (int row = 1; row < ROWS; row++) { // Set the left column of the schedule with the time slots
             String s = TIMES.get(row-1).toString();
             schedule[row][0] = s;
         }
 
         for (int row = 1; row < ROWS; row++) {
             for (int col = 1; col < COLS; col++) {
-                schedule[row][col] = "\t\t";
+                schedule[row][col] = "\t\t"; // Initialize all other cells of the schedule with empty strings
             }
         }
 
-        schedule[0][0] = "\t\t";
+        schedule[0][0] = "\t\t"; // Initialize the top left cell of the schedule with an empty string
 
+
+// Loop through each course in the list of courses
         for (Course course : courses){
+
+            // Get the start and end times of the course, and the days it occurs
             LocalTime sTime = course.getTimeInfo().startTime();
             LocalTime eTime = course.getTimeInfo().endTime();
             String days = course.getDays().toString();
+
+            // If the course occurs on Monday
             if (days.contains("MONDAY")) {
+
+                // Initialize a timeslot counter
                 int timeslot = 0;
+
+                // Loop through each small time slot
                 for (LocalTime t : smallTIMES) {
+
+                    // If the start time of the course matches the current small time slot
                     if (sTime.equals(t)) {
+
+                        // Assign the course information to the corresponding slot in the schedule array
                         schedule[(timeslot/3)+1][1] = course.getDepartmentInfo().department() +
-                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+
+                        // Move to the next small time slot and increment the timeslot counter
                         t = t.plusMinutes(5);
                         timeslot++;
+
+                        // Loop through the remaining small time slots until the end time of the course is reached
                         while (eTime.isAfter(t)) {
                             schedule[(timeslot/3)+1][1] = course.getDepartmentInfo().department() +
                                     course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
@@ -162,6 +182,8 @@ public class Schedule {
                     timeslot++;
                 }
             }
+
+            // Repeat the above process for each day of the week that the course occurs on
             if (days.contains("TUESDAY")) {
                 int timeslot = 0;
                 for (LocalTime t : smallTIMES) {
@@ -235,23 +257,26 @@ public class Schedule {
                 }
             }
         }
-        //System.out.println(Arrays.deepToString(schedule).replace("], ", "]\n"));        // Fill in the rest of the schedule with empty cells
-
-        return this.toString() + "\n" + Arrays.deepToString(schedule).replace("], ", "]\n");
-    }
+        // Return a string representation of the schedule array
+        return this.toString() + "\n" + Arrays.deepToString(schedule).replace("], ", "]\n");    }
 
 
     public String toTableView() {
         StringBuilder sb = new StringBuilder();
+        // Append schedule name
         sb.append("NAME: " + this.scheduleName + " ");
-        sb.append("SEMESTER: " + this.semester.toString().toLowerCase()+ " ");
+        // Append semester name in lowercase
+        sb.append("SEMESTER: " + this.semester.toString().toLowerCase() + " ");
+        // Append total credits
         sb.append("CREDITS: " + this.totalCredits + "\n");
-        sb.append("     COURSES: "+ "\n");
-        for(Course course : this.courses){
-            sb.append("         --"+ course.toString()+"\n");
+        // Append courses header
+        sb.append("     COURSES: " + "\n");
+        // Append each course in the list of courses
+        for (Course course : this.courses) {
+            sb.append("         --" + course.toString() + "\n");
         }
+        // Convert StringBuilder to String and return
         return sb.toString();
     }
-
 }
 
