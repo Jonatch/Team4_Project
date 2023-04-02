@@ -10,6 +10,7 @@ import java.time.*;
 
 public class DatabaseController {
 
+    //method used for authenticating user logins
     public static boolean authenticateUser(String name, String password) {
         String sql = "SELECT username, password from Users WHERE username = ?";
         try (Connection conn = DatabaseController.connect();
@@ -36,6 +37,7 @@ public class DatabaseController {
         return false;
     }
 
+    //Method responsible for checking if a user is in the database
     public static boolean checkIfUserInDB(String name){
         String sql = "SELECT username, password from Users WHERE username = ?";
         try (Connection conn = DatabaseController.connect();
@@ -63,6 +65,7 @@ public class DatabaseController {
 
     }
 
+    //method responsible for pulling a user from the database
     public static User pullUser(String name){
 
 
@@ -79,8 +82,8 @@ public class DatabaseController {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 username = rs.getString("username");
-                 year = rs.getString("year");
-                 password = rs.getString("password");
+                year = rs.getString("year");
+                password = rs.getString("password");
                 schedules = rs.getString("schedules");
             }
             pulledUser = new User(username, year, password, false);
@@ -141,6 +144,7 @@ public class DatabaseController {
         return pulledUser;
     }
 
+    //method responsible for updating users schedules
     public static void updateUser(User user){
         String sql = "UPDATE Users SET schedules = ? WHERE username = ?";
 
@@ -203,9 +207,7 @@ public class DatabaseController {
     }
 
 
-    /**
-     * @param fileName the database file name
-     */
+    //Method that creates a new database
     public static void createNewDatabase(String fileName) {
 
         String url = "jdbc:sqlite:C:/sqlite/db/" + fileName;
@@ -221,7 +223,8 @@ public class DatabaseController {
             System.out.println(e.getMessage());
         }
     }
-    
+
+    //Connection to the sqlite database
     private static Connection connect() {
         // SQLite connection string
         String url = "jdbc:sqlite:C://sqlite/db/team4_project.db";
@@ -234,6 +237,7 @@ public class DatabaseController {
         return conn;
     }
 
+    //method responsible for creating the Users table
     public static void createNewTable() {
         // SQLite connection string
         String url = "jdbc:sqlite:C://sqlite/db/team4_project.db";
@@ -258,7 +262,7 @@ public class DatabaseController {
 
 
 
-
+    //Method responsible for inserting into the sqlite database
     public static void insert(User user) {
         String username = user.getUsername();
         String year = user.getYear();
@@ -323,14 +327,13 @@ public class DatabaseController {
         }
     }
 
+    //method thats prints all users from the database
     public static void printAllUsers(){
         String sql = "SELECT * from Users";
         try (Connection conn = DatabaseController.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-
             Statement stmt = conn.createStatement();
-
             ResultSet rs = stmt.executeQuery(sql);
 
             String username = "";
@@ -339,12 +342,13 @@ public class DatabaseController {
                 username = rs.getString("username");
                 pass = rs.getString("password");
                 System.out.println("USERNAME: " + username + " PASSWORD: " + pass);
-
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    //mathod responsible for deleting users from the database
     public static void drop(){
         String url = "jdbc:sqlite:C://sqlite/db/team4_project.db";
 
@@ -356,68 +360,6 @@ public class DatabaseController {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-    }
-
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws Exception {
-//        ArrayList<DayOfWeek> testDays = new ArrayList<DayOfWeek>();
-//        testDays.add(DayOfWeek.MONDAY);
-//        testDays.add(DayOfWeek.WEDNESDAY);
-//        testDays.add(DayOfWeek.FRIDAY);
-//        Course test2 = new Course(2, "COMP", Semester.FALL, "400", 'A',
-//                "test course", 3, "Dr. test", "a test course", testDays, LocalTime.of(10,0,0), LocalTime.of(10,50,0));
-//        Course test1 = new Course(1, "COMP", Semester.FALL, "300", 'A',
-//                "test course", 3, "Dr. test", "a test course", testDays, LocalTime.of(9,0,0), LocalTime.of(9,50,0));
-//        Course test3 = new Course(20, "EDUC", Semester.SPRING, "400", 'A',
-//                "test course", 3, "Dr. test", "a test course", testDays, LocalTime.of(10,0,0), LocalTime.of(10,50,0));
-//        Course test4 = new Course(10, "EDUC", Semester.SPRING, "300", 'A',
-//                "test course", 3, "Dr. test", "a test course", testDays, LocalTime.of(9,0,0), LocalTime.of(9,50,0));
-//        createNewDatabase("team4_project.db");
-//        drop();
-//        createNewTable();
-//        User jonah = new User("DybasJW20", "Junior", "testpass", false);
-//        Schedule test = new Schedule("newer test sched", Semester.FALL);
-//        Schedule test_2 = new Schedule("test_sched2", Semester.SPRING);
-//        test.addCourse(test1);
-//        test.addCourse(test2);
-//        test_2.addCourse(test3);
-//        test_2.addCourse(test4);
-//
-//        jonah.saveScheduleToUser(test);
-//        jonah.saveScheduleToUser(test_2);
-//
-//
-////        DatabaseController.updateUser(jonah);
-//        DatabaseController.insert(jonah);
-//
-//        if (DatabaseController.authenticateUser("DybasJW20", "testpass")) {
-//            System.out.println("Autheticated!");
-//        }else{
-//            System.out.println("Failed to authenticate");
-//        }
-//
-//        System.out.println(jonah);
-//        User returnUser = pullUser("DybasJW20");
-//        System.out.println("-----------------------------------------");
-//        System.out.println(returnUser);
-//        System.out.println("-----------------------------------------");
-//        returnUser.removeSchedule(1);
-//        Schedule test_3 = new Schedule("test_sched3", Semester.FALL);
-//        test_3.addCourse(test1);
-//        test_3.addCourse(test2);
-//        returnUser.saveScheduleToUser(test_3);
-//        updateUser(returnUser);
-//        System.out.println(pullUser("DybasJW20"));
-//
-//
-
-
-
-
 
     }
 }
