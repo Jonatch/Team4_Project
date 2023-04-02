@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Session {
     private static User currentUser;
@@ -296,9 +297,9 @@ public class Session {
                 Type 'dept' to filter by department
                 Type 'time' to filter by time
                 Type 'days' to filter by days
-                Type 'lvl' to filter by level
+                Type 'lvl' to filter by course level
                 Type 'r' to remove a specific filter
-                Type 'ra' to filter by remove all filters
+                Type 'ra' to remove all filters
                 Type 'b' to go back
                 """);
             filterType = input.nextLine().toLowerCase();
@@ -367,7 +368,6 @@ public class Session {
             System.out.println("""
                 Type <department> to filter by that department
                 Type 'b' to go back
-                Type 'exit' to terminate the program
                 """);
             command = input.nextLine().toLowerCase();
             switch (command) {
@@ -395,36 +395,55 @@ public class Session {
     private static void filterDays() {
         searchBox.removeSpecificFilter("days");
         HashSet<DayOfWeek> setOfDays = new HashSet<>();
-        boolean isFiltering = true;
         String days;
-        while (isFiltering) {
+
+        Set<Character> charSet = new HashSet<>();
+
+        do {
             System.out.println("""
-                Enter the day you would like to filter by
-                'm' - Monday
-                't' - Tuesday
-                'w' - Wednesday
-                'r' - Thursday
-                'f' - Friday
-                Type 'd' if you are done adding days to filter by
-                Type 'b' to go back
-                Type 'exit' to terminate the program
-                """);
+                    Enter the days you would like to filter by as a list of up to 5 characters(MTWRF):
+                    'm' - Monday
+                    't' - Tuesday
+                    'w' - Wednesday
+                    'r' - Thursday
+                    'f' - Friday
+                    Type 'b' to go back
+                    """);
+            System.out.println("Enter the days you would like to filter by as a list of up to 5 characters(MTWRF) or type 'b' to go back: ");
             days = input.nextLine().toLowerCase();
-            switch (days) {
-                case "m" -> setOfDays.add(DayOfWeek.MONDAY);
-                case "t" -> setOfDays.add(DayOfWeek.TUESDAY);
-                case "w" -> setOfDays.add(DayOfWeek.WEDNESDAY);
-                case "r" -> setOfDays.add(DayOfWeek.THURSDAY);
-                case "f" -> setOfDays.add(DayOfWeek.FRIDAY);
-                case "d" -> {
-                    isFiltering = false;
-                    searchBox.filterByDays(new ArrayList<>(setOfDays));
-                }
-                case "b" -> isFiltering = false;
-                case "exit" -> endSession();
-                default -> invalidArgument();
+            if(days.equals("b")){
+                break;
+            }
+        } while (!days.matches("[mtwrf]{1,5}") || !noDuplicates(days, charSet));
+
+        for(char c : charSet){
+            if(c=='m'){
+                setOfDays.add(DayOfWeek.MONDAY);
+            }
+            else if(c=='t'){
+                setOfDays.add(DayOfWeek.TUESDAY);
+            }
+            else if(c=='w'){
+                setOfDays.add(DayOfWeek.WEDNESDAY);
+            }
+            else if(c=='r'){
+                setOfDays.add(DayOfWeek.THURSDAY);
+            }
+            else if(c=='f'){
+                setOfDays.add(DayOfWeek.FRIDAY);
             }
         }
+        searchBox.filterByDays(new ArrayList<>(setOfDays));
+    }
+
+    private static boolean noDuplicates(String input, Set<Character> charSet) {
+        for (char c : input.toCharArray()) {
+            if (!charSet.add(c) || !Character.isLetter(c)) {
+                invalidArgument();
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void filterLevel() {
@@ -435,10 +454,10 @@ public class Session {
         while (isFiltering) {
             System.out.println("""
                     Please enter the level you would like to filter by:
-                    '1' - 100 level classes
-                    '2' - 200 level classes
-                    '3' - 300 level classes
-                    '4' - 400 level classes
+                    '1' - 100-199 level classes
+                    '2' - 200-299 level classes
+                    '3' - 300-399 level classes
+                    '4' - 400-499 level classes
                     Type 'b' to go back
                     """);
             level = input.nextLine();
@@ -541,7 +560,6 @@ public class Session {
                     Min characters allowed: 5
                     No whitespace allowed
                     Type 'b' to cancel new account creation
-                    Type 'exit' to exit
                     Enter a username:
                     """);
             name = input.nextLine().toLowerCase();
@@ -558,7 +576,6 @@ public class Session {
                     Max characters allowed: 20
                     No whitespace allowed
                     Type 'b' to cancel new account creation
-                    Type 'exit' to exit
                     Enter a password:
                     """);
             password = input.nextLine().toLowerCase();
@@ -577,7 +594,6 @@ public class Session {
                     'j' for junior
                     'e' for senior
                     Type 'b' to cancel new account creation
-                    Type 'exit' to quit the program
                     """);
             String command = input.nextLine().toLowerCase();
 
@@ -615,7 +631,6 @@ public class Session {
                         Type 'ds' to delete a schedule
                         Type 'vs' to view saved schedule or edit
                         Type 'b' to go logout
-                        Type 'exit' to terminate the program
                         """);
     }
 
@@ -626,7 +641,6 @@ public class Session {
                             Type 'vc' to see your schedule as a calendar
                             Type 'vt' to see your schedule as a table
                             Type 'sb' to save and go back
-                            Type 'exit' to terminate the program
                             """);
 
 
@@ -702,8 +716,9 @@ public class Session {
     private static void addCourseMenu() throws Exception {
         searchBox = new Search(totalCourses, tempSchedule.getSemester());
         while (true) {
-            System.out.println("COURSES (WITH ANY SEARCH OR FILTERS APPLIED):");
+            System.out.println("COURSES:");
             for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
+            System.out.println("NUMBER OF APPLIED FILTERS/SEARCH: " + searchBox.getCurrentFilters().size());
             System.out.println("""
                 Type <REFNUM> to add the course with that reference number
                 Type 's' to apply or remove a search query
