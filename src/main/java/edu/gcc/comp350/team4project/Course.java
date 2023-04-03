@@ -14,7 +14,7 @@ record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTim
      * @param timeInfo start time and end time of a class
      * @return true if the two courses overlap, false otherwise
      */
-    public boolean doesOverLap(TimeInfo timeInfo){ //needs extensive testing
+    public boolean doesOverLap(TimeInfo timeInfo){
         Set<DayOfWeek> commonDays = new HashSet<>(this.days); // new HashSet with these courses days
         commonDays.retainAll(timeInfo.days); // keep overlapping days
 
@@ -56,49 +56,18 @@ public class Course{
     public int getRefNum() {
         return refNum;
     }
-
-//    public void setRefNum(int refNum) {
-//        this.refNum = refNum;
-//    }
-
     public int getCredits() {
         return credits;
     }
-
-//    public void setCredits(int credits) {
-//        this.credits = credits;
-//    }
-
     public String getProfessor() {
         return professor;
     }
-
-//    public void setProfessor(String professor) {
-//        this.professor = professor;
-//    }
-
     public String getDescription() {
         return description;
     }
 
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-
     public TimeInfo getTimeInfo(){
         return this.timeInfo;
-    }
-
-//    public void setTimeInfo(TimeInfo timeInfo){
-//        this.timeInfo = timeInfo;
-//    }
-
-    public ArrayList<LocalTime> getTime() {
-        try {
-            return new ArrayList<>(List.of(this.timeInfo.startTime(), this.timeInfo.endTime()));
-        }catch(Exception e){
-            return new ArrayList<>();
-        }
     }
     public ArrayList<DayOfWeek> getDays() {
         return this.timeInfo.days();
@@ -116,7 +85,7 @@ public class Course{
         Course course = (Course) o;
 
 
-        return this.refNum == course.refNum;
+        return this.refNum == course.refNum;//if diff refnum, diff course
     }
 
     @Override
@@ -125,15 +94,8 @@ public class Course{
     }
 
     public boolean doesCourseConflict(Course course){
-        if(this.equals(course)){
-            return true;
-        }
-
-        if(this.timeInfo.doesOverLap(course.timeInfo)){
-            return true;
-        }
-
-        return false;
+        if(this.equals(course)) return true;
+        else return this.timeInfo.doesOverLap(course.timeInfo);
     }
 
 
