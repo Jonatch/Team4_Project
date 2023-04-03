@@ -5,6 +5,7 @@ In order to run this project as intended, follow these steps:
 
 1. In your C: drive, make a folder called "sqlite"
 2. In the sqlite filer make another folder called "db" 
+3. Make sure you are using java 17
 
 With this file structure you will be able to use the database functionality as intended. 
 
