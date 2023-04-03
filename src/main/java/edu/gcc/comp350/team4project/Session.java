@@ -77,7 +77,7 @@ public class Session {
                     case "ns" -> newSchedule();
                     case "ds" -> deleteSchedule();
                     case "vs" -> viewSchedule();
-                    case "bl" -> {
+                    case "lb" -> {
                         logOutUser();
                         isLoggedIn = false;
                     }
@@ -656,7 +656,7 @@ public class Session {
                 Type 'u' to login as a user
                 Type 'g' to login as a guest
                 Type 'n' to create a new account
-                Typing 'exit' at most points will terminate the program
+                Typing 'exit' at most points will terminate the program (data may be lost)
                 """);
     }
 
@@ -665,7 +665,7 @@ public class Session {
                         Type 'ns' to create a new schedule
                         Type 'ds' to delete a schedule
                         Type 'vs' to view saved schedule or edit
-                        Type 'ls' to logout and go back
+                        Type 'lb' to logout and go back
                         """);
     }
 
