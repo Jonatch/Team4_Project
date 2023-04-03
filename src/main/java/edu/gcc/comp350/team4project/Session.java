@@ -23,15 +23,15 @@ public class Session {
     public static void createSession() throws Exception {
         totalCourses = new ArrayList<>();
 
-        String longCSV = "large_courses.csv";
-        importCoursesFromCSV(longCSV);
+        String longCSV = "large_courses.csv"; //pulls from csv of all courses
+        importCoursesFromCSV(longCSV); //imports information as data we can use
         Scanner tempS = new Scanner(System.in);
 
-
+        //boot menu that handles database for testing purposes.
         while(true){
-            System.out.println("Type 1 to run with existing database.");
+            System.out.println("Type 1 to run with existing database.");//Normally, the software would always run option '1'
             DatabaseController.printAllUsers();
-            System.out.println("Type 2 to run with a cleared database. WARNING: WILL DELETE ALL STORED USERS");
+            System.out.println("Type 2 to run with a cleared database. WARNING: WILL DELETE ALL STORED USERS");//option '2' clears all db files which also creates new one for first time user
             String input = tempS.nextLine();
             if(input.equals("1")){
                 System.out.println("Running with existing db");
@@ -45,7 +45,7 @@ public class Session {
                 break;
             }
             else{
-                System.out.println("bad input try again");
+                invalidArgument();
             }
         }
         menuLoop();
@@ -53,7 +53,7 @@ public class Session {
 
     private static void menuLoop() throws Exception {
         input = new Scanner(System.in);
-        boolean isLoggedIn=false, isScheduling;
+        boolean isLoggedIn=false, isScheduling = false;
         mainMenu(); // helper method that contains the menu print lines
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
@@ -68,168 +68,16 @@ public class Session {
                 System.out.println("Logged in as a guest");
                 isLoggedIn = true;
             }
-            else if (command.equals("v")) DatabaseController.printAllUsers(); // hidden command, for testing
+            //else if (command.equals("v")) DatabaseController.printAllUsers(); // hidden command, for testing
             else invalidArgument(); // invalid argument
-
             while (isLoggedIn) {
                 loggedInMenu(); // helper method that contains logged in menu print lines
                 command = input.nextLine().toLowerCase();
                 switch (command) {
-                    case "ns" -> { // making a new schedule
-                        if(currentUser.getSchedules().size()<5){
-                            String name = "";
-                            Semester sem;
-                            do {
-                                System.out.println("Enter schedule name (5-20 characters): ");
-                                name = input.nextLine();
-                            } while (name.length() > 20 || name.length() < 5);
-                            while (true) { // choose if you want it to be for fall or spring
-                                System.out.println("Enter 'f' for fall or 's' for spring");
-                                String semester = input.nextLine().toLowerCase();
-                                if (semester.equals("f")) {
-                                    sem = Semester.FALL;
-                                    break;
-                                }
-                                if (semester.equals("s")) {
-                                    sem = Semester.SPRING;
-                                    break;
-                                }
-                            }
-                            tempSchedule = new Schedule(name, sem); // makes a new schedule
-                            System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester().toString().toLowerCase() + " semester)");
-                            isScheduling = true;
-                            while (isScheduling) {
-                                isScheduling = scheduleMenu(); // print scheduling menu
-                            }
-                        }
-                        else System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " schedules allowed. Try deleting one");
-                    }
-                    case "ds" -> { // delete a schedule
-                        if(currentUser.getSchedules().size()>0){
-                            System.out.println("Pick a schedule to delete: ");
-                            for(int i = 0; i<currentUser.getSchedules().size();i++){
-                                System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
-                            }
-                            String numberToDelete = input.nextLine();
-                            switch (numberToDelete) {
-                                case "1" -> {
-                                    currentUser.removeSchedule(0);
-                                    System.out.println("Schedule deleted!");
-                                }
-                                case "2" -> {
-                                    try {
-                                        currentUser.removeSchedule(1);
-                                        System.out.println("Schedule deleted!");
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "3" -> {
-                                    try {
-                                        currentUser.removeSchedule(2);
-                                        System.out.println("Schedule deleted!");
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "4" -> {
-                                    try {
-                                        currentUser.removeSchedule(3);
-                                        System.out.println("Schedule deleted!");
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "5" -> {
-                                    try {
-                                        currentUser.removeSchedule(4);
-                                        System.out.println("Schedule deleted!");
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                default -> invalidArgument();
-                            }
-                        }
-                        else System.out.println("No saved schedules to delete!");
-                    }
-                    case "vs" -> {
-                        if(currentUser.getSchedules().size()>0){
-                            System.out.println("Pick a schedule to edit: ");
-                            for(int i = 0; i<currentUser.getSchedules().size();i++){
-                                System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
-                            }
-                            System.out.println("\nType 'b' to go back");
-                            String numberToEdit = input.nextLine();
-                            switch (numberToEdit) {
-                                case "1" -> {
-                                    System.out.println("Editing schedule 1");
-                                    tempSchedule = currentUser.getSchedules().get(0);
-                                    currentUser.removeSchedule(0);
-                                    isScheduling = true;
-                                    while (isScheduling) {
-                                        isScheduling = scheduleMenu();
-                                    }
-                                }
-                                case "2" -> {
-                                    try {
-                                        System.out.println("Editing schedule 2");
-                                        tempSchedule = currentUser.getSchedules().get(1);
-                                        currentUser.removeSchedule(1);
-                                        isScheduling = true;
-                                        while (isScheduling) {
-                                            isScheduling = scheduleMenu();
-                                        }
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "3" -> {
-                                    try {
-                                        System.out.println("Editing schedule 3");
-                                        tempSchedule = currentUser.getSchedules().get(2);
-                                        currentUser.removeSchedule(2);
-                                        isScheduling = true;
-                                        while (isScheduling) {
-                                            isScheduling = scheduleMenu();
-                                        }
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "4" -> {
-                                    try {
-                                        System.out.println("Editing schedule 4");
-                                        tempSchedule = currentUser.getSchedules().get(3);
-                                        currentUser.removeSchedule(3);
-                                        isScheduling = true;
-                                        while (isScheduling) {
-                                            isScheduling = scheduleMenu();
-                                        }
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "5" -> {
-                                    try {
-                                        System.out.println("Editing schedule 5");
-                                        tempSchedule = currentUser.getSchedules().get(4);
-                                        currentUser.removeSchedule(4);
-                                        isScheduling = true;
-                                        while (isScheduling) {
-                                            isScheduling = scheduleMenu();
-                                        }
-                                    } catch (Exception ignored) {
-                                        invalidArgument();
-                                    }
-                                }
-                                case "b" -> {}
-                                default -> invalidArgument();
-                            }
-                        }
-                        else System.out.println("No saved schedules to edit!");
-                    }
-                    case "b" -> {
+                    case "ns" -> newSchedule();
+                    case "ds" -> deleteSchedule();
+                    case "vs" -> viewSchedule();
+                    case "bl" -> {
                         logOutUser();
                         isLoggedIn = false;
                     }
@@ -245,8 +93,170 @@ public class Session {
         }
         endSession();
     }
+    private static void viewSchedule() throws Exception {//helper method to view all schedules the user has and pick one they might want to edit
+        if(currentUser.getSchedules().size()>0){
+            System.out.println("Pick a schedule to edit: ");
+            for(int i = 0; i<currentUser.getSchedules().size();i++){
+                System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
+            }
+            System.out.println("\nType 'b' to go back");
+            String numberToEdit = input.nextLine();
+            boolean isScheduling;
+            switch (numberToEdit) {
+                case "1" -> {
+                    tempSchedule = currentUser.getSchedules().get(0);
+                    currentUser.removeSchedule(0);
+                    System.out.println("Editing schedule 1");
+                    isScheduling = true;
+                    while (isScheduling) {
+                        isScheduling = scheduleMenu();
+                    }
+                }
+                case "2" -> {
+                    try {
+                        tempSchedule = currentUser.getSchedules().get(1);
+                        currentUser.removeSchedule(1);
+                        System.out.println("Editing schedule 2");
+                        isScheduling = true;
+                        while (isScheduling) {
+                            isScheduling = scheduleMenu();
+                        }
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "3" -> {
+                    try {
+                        tempSchedule = currentUser.getSchedules().get(2);
+                        currentUser.removeSchedule(2);
+                        System.out.println("Editing schedule 3");
+                        isScheduling = true;
+                        while (isScheduling) {
+                            isScheduling = scheduleMenu();
+                        }
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "4" -> {
+                    try {
+                        tempSchedule = currentUser.getSchedules().get(3);
+                        currentUser.removeSchedule(3);
+                        System.out.println("Editing schedule 4");
+                        isScheduling = true;
+                        while (isScheduling) {
+                            isScheduling = scheduleMenu();
+                        }
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "5" -> {
+                    try {
+                        tempSchedule = currentUser.getSchedules().get(4);
+                        currentUser.removeSchedule(4);
+                        System.out.println("Editing schedule 5");
+                        isScheduling = true;
+                        while (isScheduling) {
+                            isScheduling = scheduleMenu();
+                        }
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "b" -> {}
+                case "exit" -> endSession();
+                default -> invalidArgument();
+            }
+        }
+        else System.out.println("No saved schedules to edit!");
 
-    private static void filter() {
+    }
+    private static void newSchedule() throws Exception {//Handles IO to create new schedule for a user
+        if(currentUser.getSchedules().size()<5){
+            String name = "";
+            Semester sem;
+            do {
+                System.out.println("Enter schedule name (5-20 characters): ");
+                name = input.nextLine();
+            } while (name.length() > 20 || name.length() < 5);
+            while (true) { // choose if you want it to be for fall or spring
+                System.out.println("Enter 'f' for fall or 's' for spring");
+                String semester = input.nextLine().toLowerCase();
+                if (semester.equals("f")) {
+                    sem = Semester.FALL;
+                    break;
+                }
+                if (semester.equals("s")) {
+                    sem = Semester.SPRING;
+                    break;
+                }
+            }
+            tempSchedule = new Schedule(name, sem); // makes a new schedule
+            System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester().toString().toLowerCase() + " semester)");
+            boolean isScheduling = true;
+            while (isScheduling) {
+                isScheduling = scheduleMenu(); // print scheduling menu
+            }
+        }
+        else System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " schedules allowed. Try deleting one");
+
+    }
+
+    private static void deleteSchedule(){ //handles IO to ddelete a user's schedule
+        if(currentUser.getSchedules().size()>0){
+            System.out.println("Pick a schedule to delete or 'b' to go back: ");
+            for(int i = 0; i<currentUser.getSchedules().size();i++){
+                System.out.println("" + (i+1) + ": " + currentUser.getSchedules().get(i));
+            }
+            String numberToDelete = input.nextLine();
+            switch (numberToDelete) {
+                case "1" -> {
+                    currentUser.removeSchedule(0);
+                    System.out.println("Schedule deleted!");
+                }
+                case "2" -> {
+                    try {
+                        currentUser.removeSchedule(1);
+                        System.out.println("Schedule deleted!");
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "3" -> {
+                    try {
+                        currentUser.removeSchedule(2);
+                        System.out.println("Schedule deleted!");
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "4" -> {
+                    try {
+                        currentUser.removeSchedule(3);
+                        System.out.println("Schedule deleted!");
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "5" -> {
+                    try {
+                        currentUser.removeSchedule(4);
+                        System.out.println("Schedule deleted!");
+                    } catch (Exception ignored) {
+                        invalidArgument();
+                    }
+                }
+                case "b"-> {}
+                case "exit"->endSession();
+                default -> invalidArgument();
+            }
+        }
+        else System.out.println("No saved schedules to delete!");
+
+    }
+
+    private static void filter() {//runs filer menu
         String filterType;
         boolean isFiltering = true;
 
@@ -261,7 +271,7 @@ public class Session {
                 Type 'dept' to filter by department
                 Type 'time' to filter by time
                 Type 'days' to filter by days
-                case "cred" -> filterCredits();
+                Type 'cred' to filter by credits
                 Type 'lvl' to filter by course level
                 Type 'r' to remove a specific filter
                 Type 'ra' to remove all filters
@@ -290,51 +300,44 @@ public class Session {
      * This is a helper function that will call the filterByCredits function in the search class
      * This helper function handles input and prints direction messages to the console
      */
-    private static void filterCredits() {
+    private static void filterCredits() { //handles selecting a credit filter
         searchBox.removeSpecificFilter("credit"); // remove previous filter
         String credits;
         boolean isFiltering = true;
 
         while (isFiltering) {
             System.out.println("""
-                    Please enter the level you would like to filter by:
-                    '1' - 1 credit courses
-                    '2' - 2 credit courses
-                    '3' - 3 credit courses
-                    '4' - 4 credit courses
+                    Please enter the number of credits you would like to filter by:
                     Type 'b' to go back
                     """);
-            credits = input.nextLine();
+            credits = input.nextLine().toLowerCase();
             switch (credits) {
-                case "1" -> {
-                    searchBox.filterByCredits("1");
-                    isFiltering = false;
-                }
-                case "2" -> {
-                    searchBox.filterByCredits("2");
-                    isFiltering = false;
-                }
-                case "3" -> {
-                    searchBox.filterByCredits("3");
-                    isFiltering = false;
-                }
-                case "4" -> {
-                    searchBox.filterByCredits("4");
-                    isFiltering = false;
-                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
-                default -> invalidArgument();
+                default -> {
+                    try{
+                        int credAmnt = Integer.parseInt(credits);
+                        if(credAmnt>16){
+                            System.out.println("No courses are greater than 16 credits");
+                        }else{
+                            searchBox.filterByCredits(String.valueOf(credAmnt));
+                            isFiltering = false;
+                        }
+
+                    }catch(Exception ignored){
+                        invalidArgument();
+                    }
+                }
             }
         }
     }
 
     private static void removeSpecificFilter() {
-        if(searchBox.getCurrentFilters().size()>0){
+        if(searchBox.getCurrentFilters().size()>0){//only runs if there are filters to delete
             while(true){
                 System.out.println("Enter the filter number to remove it or 'b' to go back");
                 System.out.println("CURRENT FILTERS:");
-                for(int i = 0;i<searchBox.getCurrentFilters().size();i++){
+                for(int i = 0;i<searchBox.getCurrentFilters().size();i++){ //prints all current filters and their values
                     System.out.println("[" + (i+1) + "] TYPE: " + searchBox.getCurrentFilters().get(i).getType() + " VALUE: " + searchBox.getCurrentFilters().get(i).getValue());
                 }
 
@@ -393,24 +396,23 @@ public class Session {
     }
 
     private static void filterTime() {
-
-        searchBox.removeSpecificFilter("time");
-
+        searchBox.removeSpecificFilter("time"); //removes last time filter
         int startTime = 0;
         int endTime = 0;
         while (true) {
             System.out.println("""
-                Enter your time range in the form: __-__
-                example: 10-13
-                Note: time is hours 1-24
+                Enter your time range in the form: start-end
+                Note: Time is hours 1-24
+                example: 9-13 returns all courses that occur between 9 am and 1 pm
                 Enter 'b' to go back
                 """);
             String command = input.nextLine().toLowerCase();
             if (command.equals("b")) break;
             else if (command.equals("exit")) endSession();
-            else{
-                String[] parts = command.split("-");
+            else{ //make sure input is in right form before calling time filter method
+                String[] parts =  {""};
                 try{
+                    parts = command.split("-");
                     startTime = Integer.parseInt(parts[0]);
                     endTime = Integer.parseInt(parts[1]);
 
@@ -433,16 +435,13 @@ public class Session {
                 break;
             }
         }
-
     }
 
     private static void filterDays() {
         searchBox.removeSpecificFilter("days");
-        HashSet<DayOfWeek> setOfDays = new HashSet<>();
         String days;
-
+        HashSet<DayOfWeek> setOfDays = new HashSet<>();
         Set<Character> charSet = new HashSet<>();
-
         do {
             System.out.println("""
                     Enter the days you would like to filter by as a list of up to 5 characters(MTWRF):
@@ -453,13 +452,12 @@ public class Session {
                     'f' - Friday
                     Type 'b' to go back
                     """);
-            System.out.println("Enter the days you would like to filter by as a list of up to 5 characters(MTWRF) or type 'b' to go back: ");
             days = input.nextLine().toLowerCase();
             if(days.equals("b")){
                 break;
             }
             if(days.equals("exit")) endSession();
-        } while (!days.matches("[mtwrf]{1,5}") || !noDuplicates(days, charSet));
+        } while (!days.matches("[mtwrf]{1,5}") || !noDuplicates(days, charSet)); //makes sure input is in right form
 
         for(char c : charSet){
             if(c=='m'){
@@ -481,7 +479,7 @@ public class Session {
         searchBox.filterByDays(new ArrayList<>(setOfDays));
     }
 
-    private static boolean noDuplicates(String input, Set<Character> charSet) {
+    private static boolean noDuplicates(String input, Set<Character> charSet) {//helper method for filterByDays that figures out if there are duplicates in input
         for (char c : input.toCharArray()) {
             if (!charSet.add(c) || !Character.isLetter(c)) {
                 invalidArgument();
@@ -499,7 +497,6 @@ public class Session {
         String level;
         boolean isFiltering = true;
         searchBox.removeSpecificFilter("level"); // remove previous level filter
-
         while (isFiltering) {
             System.out.println("""
                     Please enter the level you would like to filter by:
@@ -541,7 +538,6 @@ public class Session {
     private static void search() {
         String command;
         boolean isSearching = true;
-
         while (isSearching) {
             System.out.println("CURRENT SEARCH QUERY: " + searchBox.getCurrentSearchPhrase());
             System.out.println("""
@@ -550,7 +546,6 @@ public class Session {
                     Type 'b' to go back
                     """);
             command = input.nextLine().toLowerCase();
-
             if (command.equals("c")) {
                 searchBox.removeSpecificFilter("phrase");
                 System.out.println("Clearing search phrase");
@@ -568,34 +563,25 @@ public class Session {
         }
     }
 
-
-    private static boolean logInUser() {
+    private static boolean logInUser() { //handles user log in. Returns a boolean for menu navigation purposes
         while(true) {
             input = new Scanner(System.in);
             System.out.println("Enter username or type 'b' to go back:");
             String name = input.nextLine().toLowerCase();
-            if(name.equals("b")){
-                return false;
-            }
+            if(name.equals("b")) return false;
             System.out.println("Enter password");
             String password = input.nextLine().toLowerCase();
-            if (DatabaseController.authenticateUser(name,password)) {
+            if (DatabaseController.authenticateUser(name,password)) {//checkers db for credentials
                 System.out.println("Log in successful!");
-                currentUser = DatabaseController.pullUser(name);
+                currentUser = DatabaseController.pullUser(name); //pulls user from database
                 return true;
             }
             System.out.println("Log in details do not match any stored users");
-
         }
     }
-    private static void logOutUser() {
-        if(currentUser.isGuest()) {
-            System.out.println("Ending guest session");
-
-        }
-        else {
-            System.out.println("Logging out!");
-        }
+    private static void logOutUser() { //handles logging user out and updating db
+        if(currentUser.isGuest()) System.out.println("Ending guest session");
+        else System.out.println("Logging out and saving changes!");
         DatabaseController.updateUser(currentUser);
         currentUser = null;
     }
@@ -607,7 +593,6 @@ public class Session {
     private static boolean createNewUser() {
         System.out.println("Creating new user!");
         String name, password, year = "";
-
         while (true) {
             System.out.println("""
                     Max characters allowed: 20
@@ -639,7 +624,6 @@ public class Session {
             else if (password.length() > 20) System.out.println("Password is too long");
             else break;
         }
-
         while (!year.equals("freshman") && !year.equals("sophomore") && !year.equals("junior") && !year.equals("senior")) {
             System.out.println("Enter class year you are scheduling for:");
             System.out.println("""
@@ -650,11 +634,8 @@ public class Session {
                     Type 'b' to cancel new account creation
                     """);
             String command = input.nextLine().toLowerCase();
-
             switch (command) {
-                case "b" -> {
-                    return false;
-                }
+                case "b" -> {return false;}
                 case "exit" -> endSession();
                 case "f" -> year = "freshman";
                 case "s" -> year = "sophomore";
@@ -664,7 +645,7 @@ public class Session {
             }
         }
         currentUser = new User(name, year, password, false);
-        DatabaseController.insert(currentUser); //(new User(name, year, password, false);
+        DatabaseController.insert(currentUser); //inserts new user into database
         System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
         return true;
     }
@@ -675,7 +656,7 @@ public class Session {
                 Type 'u' to login as a user
                 Type 'g' to login as a guest
                 Type 'n' to create a new account
-                Type 'exit' to terminate the program
+                Typing 'exit' at most points will terminate the program
                 """);
     }
 
@@ -684,7 +665,7 @@ public class Session {
                         Type 'ns' to create a new schedule
                         Type 'ds' to delete a schedule
                         Type 'vs' to view saved schedule or edit
-                        Type 'b' to go logout
+                        Type 'ls' to logout and go back
                         """);
     }
 
@@ -696,8 +677,6 @@ public class Session {
                             Type 'vt' to see your schedule as a table
                             Type 'sb' to save and go back
                             """);
-
-
         String command = input.nextLine().toLowerCase();
         switch (command) {
             case "a" -> addCourseMenu();
@@ -719,9 +698,8 @@ public class Session {
     }
 
 
-    private static void removeCourseFromSchedule(){
-
-        if(tempSchedule.getCourses().size()>0) {
+    private static void removeCourseFromSchedule(){ //removes courses from schedule
+        if(tempSchedule.getCourses().size()>0) { //only if schedule has course
             while(true){
                 for (Course c : tempSchedule.getCourses()) System.out.println(c);
                 System.out.println("""
@@ -736,14 +714,15 @@ public class Session {
                     break;
                 }
                 else if (command.equals("b")) break;
-                else {
+                else if (command.equals("exit")) endSession();
+                else { //makes sure input is right form
                     int commandInt = -100;
                     try {
                         commandInt = Integer.parseInt(command);
                         boolean flag = false;
                         Course tempCourse = null;
                         for (Course c : tempSchedule.getCourses()) {
-                            if (c.getRefNum() == commandInt) {
+                            if (c.getRefNum() == commandInt) {//checks that input refnum matches a course to be deleted
                                 flag = true;
                                 tempCourse = c;
                                 break;
@@ -767,12 +746,12 @@ public class Session {
     }
 
 
-    private static void addCourseMenu() throws Exception {
-        searchBox = new Search(totalCourses, tempSchedule.getSemester());
+    private static void addCourseMenu() {
+        searchBox = new Search(totalCourses, tempSchedule.getSemester()); //creates searchBox to handle filtering
         while (true) {
             System.out.println("COURSES:");
-            for (Course c: searchBox.getFilteredCourses()) System.out.println(c);
-            System.out.println("NUMBER OF APPLIED FILTERS/SEARCH: " + searchBox.getCurrentFilters().size());
+            for (Course c: searchBox.getFilteredCourses()) System.out.println(c); //list all courses after applied filters
+            System.out.println("NUMBER OF APPLIED FILTERS/SEARCH: " + searchBox.getCurrentFilters().size()); //print number of filters for UX
             System.out.println("""
                 Type <REFNUM> to add the course with that reference number
                 Type 's' to apply or remove a search query
@@ -780,7 +759,6 @@ public class Session {
                 Type 'b' to go back
                 """);
             String command = input.nextLine().toLowerCase();
-            //if (command.equals("r")) addByReference();
             if (command.equals("f")) filter();
             else if (command.equals("s")) search();
             else if (command.equals("b")) break;
@@ -820,7 +798,7 @@ public class Session {
         }
     }
 
-    private static void invalidArgument() { System.out.println("Invalid argument!"); }
+    private static void invalidArgument() { System.out.println("Invalid argument!"); } //generic error message
 
 
     private static void endSession() {
@@ -829,7 +807,7 @@ public class Session {
     }
 
 
-    public static void importCoursesFromCSV(String ext) throws IOException {
+    public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
         String csvFile =  "src/main/java/edu/gcc/comp350/team4project/" + ext;
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
@@ -850,26 +828,20 @@ public class Session {
                         semester = Semester.FALL;
                     else if (Integer.parseInt(data[0]) == 30)
                         semester = Semester.SPRING;
-                } catch (Exception ignored) {
-
-                }
+                } catch (Exception ignored) {continue;}
 
                 departmentName = data[1];
                 courseLevel = data[2];
 
                 try {
                     courseSection = data[3].charAt(0);
-                } catch (Exception ignored) {
-
-                }
+                } catch (Exception ignored) {}
 
                 courseName = data[4];
 
                 try {
                     numCredits = Integer.parseInt(data[5]);
-                } catch (Exception ignored) {
-
-                }
+                } catch (Exception ignored) {continue;}
 
                 if (data[6].equals("M"))
                     days.add(DayOfWeek.MONDAY);
@@ -902,7 +874,7 @@ public class Session {
                     min = Integer.parseInt(tempTime[1]);
                     startTime = LocalTime.of(hour, min);
                 } catch(Exception ignore) {
-                    //
+                    continue;
                 }
 
                 try {
@@ -921,21 +893,18 @@ public class Session {
                     min = Integer.parseInt(tempTime[1]);
                     endTime = LocalTime.of(hour, min);
                 } catch(Exception ignore) {
-                    //
+                    continue;
                 }
 
                 professorName = data[13];
 
                 try {
                     refNum = Integer.parseInt(data[14]);
-                } catch(Exception ignore) {
-                    //
-                }
+                } catch(Exception ignore) {continue;}
 
                 for(int i = 15; i < data.length; i++){
                     description.append(data[i]).append(" ");
                 }
-
                 totalCourses.add(new Course(refNum,departmentName,semester,courseLevel,courseSection,courseName,numCredits,professorName, description.toString(),days,startTime,endTime));
             }
         } catch (IOException ignored) {
