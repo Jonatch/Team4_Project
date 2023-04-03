@@ -9,11 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
+    /**
+     * @description: This method will check if the times of two courses overlap
+     * @param timeInfo start time and end time of a class
+     * @return true if the two courses overlap, false otherwise
+     */
     public boolean doesOverLap(TimeInfo timeInfo){ //needs extensive testing
-        Set<DayOfWeek> commonDays = new HashSet<>(this.days);
-        commonDays.retainAll(timeInfo.days);
+        Set<DayOfWeek> commonDays = new HashSet<>(this.days); // new HashSet with these courses days
+        commonDays.retainAll(timeInfo.days); // keep overlapping days
 
-        for (DayOfWeek day: commonDays) {
+        for (DayOfWeek day: commonDays) { // loop over all days in set
             if (!(timeInfo.startTime.isAfter(this.endTime) || timeInfo.endTime.isBefore(this.startTime))) {
                 return true;
             }
