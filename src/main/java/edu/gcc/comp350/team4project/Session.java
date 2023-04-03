@@ -17,7 +17,7 @@ public class Session {
 
     public static void main(String[] args) throws Exception {
         createSession();
-        //TODO: after, figure out where to close Scanner
+        //input.close(); //TODO: test to see if this breaks anything
     }
 
     public static void createSession() throws Exception {
@@ -54,32 +54,28 @@ public class Session {
     private static void menuLoop() throws Exception {
         input = new Scanner(System.in);
         boolean isLoggedIn=false, isScheduling;
-        mainMenu();
+        mainMenu(); // helper method that contains the menu print lines
         String command = input.nextLine().toLowerCase();
         while (!command.equals("exit")) {
-            if (command.equals("u")) {
+            if (command.equals("u")) { // login as a user
                 if(logInUser()) isLoggedIn = true;
             }
-            else if (command.equals("n")) {
-                if (createNewUser()) isLoggedIn = true;//make new account
+            else if (command.equals("n")) { // make a new account
+                if (createNewUser()) isLoggedIn = true;
             }
-            else if(command.equals("g")){
+            else if(command.equals("g")){ // guest login
                 currentUser = new User("","","",true);
                 System.out.println("Logged in as a guest");
                 isLoggedIn = true;
             }
-            else if (command.equals("v")){
-                DatabaseController.printAllUsers();
-            }
-            else{
-                invalidArgument();
-            }
+            else if (command.equals("v")) DatabaseController.printAllUsers(); // hidden command, for testing
+            else invalidArgument(); // invalid argument
 
             while (isLoggedIn) {
-                loggedInMenu();
+                loggedInMenu(); // helper method that contains logged in menu print lines
                 command = input.nextLine().toLowerCase();
                 switch (command) {
-                    case "ns" -> {
+                    case "ns" -> { // making a new schedule
                         if(currentUser.getSchedules().size()<5){
                             String name = "";
                             Semester sem;
@@ -87,7 +83,7 @@ public class Session {
                                 System.out.println("Enter schedule name (5-20 characters): ");
                                 name = input.nextLine();
                             } while (name.length() > 20 || name.length() < 5);
-                            while (true) {
+                            while (true) { // choose if you want it to be for fall or spring
                                 System.out.println("Enter 'f' for fall or 's' for spring");
                                 String semester = input.nextLine().toLowerCase();
                                 if (semester.equals("f")) {
@@ -99,22 +95,16 @@ public class Session {
                                     break;
                                 }
                             }
-                            tempSchedule = new Schedule(name, sem);
+                            tempSchedule = new Schedule(name, sem); // makes a new schedule
                             System.out.println("Creating schedule " + tempSchedule.getScheduleName() + " (" + tempSchedule.getSemester().toString().toLowerCase() + " semester)");
                             isScheduling = true;
                             while (isScheduling) {
-                                isScheduling = scheduleMenu();
+                                isScheduling = scheduleMenu(); // print scheduling menu
                             }
-
                         }
-                        else{
-                            System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " schedules allowed. Try deleting one");
-
-                        }
-
-
+                        else System.out.println("Maximum of " + currentUser.getNumMaxSchedules() + " schedules allowed. Try deleting one");
                     }
-                    case "ds" -> {
+                    case "ds" -> { // delete a schedule
                         if(currentUser.getSchedules().size()>0){
                             System.out.println("Pick a schedule to delete: ");
                             for(int i = 0; i<currentUser.getSchedules().size();i++){
@@ -161,9 +151,7 @@ public class Session {
                                 default -> invalidArgument();
                             }
                         }
-                        else{
-                            System.out.println("No saved schedules to delete!");
-                        }
+                        else System.out.println("No saved schedules to delete!");
                     }
                     case "vs" -> {
                         if(currentUser.getSchedules().size()>0){
@@ -235,14 +223,11 @@ public class Session {
                                         invalidArgument();
                                     }
                                 }
-                                case "b" -> {
-                                }
+                                case "b" -> {}
                                 default -> invalidArgument();
                             }
                         }
-                        else{
-                            System.out.println("No saved schedules to edit!");
-                        }
+                        else System.out.println("No saved schedules to edit!");
                     }
                     case "b" -> {
                         logOutUser();
@@ -266,7 +251,7 @@ public class Session {
         boolean isFiltering = true;
 
         while (isFiltering) {
-            if (searchBox.getCurrentFilters().size() > 0) {
+            if (searchBox.getCurrentFilters().size() > 0) { // print current filters
                 System.out.println("CURRENT APPLIED FILTERS: ");
                 for (Filter f: searchBox.getCurrentFilters()) System.out.println("-" + f.getType() + ": " + f.getValue() + "-");
             }
@@ -284,15 +269,15 @@ public class Session {
                 """);
             filterType = input.nextLine().toLowerCase();
             switch (filterType) {
-                case "dept" -> filterDept();
-                case "time" -> filterTime();
-                case "days" -> filterDays();
-                case "cred" -> filterCredits();
-                case "lvl" -> filterLevel();
-                case "r" -> removeSpecificFilter();
+                case "dept" -> filterDept(); // filter by department
+                case "time" -> filterTime(); // filter by the time
+                case "days" -> filterDays(); // filter by number of days
+                case "cred" -> filterCredits(); // filter by number of credits
+                case "lvl" -> filterLevel(); // filter by level
+                case "r" -> removeSpecificFilter(); // remove a specific filter
                 case "ra" -> {
-                    searchBox.getFilteredCourses().clear();//removes all filters
-                    searchBox.refreshFilteredCourses();//resets filtered courses
+                    searchBox.getFilteredCourses().clear(); // removes all filters
+                    searchBox.refreshFilteredCourses(); // resets filtered courses
                 }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
@@ -301,8 +286,12 @@ public class Session {
         }
     }
 
+    /**
+     * This is a helper function that will call the filterByCredits function in the search class
+     * This helper function handles input and prints direction messages to the console
+     */
     private static void filterCredits() {
-        searchBox.removeSpecificFilter("credit");
+        searchBox.removeSpecificFilter("credit"); // remove previous filter
         String credits;
         boolean isFiltering = true;
 
@@ -350,9 +339,8 @@ public class Session {
                 }
 
                 String command = input.nextLine();
-                if(command.equals("b")){
-                    break;
-                }
+                if (command.equals("b")) break;
+
                 try{
                     int temp = Integer.parseInt(command);
                     if(temp >0 && temp <= searchBox.getCurrentFilters().size()){
@@ -360,45 +348,41 @@ public class Session {
                         searchBox.removeSpecificFilter(filter);
                         break;
                     }
-                    else{
-                        System.out.println("Enter a valid number to remove");
-                    }
+                    else System.out.println("Enter a valid number to remove");
                 }catch(Exception ignored){
                     invalidArgument();
                 }
             }
         }
-        else{
-            System.out.println("No current filters applied");
-        }
+        else System.out.println("No current filters applied");
     }
 
+    /**
+     * This is a helper function that will call the filterByDept function in the search class
+     * This helper function handles input and prints direction messages to the console
+     */
     private static void filterDept() {
-        searchBox.removeSpecificFilter("department");
+        searchBox.removeSpecificFilter("department"); // remove previous filter
         HashSet<String> departments = new HashSet<>();
         boolean isFiltering = true;
         String command;
 
         for (Course c: searchBox.getFilteredCourses())
-            departments.add(c.getDepartmentInfo().department()); //TODO: TEST, IT SHOULD WORK THO
+            departments.add(c.getDepartmentInfo().department()); // add to HashSet all department codes from
 
         while (isFiltering) {
             System.out.println("FILTERABLE DEPARTMENTS: ");
-            for (String s: departments) System.out.println(s);
+            for (String s: departments) System.out.println(s); // print every department possible to filter by
             System.out.println("""
                 Type <department> to filter by that department
                 Type 'b' to go back
                 """);
             command = input.nextLine().toLowerCase();
             switch (command) {
-//                case "s" -> {
-//                    System.out.println("Here is a list of all departments: ");
-//                    for (String s: departments) System.out.println(s);
-//                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
                 default -> {
-                    if (departments.contains(command.toUpperCase())) {
+                    if (departments.contains(command.toUpperCase())) { // check that input is valid
                         searchBox.filterByDept(command.toUpperCase());
                         isFiltering = false;
                     }
@@ -409,7 +393,9 @@ public class Session {
     }
 
     private static void filterTime() {
+
         searchBox.removeSpecificFilter("time");
+
         int startTime = 0;
         int endTime = 0;
         while (true) {
@@ -505,10 +491,14 @@ public class Session {
         return true;
     }
 
+    /**
+     * This is a helper function that will call the filterByLevel function in the search class
+     * This helper function handles input and prints direction messages to the console
+     */
     private static void filterLevel() {
         String level;
         boolean isFiltering = true;
-        searchBox.removeSpecificFilter("level");
+        searchBox.removeSpecificFilter("level"); // remove previous level filter
 
         while (isFiltering) {
             System.out.println("""
@@ -544,6 +534,10 @@ public class Session {
         }
     }
 
+    /**
+     * This is a helper function for search. Will call the searchByPhrase method from the search class
+     * Also has options for user to clear current search and go back
+     */
     private static void search() {
         String command;
         boolean isSearching = true;
@@ -557,18 +551,15 @@ public class Session {
                     """);
             command = input.nextLine().toLowerCase();
 
-            if(command.equals("c")){
+            if (command.equals("c")) {
                 searchBox.removeSpecificFilter("phrase");
-                System.out.println("Clearing search phrase");isSearching = false;
-            }
-            else if (command.equals("b")){
+                System.out.println("Clearing search phrase");
                 isSearching = false;
             }
+            else if (command.equals("b")) isSearching = false;
             else{
-                if(command.length()>30){
-                    System.out.println("Too long of a search term");
-                }
-                else{
+                if (command.length() > 30) System.out.println("Too long of a search term");
+                else {
                     searchBox.removeSpecificFilter("phrase");
                     searchBox.filterByPhrase(command);
                     isSearching = false;
@@ -609,6 +600,10 @@ public class Session {
         currentUser = null;
     }
 
+    /**
+     * This function is how the user will create a new user in the database.
+     * @return if the user is logged in or not
+     */
     private static boolean createNewUser() {
         System.out.println("Creating new user!");
         String name, password, year = "";
@@ -626,7 +621,7 @@ public class Session {
             else if (name.equals("exit")) endSession();
             else if (name.length() > 20) System.out.println("Username is too long, must be less then 20 characters!");
             else if (name.length() < 5) System.out.println("Username is too short, 5 characters is the minimum!");
-            else if (name.matches(".*\\s+.*")) System.out.println("Username cannot contain whitespace");
+            else if (name.matches(".*\\s+.*")) System.out.println("Username cannot contain whitespace"); // regex expression,
             else if (DatabaseController.checkIfUserInDB(name)) System.out.println("Username already exists. Try again");
             else break;
         }
@@ -669,7 +664,7 @@ public class Session {
             }
         }
         currentUser = new User(name, year, password, false);
-        DatabaseController.insert(currentUser);
+        DatabaseController.insert(currentUser); //(new User(name, year, password, false);
         System.out.println("Account info: \nUsername: " + name + "\nPassowrd: " + password + "\nYear: " + year + "\n");
         return true;
     }
