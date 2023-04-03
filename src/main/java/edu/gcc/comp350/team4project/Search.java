@@ -112,10 +112,11 @@ public class Search {
     public void filterByCredits(String credits) {
         Iterator<Course> iterator = filteredCourses.iterator();
         //For each course in the current available courses
+        int creditsInt = Integer.parseInt(credits);
         while (iterator.hasNext()) {
             Course c = iterator.next();
             //If the number of credits does not match the key number of credits remove the course from filtered courses
-            if (c.getDepartmentInfo().courseLevel().charAt(0) != (credits.charAt(0))) iterator.remove();
+            if (c.getCredits() != creditsInt) iterator.remove();
         }
         //Saving the filter used
         Filter currentfilter = new Filter("credit", credits);
