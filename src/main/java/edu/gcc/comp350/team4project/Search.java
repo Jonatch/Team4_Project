@@ -48,7 +48,7 @@ public class Search {
             try{
                 //If the start time of a course is before the key start time remove it
                 //If the end time of a course if after the key end time remove it from the filtered courses list
-                if (!(c.getTimeInfo().startTime().isAfter(times.get(0)) && c.getTimeInfo().endTime().isBefore(times.get(1)))) {
+                if (!((c.getTimeInfo().startTime().isAfter(times.get(0))||c.getTimeInfo().startTime().equals(times.get(0)))  && (c.getTimeInfo().endTime().isBefore(times.get(1))|| c.getTimeInfo().endTime().equals(times.get(1))))) {
                     iterator.remove();
                 }
             }catch(Exception ignore){
