@@ -24,26 +24,8 @@ public class Session {
         totalCourses = new ArrayList<>();
 
         String longCSV = "large_courses.csv";
-        String shortCSV = "small_courses.csv";
+        importCoursesFromCSV(longCSV);
         Scanner tempS = new Scanner(System.in);
-        while(true){
-            System.out.println("Type 1 to run with small list of courses");
-            System.out.println(shortCSV);
-            System.out.println("Type 2 to run with total list of courses");
-            System.out.println(longCSV);
-            String input = tempS.nextLine();
-            if(input.equals("1")){
-                importCoursesFromCSV(shortCSV);
-                break;
-            }
-            else if(input.equals("2")){
-                importCoursesFromCSV(longCSV);
-                break;
-            }
-            else{
-                System.out.println("bad input try again");
-            }
-        }
 
 
         while(true){
@@ -283,7 +265,7 @@ public class Session {
                 Type 'lvl' to filter by course level
                 Type 'r' to remove a specific filter
                 Type 'ra' to remove all filters
-                Type 'b' to go back
+                Type 'b' to go back and view filtered courses
                 """);
             filterType = input.nextLine().toLowerCase();
             switch (filterType) {
@@ -411,9 +393,11 @@ public class Session {
     }
 
     private static void filterTime() {
+
+        searchBox.removeSpecificFilter("time");
+
         int startTime = 0;
         int endTime = 0;
-        ArrayList<LocalTime> startTimes = new ArrayList<LocalTime>();
         while (true) {
             System.out.println("""
                 Enter your time range in the form: __-__
@@ -423,6 +407,7 @@ public class Session {
                 """);
             String command = input.nextLine().toLowerCase();
             if (command.equals("b")) break;
+            else if (command.equals("exit")) endSession();
             else{
                 String[] parts = command.split("-");
                 try{
@@ -473,6 +458,7 @@ public class Session {
             if(days.equals("b")){
                 break;
             }
+            if(days.equals("exit")) endSession();
         } while (!days.matches("[mtwrf]{1,5}") || !noDuplicates(days, charSet));
 
         for(char c : charSet){
@@ -798,6 +784,7 @@ public class Session {
             if (command.equals("f")) filter();
             else if (command.equals("s")) search();
             else if (command.equals("b")) break;
+            else if (command.equals("exit")) endSession();
             else {
                 int commandInt = -100;
                 try{
