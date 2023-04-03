@@ -308,34 +308,27 @@ public class Session {
 
         while (isFiltering) {
             System.out.println("""
-                    Please enter the level you would like to filter by:
-                    '1' - 1 credit courses
-                    '2' - 2 credit courses
-                    '3' - 3 credit courses
-                    '4' - 4 credit courses
+                    Please enter the number of credits you would like to filter by:
                     Type 'b' to go back
                     """);
-            credits = input.nextLine();
+            credits = input.nextLine().toLowerCase();
             switch (credits) {
-                case "1" -> {
-                    searchBox.filterByCredits("1");
-                    isFiltering = false;
-                }
-                case "2" -> {
-                    searchBox.filterByCredits("2");
-                    isFiltering = false;
-                }
-                case "3" -> {
-                    searchBox.filterByCredits("3");
-                    isFiltering = false;
-                }
-                case "4" -> {
-                    searchBox.filterByCredits("4");
-                    isFiltering = false;
-                }
                 case "b" -> isFiltering = false;
                 case "exit" -> endSession();
-                default -> invalidArgument();
+                default -> {
+                    try{
+                        int credAmnt = Integer.parseInt(credits);
+                        if(credAmnt>16){
+                            System.out.println("No courses are greater than 16 credits");
+                        }else{
+                            searchBox.filterByCredits(String.valueOf(credAmnt));
+                            isFiltering = false;
+                        }
+
+                    }catch(Exception ignored){
+                        invalidArgument();
+                    }
+                }
             }
         }
     }
@@ -414,9 +407,9 @@ public class Session {
         int endTime = 0;
         while (true) {
             System.out.println("""
-                Enter your time range in the form: __-__
-                example: 10-13
-                Note: time is hours 1-24
+                Enter your time range in the form: start-end
+                Note: Time is hours 1-24
+                example: 9-13 returns all courses that occur between 9 am and 1 pm
                 Enter 'b' to go back
                 """);
             String command = input.nextLine().toLowerCase();
@@ -447,7 +440,6 @@ public class Session {
                 break;
             }
         }
-
     }
 
     private static void filterDays() {
@@ -785,7 +777,6 @@ public class Session {
                 Type 'b' to go back
                 """);
             String command = input.nextLine().toLowerCase();
-            //if (command.equals("r")) addByReference();
             if (command.equals("f")) filter();
             else if (command.equals("s")) search();
             else if (command.equals("b")) break;
