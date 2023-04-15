@@ -12,8 +12,6 @@ public class Schedule {
     private ArrayList<Course> courses;
     private int totalCredits;
 
-
-
     public Schedule(String scheduleName, Semester semester) {
         this.scheduleName = scheduleName;
         this.semester = semester;
@@ -21,14 +19,6 @@ public class Schedule {
         this.courses = new ArrayList<>();
     }
 
-    public Schedule(String scheduleName, Semester semester, ArrayList<Course> courses) throws Exception {
-        this.scheduleName = scheduleName;
-        this.semester = semester;
-        this.totalCredits = 0;
-        this.courses = new ArrayList<>();
-
-        this.addCourses(courses);
-    }
 
     public String getScheduleName() {
         return scheduleName;
@@ -46,9 +36,12 @@ public class Schedule {
     public ArrayList<Course> getCourses() {
         return courses;
     }
-    public void addCourse(Course newCourse) throws Exception{ //not tested
+    public void addCourse(Course newCourse) throws Exception{ //adds courses and throws an exception if there are conflicts
         for(Course course : courses){
-            if(newCourse.doesCourseConflict(course)){
+            if(newCourse.getRefNum()==course.getRefNum()){
+                throw new Exception("Cannot add the same course to a schedule twice");
+            }
+            else if(newCourse.doesCourseConflict(course)){
                 throw new Exception("New course " + newCourse.getName() + " conflicts with already scheduled course " + course.getName());
             }
         }
@@ -61,7 +54,7 @@ public class Schedule {
 
     }
 
-    public void addCourses(ArrayList<Course> courses) throws Exception {//not tested
+    public void addCourses(ArrayList<Course> courses) throws Exception {//adds multiple courses if possible
         for(Course course : courses){
             try{
                 this.addCourse(course);
@@ -73,7 +66,7 @@ public class Schedule {
 
 
 
-    public void removeCourse(Course course) throws Exception{ //not tested
+    public void removeCourse(Course course) throws Exception{ //removes courses and updates credit amnt
         if(!(this.courses.remove(course))){
             throw new Exception("Course " + course.getName() + " was not found in the schedule and was not removed");
         }
@@ -82,16 +75,17 @@ public class Schedule {
         }
     }
 
-    public void removeCourses(ArrayList<Course> courses) throws Exception{//not tested
+    public void removeCourses(ArrayList<Course> courses) throws Exception{//remove multiple courses
         for(Course course : courses){
-            this.removeCourse(course);
+            try{
+                this.removeCourse(course);
+            }catch(Exception ignored){}
         }
     }
 
     public void removeAllCourses(){//not tested
         this.courses = new ArrayList<>();
     }
-
     public int getTotalCredits() {
         return totalCredits;
     }
