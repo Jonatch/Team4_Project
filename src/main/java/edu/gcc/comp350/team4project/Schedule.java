@@ -12,6 +12,16 @@ public class Schedule {
     private ArrayList<Course> courses;
     private int totalCredits;
 
+    final int ROWS = 53;
+    final int COLS = 6;
+    final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}; // Declare a constant array of days of the week
+    final ArrayList<LocalTime> TIMES = new ArrayList<>(); // Declare an array list to store time slots for the calendar
+    final ArrayList<LocalTime> smallTIMES = new ArrayList<>(); // Declare an array list to store smaller time slots for each course
+    LocalTime sTime;
+    LocalTime eTime;
+    final String[][] schedule = new String[ROWS][COLS];
+
+
     public Schedule(String scheduleName, Semester semester) {
         this.scheduleName = scheduleName;
         this.semester = semester;
@@ -98,24 +108,17 @@ public class Schedule {
     }
     public String toCalenderView() {
 
-        final int ROWS = 53;
-        final int COLS = 6;
-        final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}; // Declare a constant array of days of the week
-        final ArrayList<LocalTime> TIMES = new ArrayList<>(); // Declare an array list to store time slots for the calendar
         LocalTime l = LocalTime.of(8, 00);
         for (int i = 0; i < 53; i++) { // Populate the TIMES array list with time slots
             TIMES.add(l);
             l = l.plusMinutes(15);
         }
 
-        final ArrayList<LocalTime> smallTIMES = new ArrayList<>(); // Declare an array list to store smaller time slots for each course
         LocalTime l2 = LocalTime.of(8, 00);
         for (int i = 0; i < 159; i++) { // Populate the smallTIMES array list with smaller time slots
             smallTIMES.add(l2);
             l2 = l2.plusMinutes(5);
         }
-
-        final String[][] schedule = new String[ROWS][COLS]; // Declare a 2D array to represent the schedule
 
         //set the top row to the days of the week
         for (int col = 1; col < COLS; col++) { // Set the top row of the schedule with the days of the week
@@ -141,119 +144,50 @@ public class Schedule {
         for (Course course : courses){
 
             // Get the start and end times of the course, and the days it occurs
-            LocalTime sTime = course.getTimeInfo().startTime();
-            LocalTime eTime = course.getTimeInfo().endTime();
+            sTime = course.getTimeInfo().startTime();
+            eTime = course.getTimeInfo().endTime();
             String days = course.getDays().toString();
 
             // If the course occurs on Monday
             if (days.contains("MONDAY")) {
-
-                // Initialize a timeslot counter
-                int timeslot = 0;
-
-                // Loop through each small time slot
-                for (LocalTime t : smallTIMES) {
-
-                    // If the start time of the course matches the current small time slot
-                    if (sTime.equals(t)) {
-
-                        // Assign the course information to the corresponding slot in the schedule array
-                        schedule[(timeslot/3)+1][1] = course.getDepartmentInfo().department() +
-                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-
-                        // Move to the next small time slot and increment the timeslot counter
-                        t = t.plusMinutes(5);
-                        timeslot++;
-
-                        // Loop through the remaining small time slots until the end time of the course is reached
-                        while (eTime.isAfter(t)) {
-                            schedule[(timeslot/3)+1][1] = course.getDepartmentInfo().department() +
-                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(5);
-                            timeslot++;
-                        }
-                    }
-                    timeslot++;
-                }
+                calendarHelper(1, course);
             }
 
             // Repeat the above process for each day of the week that the course occurs on
             if (days.contains("TUESDAY")) {
-                int timeslot = 0;
-                for (LocalTime t : smallTIMES) {
-                    if (sTime.equals(t)) {
-                        schedule[(timeslot/3)+1][2] = course.getDepartmentInfo().department() +
-                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(5);
-                        timeslot++;
-                        while (eTime.isAfter(t)) {
-                            schedule[(timeslot/3)+1][2] = course.getDepartmentInfo().department() +
-                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(5);
-                            timeslot++;
-                        }
-                    }
-                    timeslot++;
-                }
+                calendarHelper(2, course);
             }
             if (days.contains("WEDNESDAY")) {
-                int timeslot = 0;
-                for (LocalTime t : smallTIMES) {
-                    if (sTime.equals(t)) {
-                        schedule[(timeslot/3)+1][3] = course.getDepartmentInfo().department() +
-                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(5);
-                        timeslot++;
-                        while (eTime.isAfter(t)) {
-                            schedule[(timeslot/3)+1][3] = course.getDepartmentInfo().department() +
-                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(5);
-                            timeslot++;
-                        }
-                    }
-                    timeslot++;
-                }
+                calendarHelper(3, course);
             }
             if (days.contains("THURSDAY")) {
-                int timeslot = 0;
-                for (LocalTime t : smallTIMES) {
-                    if (sTime.equals(t)) {
-                        schedule[(timeslot/3)+1][4] = course.getDepartmentInfo().department() +
-                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(5);
-                        timeslot++;
-                        while (eTime.isAfter(t)) {
-                            schedule[(timeslot/3)+1][4] = course.getDepartmentInfo().department() +
-                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(5);
-                            timeslot++;
-                        }
-                    }
-                    timeslot++;
-                }
+                calendarHelper(4, course);
             }
             if (days.contains("FRIDAY")) {
-                int timeslot = 0;
-                for (LocalTime t : smallTIMES) {
-                    if (sTime.equals(t)) {
-                        schedule[(timeslot/3)+1][5] = course.getDepartmentInfo().department() +
-                                course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                        t = t.plusMinutes(5);
-                        timeslot++;
-                        while (eTime.isAfter(t)) {
-                            schedule[(timeslot/3)+1][5] = course.getDepartmentInfo().department() +
-                                    course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
-                            t = t.plusMinutes(5);
-                            timeslot++;
-                        }
-                    }
-                    timeslot++;
-                }
+                calendarHelper(5, course);
             }
         }
         // Return a string representation of the schedule array
         return this.toString() + "\n" + Arrays.deepToString(schedule).replace("], ", "]\n");    }
 
+    public void calendarHelper(int dayNum, Course course) {
+        int timeslot = 0;
+        for (LocalTime t : smallTIMES) {
+            if (sTime.equals(t)) {
+                schedule[(timeslot/3)+1][dayNum] = course.getDepartmentInfo().department() +
+                        course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                t = t.plusMinutes(5);
+                timeslot++;
+                while (eTime.isAfter(t)) {
+                    schedule[(timeslot/3)+1][dayNum] = course.getDepartmentInfo().department() +
+                            course.getDepartmentInfo().courseLevel() + course.getDepartmentInfo().section();
+                    t = t.plusMinutes(5);
+                    timeslot++;
+                }
+            }
+            timeslot++;
+        }
+    }
 
     public String toTableView() {
         StringBuilder sb = new StringBuilder();
