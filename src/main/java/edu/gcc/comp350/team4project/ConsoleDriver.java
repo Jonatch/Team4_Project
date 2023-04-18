@@ -7,9 +7,9 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
 
-public class Session {
+public class ConsoleDriver {
     private static User currentUser;
-    private static Search searchBox;
+    private static SearchController searchBox;
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
     private static Scanner input;
@@ -301,7 +301,7 @@ public class Session {
      * This helper function handles input and prints direction messages to the console
      */
     private static void filterCredits() { //handles selecting a credit filter
-        searchBox.removeSpecificFilter("credit"); // remove previous filter
+        searchBox.removeSpecificFilter(FilterTypes.CRED); // remove previous filter
         String credits;
         boolean isFiltering = true;
 
@@ -347,7 +347,7 @@ public class Session {
                 try{
                     int temp = Integer.parseInt(command);
                     if(temp >0 && temp <= searchBox.getCurrentFilters().size()){
-                        String filter = searchBox.getCurrentFilters().get(temp-1).getType();
+                        FilterTypes filter = searchBox.getCurrentFilters().get(temp-1).getType();
                         searchBox.removeSpecificFilter(filter);
                         break;
                     }
@@ -365,7 +365,7 @@ public class Session {
      * This helper function handles input and prints direction messages to the console
      */
     private static void filterDept() {
-        searchBox.removeSpecificFilter("department"); // remove previous filter
+        searchBox.removeSpecificFilter(FilterTypes.DEPT); // remove previous filter
         HashSet<String> departments = new HashSet<>();
         boolean isFiltering = true;
         String command;
@@ -396,7 +396,7 @@ public class Session {
     }
 
     private static void filterTime() {
-        searchBox.removeSpecificFilter("time"); //removes last time filter
+        searchBox.removeSpecificFilter(FilterTypes.TIME); //removes last time filter
         int startTime = 0;
         int endTime = 0;
         while (true) {
@@ -438,7 +438,7 @@ public class Session {
     }
 
     private static void filterDays() {
-        searchBox.removeSpecificFilter("days");
+        searchBox.removeSpecificFilter(FilterTypes.DAYS);
         String days;
         HashSet<DayOfWeek> setOfDays = new HashSet<>();
         Set<Character> charSet = new HashSet<>();
@@ -496,7 +496,7 @@ public class Session {
     private static void filterLevel() {
         String level;
         boolean isFiltering = true;
-        searchBox.removeSpecificFilter("level"); // remove previous level filter
+        searchBox.removeSpecificFilter(FilterTypes.LVL); // remove previous level filter
         while (isFiltering) {
             System.out.println("""
                     Please enter the level you would like to filter by:
@@ -547,7 +547,7 @@ public class Session {
                     """);
             command = input.nextLine().toLowerCase();
             if (command.equals("c")) {
-                searchBox.removeSpecificFilter("phrase");
+                searchBox.removeSpecificFilter(FilterTypes.PHRASE);
                 System.out.println("Clearing search phrase");
                 isSearching = false;
             }
@@ -555,7 +555,7 @@ public class Session {
             else{
                 if (command.length() > 30) System.out.println("Too long of a search term");
                 else {
-                    searchBox.removeSpecificFilter("phrase");
+                    searchBox.removeSpecificFilter(FilterTypes.PHRASE);
                     searchBox.filterByPhrase(command);
                     isSearching = false;
                 }
@@ -747,7 +747,7 @@ public class Session {
 
 
     private static void addCourseMenu() {
-        searchBox = new Search(totalCourses, tempSchedule.getSemester()); //creates searchBox to handle filtering
+        searchBox = new SearchController(totalCourses, tempSchedule.getSemester()); //creates searchBox to handle filtering
         while (true) {
             System.out.println("COURSES:");
             for (Course c: searchBox.getFilteredCourses()) System.out.println(c); //list all courses after applied filters
