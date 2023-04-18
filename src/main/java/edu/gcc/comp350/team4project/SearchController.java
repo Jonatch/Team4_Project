@@ -9,31 +9,28 @@ import java.util.Iterator;
  * Search Object holds list of classes and and filters them
  * based on user's preferences
  */
-public class Search {
+public class SearchController {
     private final ArrayList<Course> courseList;
     private ArrayList<Course> filteredCourses;
     private ArrayList<Filter> currentFilters;
-    private Semester semester;
 
-    public Search(ArrayList<Course> courseList, Semester semester) {
-        currentFilters = new ArrayList<>();
-        filteredCourses = new ArrayList<>(courseList);
-        this.courseList = courseList;
-        this.semester = semester;
-        filterBySemester(semester);
-    }
-
-    private void filterBySemester(Semester s) {
-        Iterator<Course> iterator = filteredCourses.iterator();
+    public SearchController(ArrayList<Course> courseList, Semester semester) {
+        //restrict courseList to courses of only one semester
+        ArrayList<Course> oneSemCourses = new ArrayList<>(courseList);
+        Iterator<Course> iterator = oneSemCourses.iterator();
         //For each course in the current available courses
         while (iterator.hasNext()) {
             Course c = iterator.next();
             //If the semester is not the one from te key remove if from the filtered course list
-            if (!c.getSemester().equals(s)){
+            if (!c.getSemester().equals(semester)){
                 iterator.remove();
             }
         }
+        currentFilters = new ArrayList<>();
+        filteredCourses = new ArrayList<>(oneSemCourses);
+        this.courseList = oneSemCourses;
     }
+
 
     /**
      *
@@ -56,7 +53,7 @@ public class Search {
             }
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("time", times);
+        Filter currentfilter = new Filter(FilterTypes.TIME, times);
         currentFilters.add(currentfilter);
     }
 
@@ -74,7 +71,7 @@ public class Search {
             }
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("days", days);
+        Filter currentfilter = new Filter(FilterTypes.DAYS, days);
         currentFilters.add(currentfilter);
 
     }
@@ -89,7 +86,7 @@ public class Search {
         }
 
         //Saving the filter used
-        Filter currentfilter = new Filter("department", dept);
+        Filter currentfilter = new Filter(FilterTypes.DEPT, dept);
         currentFilters.add(currentfilter);
 
     }
@@ -105,7 +102,7 @@ public class Search {
             }
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("professor", profName);
+        Filter currentfilter = new Filter(FilterTypes.PROF, profName);
         currentFilters.add(currentfilter);
     }
 
@@ -119,7 +116,7 @@ public class Search {
             if (c.getCredits() != creditsInt) iterator.remove();
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("credit", credits);
+        Filter currentfilter = new Filter(FilterTypes.CRED, credits);
         currentFilters.add(currentfilter);
     }
 
@@ -132,7 +129,7 @@ public class Search {
             if (c.getDepartmentInfo().courseLevel().charAt(0) != (level.charAt(0))) iterator.remove();
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("level", level);
+        Filter currentfilter = new Filter(FilterTypes.LVL, level);
         currentFilters.add(currentfilter);
     }
 
@@ -145,14 +142,13 @@ public class Search {
             if (!course.getName().contains(searchPhrase.toUpperCase())) iterator.remove();
         }
         //Saving the filter used
-        Filter currentfilter = new Filter("phrase", searchPhrase);
+        Filter currentfilter = new Filter(FilterTypes.PHRASE, searchPhrase);
         currentFilters.add(currentfilter);
     }
 
     public void refreshFilteredCourses() {
         filteredCourses.clear();
         filteredCourses.addAll(courseList);
-        filterBySemester(semester);
         currentFilters.clear();
     }
 
@@ -165,12 +161,12 @@ public class Search {
         return null;
     }
 
-    public void removeSpecificFilter(String filter) {
+    public void removeSpecificFilter(FilterTypes type) {
         boolean containsFilter = false;
         //Goes through all filters currently used
         for(Filter f :currentFilters){
             //check if filter specified is in current filters used
-            if(f.getType().equals(filter)){
+            if(f.getType().equals(type)){
                 containsFilter = true;
             }
         }
@@ -180,7 +176,7 @@ public class Search {
             while (iterator.hasNext()) {
                 Filter f = iterator.next();
                 //If filter type is a match remove it
-                if (f.getType().equals(filter)) {
+                if (f.getType().equals(type)) {
                     currentFilters.remove(f);
                     break;
                 }
@@ -191,25 +187,25 @@ public class Search {
             this.refreshFilteredCourses();
             //Refilters but without the filte just removed
             for (Filter f : tempList) {
-                if (f.getType().equals("time")) {
+                if (f.getType().equals(FilterTypes.TIME)) {
                     filterByTime((ArrayList<LocalTime>) f.getValue());
                 }
-                if (f.getType().equals("days")) {
+                if (f.getType().equals(FilterTypes.DAYS)) {
                     filterByDays((ArrayList<DayOfWeek>) f.getValue());
                 }
-                if (f.getType().equals("department")) {
+                if (f.getType().equals(FilterTypes.DEPT)) {
                     filterByDept((String) f.getValue());
                 }
-                if (f.getType().equals("professor")) {
+                if (f.getType().equals(FilterTypes.PROF)) {
                     filterByProf((String) f.getValue());
                 }
-                if (f.getType().equals("credit")){
+                if (f.getType().equals(FilterTypes.CRED)){
                     filterByCredits((String)f.getValue());
                 }
-                if (f.getType().equals("level")) {
+                if (f.getType().equals(FilterTypes.LVL)) {
                     filterByLevel((String) f.getValue());
                 }
-                if (f.getType().equals("phrase")) {
+                if (f.getType().equals(FilterTypes.PHRASE)) {
                     filterByPhrase((String) f.getValue());
                 }
             }
@@ -222,7 +218,7 @@ public class Search {
      */
     public String getCurrentSearchPhrase(){
         for(Filter f : currentFilters){
-            if(f.getType().equals("phrase")){
+            if(f.getType().equals(FilterTypes.PHRASE)){
                 return (String) f.getValue();
             }
         }
@@ -252,15 +248,15 @@ public class Search {
  * of the filter applied
  */
 class Filter{
-    private String type;
+    private FilterTypes type;
     private Object value;
 
-    public Filter(String type, Object value){
+    public Filter(FilterTypes type, Object value){
         this.type = type;
         this.value = value;
     }
 
-    public String getType(){
+    public FilterTypes getType(){
         return type;
     }
     public Object getValue(){
