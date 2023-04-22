@@ -764,34 +764,22 @@ public class ConsoleDriver {
             else if (command.equals("b")) break;
             else if (command.equals("exit")) endSession();
             else {
-                int commandInt = -100;
-                try{
-                    commandInt = Integer.parseInt(command);
-                    boolean flag = false;
-                    for(Course c : searchBox.getFilteredCourses()){
-                        if(c.getRefNum() == commandInt){
-                            flag = true;
+                try {
+                    int commandInt = Integer.parseInt(command);
+                    Course c = searchBox.searchForRefNum(commandInt);
+                    if (c != null) {
+                        try {
+                            tempSchedule.addCourse(c);
+                            System.out.println("Course: " + c.getName() + " added");
+                            break;
+                        }
+                        catch (Exception e) {
+                            System.out.println(e.getMessage());
                             break;
                         }
                     }
-                    if(flag){
-                        Course c = searchBox.searchForRefNum(commandInt);
-                        if (c != null) {
-                            try {
-                                tempSchedule.addCourse(c);
-                                System.out.println("Course: " + c.getName() + " added!");
-                                break;
-                            }catch(Exception e){
-                                System.out.println(e.getMessage());
-                                break;
-                            }
-                        }
-                    }
-                    else{
-                        System.out.println("Not a valid refnum!");
-                        break;
-                    }
-                }catch(Exception ignored){
+                }
+                catch (Exception ignored) {
                     invalidArgument();
                 }
             }
