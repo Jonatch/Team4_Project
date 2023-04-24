@@ -3,32 +3,10 @@ package edu.gcc.comp350.team4project;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-record TimeInfo(ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
-    /**
-     * @description: This method will check if the times of two courses overlap
-     * @param timeInfo start time and end time of a class
-     * @return true if the two courses overlap, false otherwise
-     */
-    public boolean doesOverLap(TimeInfo timeInfo){
-        Set<DayOfWeek> commonDays = new HashSet<>(this.days); // new HashSet with these courses days
-        commonDays.retainAll(timeInfo.days); // keep overlapping days
-
-        for (DayOfWeek day: commonDays) { // loop over all days in set
-            if (!(timeInfo.startTime.isAfter(this.endTime) || timeInfo.endTime.isBefore(this.startTime))) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
-
-record DepartmentInfo(String department, String courseLevel, char section){}
-public class Course{
+record DepartmentInfo(String department, String courseLevel, char section) {}
+public class Course extends ScheduleElement {
     private String name;
     private DepartmentInfo departmentInfo;
     private int refNum;
@@ -39,6 +17,7 @@ public class Course{
     private TimeInfo timeInfo;
 
     public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
+        super(name, days, startTime, endTime, description);
         this.name = name;
         this.refNum = refNum;
         this.credits = credits;
@@ -49,59 +28,26 @@ public class Course{
         this.departmentInfo = new DepartmentInfo(department,courseLevel,section);
     }
 
-    public String getName() {
-        return name;
-    }
-    public Semester getSemester(){return this.semester;};
-    public int getRefNum() {
-        return refNum;
-    }
-    public int getCredits() {
-        return credits;
-    }
-    public String getProfessor() {
-        return professor;
-    }
-    public String getDescription() {
-        return description;
-    }
-
-    public TimeInfo getTimeInfo(){
-        return this.timeInfo;
-    }
-    public ArrayList<DayOfWeek> getDays() {
-        return this.timeInfo.days();
-    }
-
-    public DepartmentInfo getDepartmentInfo(){
-        return this.departmentInfo;
-    }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Course course = (Course) o;
-
-
-        return this.refNum == course.refNum;//if diff refnum, diff course
+    public boolean equals(Object obj) {
+        //TODO: Test!
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Course other = (Course) obj;
+        return refNum == other.refNum;
     }
-
-    @Override
-    public int hashCode() {
-        return refNum;
-    }
-
-    public boolean doesCourseConflict(Course course){
-        if(this.equals(course)) return true;
-        else return this.timeInfo.doesOverLap(course.timeInfo);
-    }
-
 
     @Override
     public String toString(){
-        //return "REFNUM: " + refNum + ", " + departmentInfo + ", " + timeInfo + ", SEMESTER: "+ semester + ", CREDITS: " + credits + ", PROF: " + professor + ", NAME: " + name + ", DESCRIPTION: " + description;
         return "REFNUM: " + refNum + ", DEPARTMENT_INFO: " + departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + ", NAME: " + name + ", SEMESTER: "+ semester.toString().toLowerCase() +", DAYS: " + timeInfo.days() + ", TIME: " + timeInfo.startTime() + "-" + timeInfo.endTime() + ", PROF: " + professor + ", CREDITS: " + credits + ", DESCRIPTION: "+ description ;
     }
+
+    @Override
+    public int hashCode() { return refNum; }
+    public int getRefNum() { return refNum; }
+    public Semester getSemester() { return semester; }
+    public String getProfessor() { return professor; }
+    public String getDescription() { return description; }
+    public DepartmentInfo getDepartmentInfo(){ return this.departmentInfo; }
 }
