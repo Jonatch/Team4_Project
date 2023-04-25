@@ -6,6 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Server {
     public static void main(String[] args) {
+        //Creating Database
+        DatabaseController.createNewDatabase("team4_project.db");
+        DatabaseController.drop();
+        DatabaseController.createNewTable();
+        //Running Server
         SpringApplication.run(Server.class, args);
     }
 }
