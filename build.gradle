@@ -16,6 +16,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation 'org.xerial:sqlite-jdbc:3.41.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.apache.tika:tika-core:2.7.0'
+    implementation 'org.apache.tika:tika-parsers-standard-package:2.7.0'
+
 }
 
 test {
