@@ -1,7 +1,5 @@
 package edu.gcc.comp350.team4project;
 
-import java.sql.Array;
-import java.sql.SQLOutput;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +8,7 @@ public class Schedule {
     private String scheduleName;
     private Semester semester;
     private ArrayList<Course> courses;
+    private ArrayList<ScheduleElement> events;
     private int totalCredits;
 
     final int ROWS = 53;
@@ -17,8 +16,8 @@ public class Schedule {
     final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}; // Declare a constant array of days of the week
     final ArrayList<LocalTime> TIMES = new ArrayList<>(); // Declare an array list to store time slots for the calendar
     final ArrayList<LocalTime> smallTIMES = new ArrayList<>(); // Declare an array list to store smaller time slots for each course
-    LocalTime sTime;
-    LocalTime eTime;
+    private LocalTime sTime;
+    private LocalTime eTime;
     final String[][] schedule = new String[ROWS][COLS];
 
 
@@ -27,25 +26,22 @@ public class Schedule {
         this.semester = semester;
         this.totalCredits = 0;
         this.courses = new ArrayList<>();
+        this.events = new ArrayList<>();
     }
 
+    /**
+     * just a stub method but later will be used to prompt user to add a custom event
+     */
+    public void createCustomEvent() {
 
-    public String getScheduleName() {
-        return scheduleName;
     }
 
-    public void setScheduleName(String scheduleName) {
-        this.scheduleName = scheduleName;
-    }
-    public Semester getSemester() {
-        return semester;
-    }
-    public void setSemester(Semester semester) {
-        this.semester = semester;
-    }
-    public ArrayList<Course> getCourses() {
-        return courses;
-    }
+    public String getScheduleName() { return scheduleName; }
+    public void setScheduleName(String scheduleName) { this.scheduleName = scheduleName; }
+    public Semester getSemester() { return semester; }
+    public ArrayList<ScheduleElement> getEvents() { return events; }
+    public ArrayList<Course> getCourses() { return courses; }
+
     public void addCourse(Course newCourse) throws Exception{ //adds courses and throws an exception if there are conflicts
         for(Course course : courses){
             if(newCourse.getRefNum()==course.getRefNum()){
@@ -61,7 +57,20 @@ public class Schedule {
         }else{
             throw new Exception("Cannot add a " + newCourse.getSemester() + " course to a " + this.semester + " schedule");
         }
+    }
+    public void addEvent(ScheduleElement newEvent) throws Exception {
+        for (ScheduleElement event: events) {
+            if (newEvent.getRefNum() == event.getRefNum())
+                throw new Exception("Your schedule already has this event. It can not be added twice!");
+            else if (newEvent.conflictsWith(event))
+                throw new Exception("New event: " + event.getName() + " conflicts with already scheduled event: " + event.getName());
+        }
+        events.add(newEvent);
+        totalCredits += newEvent.getCredits();
+    }
 
+    public void addEvents(ArrayList<ScheduleElement> events) throws Exception {
+        for (ScheduleElement event: events) addEvent(event);
     }
 
     public void addCourses(ArrayList<Course> courses) throws Exception {//adds multiple courses if possible
@@ -74,7 +83,11 @@ public class Schedule {
         }
     }
 
-
+    public void removeEvent(ScheduleElement event) throws Exception {
+        //TODO: Test!
+        if (events.remove(event)) totalCredits -= event.getCredits();
+        else throw new Exception("Event " + event.getName() + " was not found in the schedule.");
+    }
 
     public void removeCourse(Course course) throws Exception{ //removes courses and updates credit amnt
         if(!(this.courses.remove(course))){
@@ -85,6 +98,11 @@ public class Schedule {
         }
     }
 
+    public void removeEvents(ArrayList<ScheduleElement> events) throws Exception {
+        for (ScheduleElement event: events) {
+            removeEvent(event);
+        }
+    }
     public void removeCourses(ArrayList<Course> courses) throws Exception{//remove multiple courses
         for(Course course : courses){
             try{
@@ -93,19 +111,26 @@ public class Schedule {
         }
     }
 
+    public void removeAllEvents() {
+        events.clear();
+    }
+
     public void removeAllCourses(){//not tested
-        this.courses = new ArrayList<>();
+        courses.clear();
     }
     public int getTotalCredits() {
         return totalCredits;
     }
+
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("SCHEDULE_NAME: " + this.scheduleName + " ");
-        sb.append("SEMESTER: " + this.semester.toString().toLowerCase()+ " ");
-        sb.append("CREDITS: " + this.totalCredits);
+        sb.append("SCHEDULE_NAME: ").append(scheduleName).append(" ");
+        sb.append("SEMESTER: ").append(semester.toString().toLowerCase()).append(" ");
+        sb.append("CREDITS: ").append(totalCredits);
         return sb.toString();
     }
+
     public String toCalenderView() {
 
         LocalTime l = LocalTime.of(8, 00);
