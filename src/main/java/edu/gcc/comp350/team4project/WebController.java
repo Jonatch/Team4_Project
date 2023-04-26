@@ -1,5 +1,7 @@
 package edu.gcc.comp350.team4project;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +15,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-
+@SpringBootApplication
 @Controller
 public class WebController {
     /**
@@ -81,6 +83,22 @@ public class WebController {
         public void setUsername(String username) {
             this.username = username;
         }
+    }
+
+    private class ScheduleFormData{
+        private String name;
+        private String semester;
+
+        public ScheduleFormData(){
+            this.name = "";
+            this.semester = "";
+        }
+        public String getName() {return name;}
+
+        public void setName(String name) {this.name = name;}
+        public String getSemester() {return semester;}
+
+        public void setSemester(String semester) {this.semester = semester;}
     }
 
     //Session Data
@@ -201,10 +219,12 @@ public class WebController {
         }
     }
 
-    @GetMapping("/")
+    @RequestMapping("/")
     public String home(Model model) {
         // TODO: add code to display home page
-        model.addAttribute("user", currentUser);
+//        User newUser = currentUser; // Replace with your implementation to get the current user object
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("schedules", currentUser.getSchedules()); // Replace with your implementation to get the schedules
         return "home";
     }
 
@@ -231,6 +251,33 @@ public class WebController {
         return "schedules";
     }
 
+    @GetMapping("/create-schedule")
+    public String createSchedule(Model model) {
+        model.addAttribute("scheduleFormData", new ScheduleFormData());
+        return "create-schedule";
+    }
+
+    @PostMapping("/create-schedule")
+    public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData, BindingResult bindingResult) throws Exception {
+        if (bindingResult.hasErrors()) {
+            return "create-schedule";
+        }
+        Semester semester;
+        if(scheduleFormData.getSemester().equalsIgnoreCase("spring")){
+            semester = Semester.SPRING;
+        }else if(scheduleFormData.getSemester().equalsIgnoreCase("fall")){
+            semester = Semester.FALL;
+        }else{
+            throw new Exception("Invalid semester value");
+        }
+        Schedule schedule = new Schedule(scheduleFormData.getName(), semester);
+        currentUser.saveScheduleToUser(schedule);
+        tempSchedule = schedule;
+        return "redirect:/edit-schedule/" + schedule.getScheduleName();
+    }
+
+
+
     @GetMapping("/editschedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         // TODO: add code to display edit schedule page for a specific schedule
@@ -242,6 +289,13 @@ public class WebController {
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule) {
         // TODO: add code to handle form submission for editing a schedule
         return "redirect:/schedules";
+    }
+
+    @GetMapping("/viewschedule/{scheduleName}")
+    public String viewSchedule(@PathVariable String scheduleName, Model model) {
+        // TODO: add code to display edit schedule page for a specific schedule
+        model.addAttribute("schedule", tempSchedule);
+        return "schedule";
     }
 
     @GetMapping("/register")

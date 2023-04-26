@@ -11,6 +11,7 @@ public class Server {
         DatabaseController.drop();
         DatabaseController.createNewTable();
         //Running Server
-        SpringApplication.run(Server.class, args);
+        SpringApplication.run(WebController.class, args);
     }
+
 }
