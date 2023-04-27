@@ -4,7 +4,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,15 +23,34 @@ public class WebController {
     /**
      * This class holds together form data for a User
      */
-    private class UserFormData{
+    private class RegisterFormData{
+        @NotEmpty(message = "Username cannot be empty")
+        @Size(min = 5, max = 250)
         private String username;
+
+        @NotEmpty(message = "Password cannot be empty")
+        @Size(min = 8)
         private String password;
+
+        @NotEmpty(message = "Confirm password cannot be empty")
+        @Size(min = 8)
+        private String confirm_password;
+
         private String year;
 
-        public UserFormData(){
+        public RegisterFormData(){
             this.username = "";
             this.password = "";
+            this.confirm_password = "";
             this.year = "";
+        }
+
+        public String getConfirm_password() {
+            return confirm_password;
+        }
+
+        public void setConfirm_password(String confirm_password) {
+            this.confirm_password = confirm_password;
         }
 
         public String getPassword() {
@@ -59,7 +82,12 @@ public class WebController {
      * This calss holds together form data for the login form
      */
     private class LoginFormData{
+        @NotEmpty(message = "Username cannot be empty")
+        @Size(min = 5, max = 250)
         private String username;
+
+        @NotEmpty(message = "Password cannot be empty")
+        @Size(min = 8)
         private String password;
 
         public LoginFormData(){
@@ -94,6 +122,7 @@ public class WebController {
         totalCourses = new ArrayList<>();
         String longCSV = "large_courses.csv"; //pulls from csv of all courses
         importCoursesFromCSV(longCSV); //imports information as data we can use
+        currentUser = new User("admin", "senior", "pass", false);
 
     }
     public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
@@ -209,20 +238,28 @@ public class WebController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, RedirectAttributes redirectAttributes) {
         // TODO: add code to display login page
+        if (redirectAttributes.containsAttribute("errors")) {
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
         model.addAttribute("formData", new LoginFormData());
         return "login";
     }
 
     @PostMapping("/login")
-    public String doLogin(@ModelAttribute LoginFormData formData) {
+    public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
         // TODO: add code to handle login form submission
-        if(DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
-            currentUser = DatabaseController.pullUser(formData.getUsername());
-            return "redirect:/";
+        if(!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
+            result.rejectValue("username", "username.invalid", "The username and password do not match");
         }
-        return "redirect:/login";
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
+            System.out.println(result.getAllErrors().toString());
+            return "redirect:/login";
+        }
+        currentUser = DatabaseController.pullUser(formData.getUsername());
+        return "redirect:/";
     }
 
     @GetMapping("/schedules")
@@ -245,15 +282,29 @@ public class WebController {
     }
 
     @GetMapping("/register")
-    public String register(Model model) {
+    public String register(Model model, RedirectAttributes redirectAttributes) {
         // TODO: add code to display registration page
-        model.addAttribute("formData", new UserFormData());
+        if (redirectAttributes.containsAttribute("errors")){
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
+        model.addAttribute("formData", new RegisterFormData());
         return "register";
     }
 
     @PostMapping("/register")
-    public String doRegister(@ModelAttribute UserFormData formData) {
+    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
         // TODO: add code to handle registration form submission
+        if (!formData.getPassword().equals(formData.getConfirm_password())){
+            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
+        }
+        if(DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
+            result.rejectValue("username", "username.invalid", "This account already exist");
+        }
+        if(result.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
+            System.out.println(result.getAllErrors().toString());
+            return "redirect:/register";
+        }
         User newUser = new User(formData.username, formData.year, formData.password, false);
         DatabaseController.insert(newUser);
         return "redirect:/login";
