@@ -1,45 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Schedule</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Create Schedule Object</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">My App</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Create Schedule</a>
-            </li>
-        </ul>
-    </div>
-</nav>
 <div class="container mt-5">
-    <h2 class="mb-3">Create a New Schedule</h2>
-    <form>
+    <h1>Create Schedule Object</h1>
+    <form th:object="${scheduleFormData}" th:action="@{/create-schedule}" method="post">
         <div class="form-group">
-            <label for="scheduleName">Schedule Name:</label>
-            <input type="text" class="form-control" id="scheduleName" name="scheduleName" required>
+            <label for="scheduleName">Schedule Name</label>
+            <input type="text" th:field="*{name}" class="form-control" id="scheduleName" placeholder="Enter schedule name" name="name" />
         </div>
         <div class="form-group">
-            <label for="semester">Semester:</label>
-            <select class="form-control" id="semester" name="semester" required>
-                <option value="FALL">Fall</option>
+            <label for="scheduleSemester">Schedule Semester</label>
+            <select th:field="*{semester}" class="form-control" id="scheduleSemester" name="semester">
                 <option value="SPRING">Spring</option>
+                <option value="FALL">Fall</option>
             </select>
         </div>
-        <button type="button" class="btn btn-primary">Create Schedule</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-<!-- Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

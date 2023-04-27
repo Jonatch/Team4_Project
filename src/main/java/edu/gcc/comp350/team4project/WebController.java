@@ -258,22 +258,18 @@ public class WebController {
     }
 
     @PostMapping("/create-schedule")
-    public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return "create-schedule";
-        }
-        Semester semester;
+    public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
+        Semester semester = null;
         if(scheduleFormData.getSemester().equalsIgnoreCase("spring")){
             semester = Semester.SPRING;
         }else if(scheduleFormData.getSemester().equalsIgnoreCase("fall")){
             semester = Semester.FALL;
-        }else{
-            throw new Exception("Invalid semester value");
         }
-        Schedule schedule = new Schedule(scheduleFormData.getName(), semester);
-        currentUser.saveScheduleToUser(schedule);
-        tempSchedule = schedule;
-        return "redirect:/edit-schedule/" + schedule.getScheduleName();
+
+        Schedule newSchedule = new Schedule(scheduleFormData.name, semester);
+        tempSchedule = newSchedule;
+
+        return "redirect:/editschedule/" + newSchedule.getScheduleName();
     }
 
 

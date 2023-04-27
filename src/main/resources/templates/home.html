@@ -33,7 +33,7 @@
         <tbody>
         <tr th:each="schedule : ${schedules}">
             <td th:text="${schedule.name}"></td>
-            <td th:text="${schedule.date}"></td>
+            <td th:text="${schedule.semester}"></td>
             <td>
                 <button class="btn btn-primary mr-2" th:onclick="'edit(' + ${schedule.id} + ')'">Edit</button>
                 <button class="btn btn-danger" th:onclick="'delete(' + ${schedule.id} + ')'">Delete</button>
