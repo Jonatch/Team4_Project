@@ -36,6 +36,7 @@ public class Event extends ScheduleElement {
      * this allows for max of 17 credits and a min of 0
      */
     public void setCredits() {
+        /*
         System.out.println("""
                 Please enter the number of credits:
                 (There is a minimum of 0 credits and a maximum of 17)
@@ -45,6 +46,8 @@ public class Event extends ScheduleElement {
             input.nextLine();
         }
         credits = Math.max(0, Math.min(input.nextInt(), 17));
+         */
+        credits = 0;
     }
 
     public int getRefNum() { return hashCode(); }
