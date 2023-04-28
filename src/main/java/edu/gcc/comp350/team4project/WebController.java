@@ -328,6 +328,13 @@ public class WebController {
     @GetMapping("/viewschedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
         // TODO: add code to display edit schedule page for a specific schedule
+        ArrayList<Schedule> schedules = currentUser.getSchedules();
+        for (Schedule schedule : schedules) {
+            if (schedule.getScheduleName().equals(scheduleName)) {
+                tempSchedule = schedule;
+                break;
+            }
+        }
         model.addAttribute("schedule", tempSchedule);
         return "schedule";
     }

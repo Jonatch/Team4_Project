@@ -10,6 +10,10 @@ public class Server {
         DatabaseController.createNewDatabase("team4_project.db");
         DatabaseController.drop();
         DatabaseController.createNewTable();
+        User jonah = new User("Jonah_Dybas", "Junior", "Password", false);
+        Schedule schedule = new Schedule("test_sched", Semester.SPRING);
+        jonah.saveScheduleToUser(schedule);
+        DatabaseController.insert(jonah);
         //Running Server
         SpringApplication.run(WebController.class, args);
     }

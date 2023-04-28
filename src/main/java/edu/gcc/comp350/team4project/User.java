@@ -55,14 +55,14 @@ public class User {
         return schedules;
     }
 
-    public void saveScheduleToUser(Schedule newSchedule) throws Exception { //Shouldn't this just pass in a schedule? and be called save schedule?
+    public void saveScheduleToUser(Schedule newSchedule) { //Shouldn't this just pass in a schedule? and be called save schedule?
         schedules.add(newSchedule);
-        if (newSchedule.getTotalCredits() < 12) {
-            throw new Exception("Warning: Schedule is less than 12 credits");
-        }
-        if (newSchedule.getTotalCredits() > 17) {
-            throw new Exception("Warning: Schedule is greater than 17 credits");
-        }
+//        if (newSchedule.getTotalCredits() < 12) {
+//            throw new Exception("Warning: Schedule is less than 12 credits");
+//        }
+//        if (newSchedule.getTotalCredits() > 17) {
+//            throw new Exception("Warning: Schedule is greater than 17 credits");
+//        }
     }
 
     public void removeSchedule(int index) {

@@ -26,17 +26,26 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Date</th>
+            <th>Semester</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="schedule : ${schedules}">
-            <td th:text="${schedule.name}"></td>
+            <td th:text="${schedule.scheduleName}"></td>
             <td th:text="${schedule.semester}"></td>
             <td>
-                <button class="btn btn-primary mr-2" th:onclick="'edit(' + ${schedule.id} + ')'">Edit</button>
-                <button class="btn btn-danger" th:onclick="'delete(' + ${schedule.id} + ')'">Delete</button>
+                <div class="btn-group" role="group">
+                    <form th:action="@{/editschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                        <button class="btn btn-primary mr-2" type="submit">Edit</button>
+                    </form>
+                    <form th:action="@{/viewschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                        <button class="btn btn-success mr-2" type="submit">View</button>
+                    </form>
+                    <form th:action="@{/deleteschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                        <button class="btn btn-danger mr-2" type="submit">Delete</button>
+                    </form>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -69,18 +78,18 @@
             // Iterate over the schedules and add them to the table
             schedules.forEach(function(schedule) {
                 var row = $('<tr>');
-                var nameCell = $('<td>').text(schedule.name);
-                var dateCell = $('<td>').text(schedule.date);
+                var nameCell = $('<td>').text(schedule.scheduleName);
+                var dateCell = $('<td>').text(schedule.semester);
                 var actionsCell = $('<td>');
-// Add edit and delete buttons to the actions cell
-var editButton = $('<button>').addClass('btn btn-primary mr-2')
-.attr('onclick', "edit(" + schedule.id + ")")
-.text('Edit');
-var deleteButton = $('<button>').addClass('btn btn-danger')
-.attr('onclick', "delete(" + schedule.id + ")")
-.text('Delete');
-actionsCell.append(editButton, deleteButton);
-    // Add cells to the row and append the row to the table body
+            // Add edit and delete buttons to the actions cell
+                var editButton = $('<button>').addClass('btn btn-primary mr-2')
+                .attr('onclick', "edit(" + schedule.id + ")")
+                .text('Edit');
+                var deleteButton = $('<button>').addClass('btn btn-danger')
+                .attr('onclick', "delete(" + schedule.id + ")")
+                .text('Delete');
+                actionsCell.append(editButton, deleteButton);
+            // Add cells to the row and append the row to the table body
             row.append(nameCell, dateCell, actionsCell);
             $('tbody').append(row);
         });
