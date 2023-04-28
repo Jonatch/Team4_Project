@@ -57,7 +57,6 @@ public abstract class ScheduleElement {
 
     public String getName() { return name; }
     public abstract int getRefNum();
-    //public int getRefNum() { return this.refNum; }
     public int getCredits() { return credits; }
     public ArrayList<DayOfWeek> getDays() { return days; }
     public TimeInfo getTimeInfo() { return timeInfo; }
