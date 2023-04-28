@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select Completed Courses</title>
+</head>
+<body>
+<form th:action="@{/submit}" method="post">
+    <div th:each="option : ${options}">
+        <input type="checkbox" th:value="${option}" />
+        <label th:text="${option}"></label>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

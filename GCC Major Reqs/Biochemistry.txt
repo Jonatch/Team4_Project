@@ -1,0 +1,72 @@
+CHEM 111
+3
+CHEM 113
+1
+BIOL 101
+4
+MATH 161
+4
+WRIT 101
+3
+1 Credit General Elective
+1
+CHEM 112
+3
+CHEM 114
+1
+BIOL 102
+4
+MATH 162
+4
+HUMA 102
+3
+PHYE 100
+1
+CHEM 235
+1
+CHEM 241
+4
+BIOL 233
+4
+HUMA 200
+3
+PSYC 201
+3
+CHEM 231
+2
+CHEM 242
+4
+BIOL 234
+4
+HUMA 202
+3
+Foundations of Social Science
+3
+CHEM 227
+4
+CHEM 351
+4
+PHYS 121
+4
+SSFT
+2
+3 Credits General Electives
+3
+CHEM 342
+4
+CHEM 352
+4
+PHYS 122
+4
+HUMA 303
+3
+CHEM 451
+3
+HUMA 301
+3
+11 Credits General Electives
+11
+CHEM 487
+1
+15 Credits General Electives
+15
