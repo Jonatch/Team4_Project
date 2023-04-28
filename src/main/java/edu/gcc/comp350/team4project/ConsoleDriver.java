@@ -256,7 +256,7 @@ public class ConsoleDriver {
 
     }
 
-    private static void filter() {//runs filer menu
+    private static void filter() {//runs filter menu
         String filterType;
         boolean isFiltering = true;
 
