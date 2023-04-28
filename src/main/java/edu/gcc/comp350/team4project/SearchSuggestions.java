@@ -3,10 +3,10 @@ package edu.gcc.comp350.team4project;
 import java.util.*;
 
 public class SearchSuggestions {
-    WordTree tree;
-    String query;
-    ArrayList<Course> courses;
-    Scanner input; //use for now, update later
+    private WordTree tree;
+    private String query;
+    private ArrayList<Course> courses;
+    private Scanner input;
     public SearchSuggestions(ArrayList<Course> courses) {
         this.courses = courses;
         initTree();
@@ -27,6 +27,7 @@ public class SearchSuggestions {
     public List<String> getSuggestions() {
         List<String> suggestions = new ArrayList<>();
         TrieNode currNode = tree.getRoot();
+        Queue<String> queue = new LinkedList<>();
 
         //move currNode to the lowest position of query
         //i.e.: if query is soft, move currNode from s down to t assuming that is in the trie
@@ -37,13 +38,9 @@ public class SearchSuggestions {
             else return suggestions; //no suggestions found
         }
 
-        Queue<String> queue = new LinkedList<>();
+        dfs(currNode, query.toUpperCase(), queue); //dfs from currNode down
 
-        //dfs from currNode down
-        dfs(currNode, query.toUpperCase(), queue);
-
-        //add each element from the queue to suggestions
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty()) { //add each element form the queue to suggestions
             String suggestion = queue.poll();
             suggestions.add(suggestion);
         }
