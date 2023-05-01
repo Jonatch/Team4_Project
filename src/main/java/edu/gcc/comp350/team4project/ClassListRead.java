@@ -11,10 +11,10 @@ public class ClassListRead {
     public ArrayList<String> classes;
     public static ArrayList<Course> totalCourses;
 
-//    public static void main(String[] args) {
-//        ClassListRead c = new ClassListRead();
-//        c.ReadTextFile("Accounting");
-//    }
+    public static void main(String[] args) {
+        ClassListRead c = new ClassListRead();
+        c.ReadTextFile("Accounting");
+    }
 
     public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
         totalCourses = new ArrayList<>();
@@ -138,16 +138,32 @@ public class ClassListRead {
         }
 
         String longCSV = "large_courses.csv"; //pulls from csv of all courses
+        importCoursesFromCSV(longCSV); //imports information as data we can use
+        SearchController sFall = new SearchController(totalCourses, Semester.FALL);
+        SearchController sSpring = new SearchController(totalCourses, Semester.SPRING);
         for (int i = 0; i < classes.size(); i++) {
-            importCoursesFromCSV(longCSV); //imports information as data we can use
-            SearchController s = new SearchController(totalCourses, Semester.FALL);
+            sFall.refreshFilteredCourses();
             if (Pattern.matches("[A-Z]{4}\s\\d{3}", classes.get(i))) {
                 String dept = classes.get(i).substring(0, 4);
-                s.filterByDept(dept);
+                sFall.filterByDept(dept);
                 String courseNum = classes.get(i).substring(5, 8);
-                s.filterByExactLevel(courseNum);
-                if (!s.getFilteredCourses().isEmpty()) {
-                    String courseName = s.getFilteredCourses().get(0).getName();
+                sFall.filterByExactLevel(courseNum);
+                if (!sFall.getFilteredCourses().isEmpty()) {
+//                    System.out.println(s.getFilteredCourses().get(0));
+                    String courseName = sFall.getFilteredCourses().get(0).getName();
+                    classes.set(i, classes.get(i) + " " + courseName);
+                }
+            }
+        }
+        for (int i = 0; i < classes.size(); i++) {
+            sSpring.refreshFilteredCourses();
+            if (Pattern.matches("[A-Z]{4}\s\\d{3}", classes.get(i))) {
+                String dept = classes.get(i).substring(0, 4);
+                sSpring.filterByDept(dept);
+                String courseNum = classes.get(i).substring(5, 8);
+                sSpring.filterByExactLevel(courseNum);
+                if (!sSpring.getFilteredCourses().isEmpty()) {
+                    String courseName = sSpring.getFilteredCourses().get(0).getName();
                     classes.set(i, classes.get(i) + " " + courseName);
                 }
             }
