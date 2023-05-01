@@ -1,0 +1,82 @@
+ACCT 201
+3
+MNGT 103
+3
+ECON 101
+3
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+PHYE 100
+1
+ACCT 202
+3
+ECON 102
+3
+MNGT 110
+3
+HUMA 102
+3
+Foreign Language or 3 Credit General Elective
+3
+ACCT 301
+3
+ACCT 310
+3
+STAT 131
+3
+HUMA 200
+3
+Foreign Language or 3 Credit General Elective
+3
+ACCT 302
+3
+FNCE 301
+3
+MATH 141 or MATH 161
+4
+Natural Science with Lab
+4
+Foreign Language or 3 Credit General Elective
+3
+ACCT 303
+3
+ACCT 402
+3
+MNGT 214
+3
+HUMA 202
+3
+Natural Science with Lab
+4
+ACCT 321
+3
+ACCT 407
+3
+MARK 104
+3
+HUMA 301
+3
+3 Credit General Elective
+3
+ACCT 403
+3
+MNGT 303
+3
+HUMA 303
+3
+Foundations of Social Science
+3
+SSFT 
+2
+3 Credit General Electives
+3
+Accounting Major Elective
+3
+Accounting Major Elective
+3
+MNGT 486
+3
+8 Credits of General Electives
+8

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 @Controller
@@ -81,7 +82,7 @@ public class WebController {
     }
 
     /**
-     * This calss holds together form data for the login form
+     * This class holds together form data for the login form
      */
     private class LoginFormData{
         @NotEmpty(message = "Username cannot be empty")
@@ -137,6 +138,8 @@ public class WebController {
 
     public static void initialize(){
         //Importing Courses
+        currentUser = new User("admin", "admin", "admin", false);
+
         totalCourses = new ArrayList<>();
         String longCSV = "large_courses.csv"; //pulls from csv of all courses
         importCoursesFromCSV(longCSV); //imports information as data we can use
@@ -349,6 +352,22 @@ public class WebController {
         return "register";
     }
 
+    @GetMapping("/select-courses-completed")
+    public String showForm(Model model) {
+        ClassListRead c = new ClassListRead();
+        c.ReadTextFile("Chemistry");
+        ArrayList<String> classes = c.classes;
+        model.addAttribute("options", classes);
+        return "select-courses";
+    }
+
+    @PostMapping("/select-courses-completed")
+    public String processForm(@ModelAttribute("selectedOptions") List<String> selectedOptions) {
+        // Handle the form submission
+        return "result";
+    }
+
+
     @PostMapping("/register")
     public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
         // TODO: add code to handle registration form submission
@@ -379,4 +398,6 @@ public class WebController {
         // TODO: add code to handle deleting a specific schedule
         return "redirect:/schedules";
     }
+
+
 }

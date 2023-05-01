@@ -1,6 +1,6 @@
 package edu.gcc.comp350.team4project;
 
-import org.springframework.boot.SpringApplication;
+import  org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication

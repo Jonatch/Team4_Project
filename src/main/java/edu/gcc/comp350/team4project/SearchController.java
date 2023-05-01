@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Search Object holds list of classes and and filters them
+ * Search Object holds list of classes and filters them
  * based on user's preferences
  */
 public class SearchController {
@@ -133,6 +133,19 @@ public class SearchController {
         currentFilters.add(currentfilter);
     }
 
+    public void filterByExactLevel(String level) {
+        Iterator<Course> iterator = filteredCourses.iterator();
+        //For each course in the current available courses
+        while (iterator.hasNext()) {
+            Course c = iterator.next();
+            //If the Course level does not match the key level remove it from the filtered courses list
+            if (!c.getDepartmentInfo().courseLevel().equals(level)) iterator.remove();
+        }
+        //Saving the filter used
+        Filter currentfilter = new Filter(FilterTypes.LVL, level);
+        currentFilters.add(currentfilter);
+    }
+
     public void filterByPhrase(String searchPhrase) {
         Iterator<Course> iterator = filteredCourses.iterator();
         //For each course in the current available courses
@@ -185,7 +198,7 @@ public class SearchController {
             ArrayList<Filter> tempList = new ArrayList<>(currentFilters);
             currentFilters.clear();
             this.refreshFilteredCourses();
-            //Refilters but without the filte just removed
+            //Refilters but without the filter just removed
             for (Filter f : tempList) {
                 if (f.getType().equals(FilterTypes.TIME)) {
                     filterByTime((ArrayList<LocalTime>) f.getValue());
