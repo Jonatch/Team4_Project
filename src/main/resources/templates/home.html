@@ -1,14 +1,99 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <p>
-        <span th:text="${user.username}"></span>
-        <span th:text="${user.password}"></span>
-        <span th:text="${user.year}"></span>
-    </p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">My App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Welcome, <span th:text="${currentUser.username}"></span>!</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h2 class="mb-3">Your Schedules</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Semester</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="schedule : ${schedules}">
+            <td th:text="${schedule.scheduleName}"></td>
+            <td th:text="${schedule.semester}"></td>
+            <td>
+                <div class="btn-group" role="group">
+                    <form th:action="@{/editschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                        <button class="btn btn-primary mr-2" type="submit">Edit</button>
+                    </form>
+                    <form th:action="@{/viewschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                        <button class="btn btn-success mr-2" type="submit">View</button>
+                    </form>
+                    <form th:action="@{/deleteschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                        <button class="btn btn-danger mr-2" type="submit">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-secondary" onclick="location.href='/create-schedule'">Create New</button>
+</div>
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script th:inline="javascript">
+		/* JavaScript code to handle Thymeleaf template expressions */
+		function edit(id) {
+			// Handle edit button click
+			console.log("Edit schedule " + id);
+		}
+		function delete(id) {
+			// Handle delete button click
+			console.log("Delete schedule " + id);
+		}
+		function create() {
+			// Handle create new button click
+			console.log("Create new schedule");
+		}
+        /* JavaScript code to dynamically populate the table */
+        $(document).ready(function() {
+            // Get the list of schedules
+            var schedules = /*[[${schedules}]]*/ [];
+
+            // Iterate over the schedules and add them to the table
+            schedules.forEach(function(schedule) {
+                var row = $('<tr>');
+                var nameCell = $('<td>').text(schedule.scheduleName);
+                var dateCell = $('<td>').text(schedule.semester);
+                var actionsCell = $('<td>');
+            // Add edit and delete buttons to the actions cell
+                var editButton = $('<button>').addClass('btn btn-primary mr-2')
+                .attr('onclick', "edit(" + schedule.id + ")")
+                .text('Edit');
+                var deleteButton = $('<button>').addClass('btn btn-danger')
+                .attr('onclick', "delete(" + schedule.id + ")")
+                .text('Delete');
+                actionsCell.append(editButton, deleteButton);
+            // Add cells to the row and append the row to the table body
+            row.append(nameCell, dateCell, actionsCell);
+            $('tbody').append(row);
+        });
+    });
+    </script>
 </body>
 </html>

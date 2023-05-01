@@ -28,7 +28,6 @@ public class Course extends ScheduleElement {
         this.departmentInfo = new DepartmentInfo(department,courseLevel,section);
     }
 
-
     @Override
     public boolean equals(Object obj) {
         //TODO: Test!

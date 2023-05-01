@@ -19,6 +19,7 @@ dependencies {
     implementation 'org.apache.tika:tika-core:2.7.0'
     implementation 'org.apache.tika:tika-parsers-standard-package:2.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 test {
