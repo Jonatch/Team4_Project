@@ -36,6 +36,7 @@ public class Event extends ScheduleElement {
      * this allows for max of 17 credits and a min of 0
      */
     public void setCredits() {
+        //TODO: IMPLEMENT FOR PROPER GUI INTERFACE
         /*
         System.out.println("""
                 Please enter the number of credits:
@@ -50,6 +51,8 @@ public class Event extends ScheduleElement {
         credits = 0;
     }
 
+    public String getLevel() { return null; }
+    public boolean isAnEvent() { return true; }
     public int getRefNum() { return hashCode(); }
     public void setCredits(int credits) { this.credits = credits; }
     public void setDescription(String description) { this.description = description; }
