@@ -1,0 +1,68 @@
+ENGL 201
+3
+ENGL Elective
+3
+HUMA 102
+3
+Foundations of Social Science
+3
+Foreign Language or 3 Credit General Elective
+3
+ENGL 202
+3
+WRIT 101
+3
+Quantitative/Logical Reasoning Course
+3
+PHYE 100
+1
+Foreign Language or 3 Credit General Elective
+3
+3 Credits General Electives
+3
+ENGL 203
+3
+ENGL 205
+3
+HUMA 200
+3
+Natural Science with Lab
+4
+Foreign Language or 3 Credit General Elective
+3
+ENGL 204
+3
+ENGL 206
+3
+SSFT
+2
+Foreign Language or 3 Credit General Elective
+3
+5 Credits General Electives
+5
+ENGL 351
+3
+ENGL 302
+3
+ENGL Elective
+3
+HUMA 301
+3
+Natural Science with Lab
+4
+ENGL 352
+3
+ENGL Elective
+3
+HUMA 303
+3
+8 Credits General Electives
+8
+Quantitative/Logical Reasoning Course
+3
+13 Credits General Electives
+13
+ENGL 485
+3
+13 Credits General Electives
+13

@@ -1,0 +1,70 @@
+RELI 211
+3
+WRIT 101
+3
+PHYE 100
+1
+Foreign Language or 3 Credit General Elective
+3
+6 Credits General Electives
+6
+RELI 212
+3
+Quantitative/Logical Reasoning Course
+3
+Foundations of Social Sciencee Course
+3
+Foreign Language or 3 Credit General Elective
+3
+3 Credits General Electives
+3
+CMIN 112 or 122
+3
+RELI 217
+3
+HUMA 200
+3
+Natural Science with Lab
+4
+Foreign Language or 3 Credit General Elective
+3
+Christian Ministry Elective
+3
+Religion Elective
+3
+SSFT Course
+2
+General Elective
+4
+Foreign Language or 3 Credit General Elective
+3
+CMIN 238
+3
+HUMA 301
+3
+Natural Science with Lab
+4
+6 Credits General Electives
+6
+Christian Ministry Elective
+3
+HUMA 202
+3
+HUMA 303
+3
+6 Credits General Electives
+6
+CMIN 480
+3
+CMIN 258
+3
+Quantitative/Logical Reasoning Course
+3
+10 Credits General Electives
+10
+CMIN 321
+3
+Christian Ministry Elective
+3
+10 Credits General Electives
+10

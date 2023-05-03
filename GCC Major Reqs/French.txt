@@ -1,0 +1,80 @@
+FREN 101
+3
+3 Credits General Electives
+3
+HUMA 102
+3
+PHYE 100
+1
+6 Credits General Electives
+6
+FREN 102
+3
+3 Crdits General Electives
+3
+Quantitative/Logical Reasoning Course
+3
+WRIT 101
+3
+4 Credits General Electives
+4
+FREN 201
+3
+3 Credits General Electives
+3
+HUMA 200
+3
+Natural Science with Lab
+4
+3 Credits General Electives
+3
+FREN 202
+3
+3 Credits General Electives
+3
+HUMA 202
+3
+Natural Science with Lab
+4
+SSFT
+2
+FREN 301
+3
+FREN 307
+3
+HUMA 301
+3
+Quantitative/Logical Reasoning Course
+3
+HIST 141
+3
+2 Credits General Electives
+2
+French Elective
+3
+French Elective
+3
+HUMA 303
+3
+History Elective
+3
+3 Credit General Electives
+3
+French Elective
+3
+French Elective
+3
+ENGL Elective
+3
+GOBL 300
+3
+5 Credits General Electives
+5
+French Elective
+3
+French Elective
+3
+ENGL Elective
+3
+7 Credits General Electives
+7

@@ -1,0 +1,82 @@
+MNGT 103
+3
+ECON 101
+3
+MATH 141
+4
+Foreign Language Course
+3
+HUMA 102
+3
+MARK 104
+3
+MNGT 110
+3
+ECON 102
+3
+Foreign Language Course
+3
+WRIT 101
+3
+PHYE 100
+1
+ACCT 201
+3
+STAT 131
+3
+Foreign Language Course
+3
+HUMA 202
+3
+Natural Science with Lab
+4
+ACCT 202
+3
+MNGT 214
+3
+FNCE 301
+3
+HUMA 200
+3
+SSFT
+2
+1 Credit General Elective
+1
+MNGT 303
+3
+INBS 205
+3
+Foreign Language Course
+3
+HUMA 303
+3
+Natural Science with Lab
+4
+Business Concentration Course
+3
+International Business Core Course
+3
+Global Emphasis Elective
+3
+Foundations of Social Science
+3
+HUMA 301
+3
+Business Concentration Course
+3
+Business Concentration Course
+3
+International Business Core Course
+3
+Global Emphasis Elective
+3
+5 Credits General Electives
+5
+MNGT 486
+3
+Business Concentration Course
+3
+International Business Core Course
+3
+8 Credits General Electives
+8

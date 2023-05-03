@@ -1,0 +1,80 @@
+MARK 104
+3
+ECON 101
+3
+MATH 141
+4
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+MNGT 103
+3
+MNGT 110
+3
+ECON 102
+3
+HUMA 102
+3
+Foreign Language or 3 Credit General Elective
+3
+PHYE 100
+1
+ACCT 201
+3
+STAT 131
+3
+HUMA 200
+3
+Natural Science with Lab
+4
+Foreign Language or 3 Credit General Elective
+3
+ACCT 202
+3
+INBS 205
+3
+MNGT 214
+3
+FNCE 301
+3
+SSFT
+2
+Foreign Language or 3 Credit General Elective
+3
+MNGT 303
+3
+MNGT 457
+3
+Foundations of Social Science
+3
+HUMA 301
+3
+3 Credits General Electives
+3
+MNGT 433
+3
+MNGT 458
+3
+HR Management Major Elective
+3
+HUMA 202
+3
+Natural Science with Lab
+4
+MNGT 486
+3
+HR Management Major Elective
+3
+HUMA 303
+3
+8 Credits General Electives
+8
+MNGT 462
+3
+MNGT 465
+3
+HR Management Major Elective
+3
+6 Credits General Electives
+6

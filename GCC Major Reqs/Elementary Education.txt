@@ -1,0 +1,88 @@
+EDUC 202
+3
+EDUC 204
+3
+EDUC 281
+1
+MATH 151
+3
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+PSYC 102
+3
+MATH 152
+3
+HUMA 102
+3
+PHYE 100
+1
+Foreign Language or 3 Credit General Elective
+3
+3 Credits General Electives
+3
+EDUC 318
+1
+EDUC 319
+1
+EDUC 327
+3
+MUSE 315
+1
+SEDU 101
+3
+HUMA 200
+3
+4 Credits General Electives
+4
+EDUC 203
+3
+EDUC 381
+1
+PSYC 209
+3
+HUMA 202
+3
+Natural Science with Lab
+4
+2 Credits General Electives
+2
+EDUC 323
+3
+EDUC 324
+3
+EDUC 342
+3
+EDUC 382
+1
+Foundations of Social Science
+3
+3 Credits General Electives
+3
+EDUC 325
+3
+EDUC 326
+3
+EDUC 328
+2
+EDUC 383
+1
+HUMA 301
+3
+SSFT
+2
+2 Credits General Electives
+2
+EDUC 343
+3
+EDUC 488
+3
+HUMA 303
+3
+Natural Science with Lab
+4
+3 Credits General Electives
+3
+EDUC 450
+16

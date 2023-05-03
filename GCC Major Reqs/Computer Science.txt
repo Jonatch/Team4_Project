@@ -1,0 +1,82 @@
+COMP 141
+3
+COMP 155
+3
+MATH 161
+4
+Science Elective
+4
+HUMA 102
+3
+COMP 220
+3
+MATH 162
+4
+Science Elective
+4
+WRIT 101
+3
+PHYE 100
+1
+COMP 222
+3
+COMP 244
+3
+MATH 213
+4
+HUMA 200
+3
+Foundations of Social Science Course
+3
+1 Credit General Elective
+1
+COMP 205
+3
+COMP 230
+3
+COMP 342
+3
+MATH 214
+4
+HUMA 202
+3
+COMP 325
+3
+COMP 422
+3
+Computer Science Elective
+3
+Computer Science Elective
+3
+HUMA 301
+3
+2 Credits General Electives
+2
+COMP 314
+3
+COMP 340
+3
+COMP 350
+3
+Computer Science Elective
+3
+4 Credits General Electives
+4
+COMP 448
+3
+COMP 451
+2
+Computer Science Elective
+3
+HUMA 303
+3
+4 Credits General Electives
+4
+COMP 424
+3
+COMP 452
+3
+Computer Science Elective
+3
+6 Credits General Electives
+6

@@ -149,7 +149,6 @@ public class ClassListRead {
                 String courseNum = classes.get(i).substring(5, 8);
                 sFall.filterByExactLevel(courseNum);
                 if (!sFall.getFilteredCourses().isEmpty()) {
-//                    System.out.println(s.getFilteredCourses().get(0));
                     String courseName = sFall.getFilteredCourses().get(0).getName();
                     classes.set(i, classes.get(i) + " " + courseName);
                 }
@@ -168,8 +167,8 @@ public class ClassListRead {
                 }
             }
         }
-        for (int i = 0; i < classes.size(); i++) {
-            System.out.println(classes.get(i));
-        }
+//        for (int i = 0; i < classes.size(); i++) {
+//            System.out.println(classes.get(i));
+//        }
     }
 }
