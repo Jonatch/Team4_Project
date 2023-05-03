@@ -1,7 +1,9 @@
 package edu.gcc.comp350.team4project;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,12 +18,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static edu.gcc.comp350.team4project.DatabaseController.updateUser;
 
 @SpringBootApplication
 @Controller
 public class WebController {
+
+
     /**
      * This class holds together form data for a User
      */
@@ -325,19 +334,102 @@ public class WebController {
         return "redirect:/schedules";
     }
 
+    // This map stores the schedules by name
+    private final Map<String, Schedule> schedules = new HashMap<>();
+
+    // This method adds a Schedule to the map
+    public void addSchedule(String name, Schedule schedule) {
+        schedules.put(name, schedule);
+    }
+
     @GetMapping("/viewschedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
-        // TODO: add code to display edit schedule page for a specific schedule
-        ArrayList<Schedule> schedules = currentUser.getSchedules();
-        for (Schedule schedule : schedules) {
-            if (schedule.getScheduleName().equals(scheduleName)) {
-                tempSchedule = schedule;
-                break;
+        for (Schedule s : currentUser.getSchedules()) {
+            if (s.getScheduleName().equals(scheduleName)) {
+                tempSchedule = s;
             }
         }
-        model.addAttribute("schedule", tempSchedule);
+        String[][] array = new String[80][6];
+        String[] header = {"Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+
+
+
+        LocalTime beginning = LocalTime.of(4,0);
+        LocalTime ending = LocalTime.MIDNIGHT;
+        int j = 0;
+        while(beginning != ending){
+            array[j][0] = beginning.toString();
+            beginning = beginning.plusMinutes(15);
+            j = j+1;
+        }
+        List<String> course_info = new ArrayList<>();
+        for (Course c : tempSchedule.getCourses()){
+            List<DayOfWeek> course_days = c.getDays();
+            LocalTime course_start_time = c.getStartTime();
+            LocalTime course_end_time = c.getEndTime();
+            int start_row = (course_start_time.getHour() - 4) * 4 + course_start_time.getMinute() / 15;
+            int end_row = (course_end_time.getHour() - 4) * 4 + course_end_time.getMinute() / 15;
+            int[] columns = new int[3];
+            int col_idx = 0;
+            for (int i = 0; i < course_days.size(); i++) {
+                switch (course_days.get(i)) {
+                    case MONDAY:
+                        columns[col_idx] = 1;
+                        col_idx++;
+                        break;
+                    case WEDNESDAY:
+                        columns[col_idx] = 3;
+                        col_idx++;
+                        break;
+                    case FRIDAY:
+                        columns[col_idx] = 5;
+                        col_idx++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            for (int i = start_row; i <= end_row; i++) {
+                for (int k = 0; k < columns.length; k++) {
+                    if (columns[k] == 0 || columns[k] % 6 == 0) {
+                        continue;
+                    }
+                    array[i][columns[k]] = c.getName();
+                }
+            }
+
+            int[] tr_columns = new int[2];
+            int tr_col_idx = 0;
+            for (int i = 0; i < course_days.size(); i++) {
+                switch (course_days.get(i)) {
+                    case TUESDAY:
+                        tr_columns[tr_col_idx] = 2;
+                        tr_col_idx++;
+                        break;
+                    case THURSDAY:
+                        tr_columns[tr_col_idx] = 4;
+                        tr_col_idx++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            for (int i = start_row; i <= end_row; i++) {
+                for (int k = 0; k < tr_columns.length; k++) {
+                    if (tr_columns[k] == 0 || tr_columns[k] % 6 == 0) {
+                        continue;
+                    }
+                    array[i][tr_columns[k]] = c.getName();
+                }
+            }
+        }
+        model.addAttribute("header", header);
+        model.addAttribute("times", array);
+
         return "schedule";
     }
+
 
     @GetMapping("/register")
     public String register(Model model, RedirectAttributes redirectAttributes) {
@@ -371,12 +463,29 @@ public class WebController {
     @PostMapping("/logout")
     public String doLogout() {
         // TODO: add code to handle logout
+        currentUser = null;
         return "redirect:/login";
     }
 
     @PostMapping("/deleteschedule/{scheduleName}")
     public String doDeleteSchedule(@PathVariable String scheduleName) {
-        // TODO: add code to handle deleting a specific schedule
-        return "redirect:/schedules";
+        // Find the index of the schedule to be removed
+        int index = -1;
+        List<Schedule> schedules = currentUser.getSchedules();
+        for (int i = 0; i < schedules.size(); i++) {
+            if (schedules.get(i).getScheduleName().equals(scheduleName)) {
+                index = i;
+                break;
+            }
+        }
+
+        // Remove the schedule if it was found
+        if (index != -1) {
+            currentUser.removeSchedule(index);
+            updateUser(currentUser);
+        }
+
+        return "redirect:/";
     }
+
 }

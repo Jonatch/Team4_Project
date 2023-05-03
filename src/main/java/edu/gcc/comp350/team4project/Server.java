@@ -1,7 +1,14 @@
 package edu.gcc.comp350.team4project;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.ArrayList;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.time.DayOfWeek;
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class Server {
@@ -12,7 +19,34 @@ public class Server {
         DatabaseController.createNewTable();
         User jonah = new User("Jonah_Dybas", "Junior", "Password", false);
         Schedule schedule = new Schedule("test_sched", Semester.SPRING);
+        Schedule schedule2 = new Schedule("test_sched2", Semester.SPRING);
+        ArrayList<DayOfWeek> days1 = new ArrayList<>();
+        days1.add(DayOfWeek.MONDAY);
+        days1.add(DayOfWeek.WEDNESDAY);
+        days1.add(DayOfWeek.FRIDAY);
+
+        ArrayList<DayOfWeek> days2 = new ArrayList<>();
+        days2.add(DayOfWeek.TUESDAY);
+        days2.add(DayOfWeek.THURSDAY);
+
+        Course course1 = new Course(12345, "CS", Semester.SPRING, "300", 'A', "Algorithms", 4, "Dr. Smith", "This course covers the design and analysis of algorithms.", days1, LocalTime.of(9, 0), LocalTime.of(9, 50));
+        Course course2 = new Course(67890, "MATH", Semester.SPRING, "200", 'B', "Calculus II", 3, "Dr. Johnson", "This course covers advanced topics in calculus.", days2, LocalTime.of(13, 0), LocalTime.of(14, 15));
+
+        try {
+            schedule.addCourse(course1);
+            schedule2.addCourse(course1);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            schedule.addCourse(course2);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         jonah.saveScheduleToUser(schedule);
+        jonah.saveScheduleToUser(schedule2);
+
         DatabaseController.insert(jonah);
         //Running Server
         SpringApplication.run(WebController.class, args);

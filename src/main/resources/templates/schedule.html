@@ -1,69 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Schedule View</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <!-- FullCalendar CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"/>
-  <!-- jQuery and Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-          integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-          crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-          integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-          crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-          integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-          crossorigin="anonymous"></script>
-  <!-- FullCalendar JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <title th:text="${scheduleName}"></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <style>
+        table {
+            margin-top: 20px;
+        }
+        .shaded {
+            background-color: lightblue;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1>Schedule Name: <span th:text="${schedule.scheduleName}"></span></h1>
-      <p>Semester: <span th:text="${schedule.semester}"></span></p>
-      <p>Total Credits: <span th:text="${schedule.totalCredits}"></span></p>
-      <a href="/" class="btn btn-primary">Back to Home</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Home</a>
+</nav>
+<div class="container my-5">
+    <h1 class="text-center mb-5" th:text="${scheduleName}"></h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th th:each="header : ${header}" th:text="${header}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row, rowIdx : ${times}">
+                <td th:each="cell, cellIdx : ${row}" th:text="${cell}"
+                    th:classappend="${cellIdx != 0 && (cell != null and cell != '')} ? 'shaded' : ''"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <div id="calendar"></div>
-    </div>
-  </div>
 </div>
-<script>
-  $(document).ready(function () {
-    // Initialize FullCalendar
-    $('#calendar').fullCalendar({
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'agendaWeek,listMonth'
-      },
-      defaultView: 'agendaWeek',
-      defaultDate: '2023-04-01',
-      editable: true,
-      events: [
-        th:each="course : ${schedule.courses}"
-        {
-          title: th:text="${course.name}",
-          start: the="${course.startDate}",
-          end: th:text="${course.endDate}",
-          url: '/course/'+th:text="${course.id}",
-          color: th:text="${course.color}"
-        },
-        /th
-      ]
+<script th:inline="javascript">
+    /* Retroactively remove the shading from the first column */
+    var firstColumnCells = document.querySelectorAll("tbody td:nth-child(1)");
+    firstColumnCells.forEach(function(cell) {
+        cell.classList.remove("shaded");
     });
-   });
 </script>
-
 </body>
 </html>
