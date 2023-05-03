@@ -36,32 +36,27 @@ public abstract class ScheduleElement {
         }
     }
 
+    public abstract boolean isAnEvent();
+
     public boolean doesCourseConflict(ScheduleElement e) {
         //TODO: Test!
         if (this.equals(e)) return true;
         else return this.timeInfo.doesOverLap(e.getTimeInfo());
     }
 
-    @Override
     public abstract boolean equals(Object o);
-
-    @Override
     public abstract int hashCode();
-
-    @Override
     public abstract String toString();
-
+    public abstract String getLevel();
+    public abstract int getRefNum();
     public boolean conflictsWith(ScheduleElement event) {
         return this.equals(event);
     }
-
     public String getName() { return name; }
-    public abstract int getRefNum();
     public int getCredits() { return credits; }
     public ArrayList<DayOfWeek> getDays() { return days; }
     public TimeInfo getTimeInfo() { return timeInfo; }
     public LocalTime getStartTime() { return startTime; }
     public LocalTime getEndTime() { return endTime; }
-
 
 }
