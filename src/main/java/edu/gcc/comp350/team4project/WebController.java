@@ -315,8 +315,8 @@ public class WebController {
     @GetMapping("/editschedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         // TODO: add code to display edit schedule page for a specific schedule
-        model.addAttribute("schedule", tempSchedule);
-        model.addAttribute("courses", totalCourses);
+//        model.addAttribute("schedule", tempSchedule);
+//        model.addAttribute("courses", totalCourses);
         return "edit-schedule";
     }
 
