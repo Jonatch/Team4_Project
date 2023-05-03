@@ -1,0 +1,68 @@
+COMM 104
+3
+COMM 135
+3
+Quantitative/Logical Reasoning Course
+3
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+COMM Media & Design Elective
+3
+HUMA 102
+3
+Foundations of Social Science Course
+3
+Quantitative/Logical Reasoning Course
+3
+PHYE 100
+1
+Foreign Language or 3 Credit General Elective
+3
+COMM 215
+3
+COMM Culture & Theory Elective
+3
+HUMA 200
+3
+Natural Science with Lab
+4
+Foreign Language or 3 Credit General Elective
+3
+COMM Media & Design Elective
+3
+COMM Professional & Technical Elective
+3
+HUMA 202
+3
+SSFT
+2
+Foreign Language or 3 Credit General Elective
+3
+1 Credit General Elective
+1
+COMM 212
+3
+HUMA 301
+3
+Natural Science with Lab
+4
+7 Credits General Electives
+7
+COMM 225
+3
+COMM Culture & Theory Elective
+3
+HUMA 303
+3
+7 Credits General Electives
+7
+COMM Professional & Technical Elective
+3
+14 Credits General Electives
+14
+COMM Capstone Elective
+3
+13 Credits General Electives
+13

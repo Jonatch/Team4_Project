@@ -355,16 +355,28 @@ public class WebController {
     @GetMapping("/select-courses-completed")
     public String showForm(Model model) {
         ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Chemistry");
+        c.ReadTextFile("Mathematics");
         ArrayList<String> classes = c.classes;
         model.addAttribute("options", classes);
         return "select-courses";
     }
 
     @PostMapping("/select-courses-completed")
-    public String processForm(@ModelAttribute("selectedOptions") List<String> selectedOptions) {
-        // Handle the form submission
-        return "result";
+    public String processForm(@RequestParam(value = "selected", required = false) ArrayList<String> selectedStrings, Model model) {
+        ArrayList<String> uncheckedItems = new ArrayList<>();
+        ClassListRead c = new ClassListRead();
+        c.ReadTextFile("Mathematics");
+        ArrayList<String> classes = c.classes;
+        for (String s : classes) {
+            if (!selectedStrings.contains(s)) {
+                uncheckedItems.add(s);
+            }
+        }
+        for (int i = 0; i < uncheckedItems.size(); i++) {
+            System.out.println(uncheckedItems.get(i));
+        }
+        model.addAttribute("uncheckedItems", uncheckedItems);
+        return "redirect:/login";
     }
 
 

@@ -1,0 +1,120 @@
+MUSI 103
+3
+MUSI 105
+1
+Applied Music
+1
+Ensemble
+1
+MUSI 199
+0
+HUMA 102
+3
+Quantitative/Logical Reasoning Course
+3
+PHYE 100
+1
+2 Credits General Electives
+2
+MUSI 104
+2
+MUSI 106
+1
+Applied Music
+1
+Ensemble
+1
+MUSI 199
+0
+WRIT 101
+3
+7 Credits General Electives
+7
+MUSI 203
+2
+MUSI 205
+2
+MUSI 219
+1
+Applied Music
+2
+Ensemble
+1
+MUSI 199
+0
+HUMA 301
+3
+Natural Science with Lab
+4
+1 Credit General Elective
+1
+MUSI 204
+2
+MUSI 206
+2
+MUSI 331
+3
+Applied Music
+2
+Ensemble
+1
+MUSI 199
+0
+HUMA 200
+3
+4 Credits General Electives
+4
+MUSI 317
+2
+MUSI 332
+3
+Applied Music
+2
+Ensemble
+1
+Ensemble
+1
+MUSI 199
+0
+HUMA 202
+3
+4 Credits General Electives
+4
+MUSI 335
+2
+Music Elective
+1
+Ensemble
+1
+Ensemble
+1
+MUSI 199
+0
+Natural Science with Lab
+4
+6 Credits General Electives
+6
+Music Elective
+1
+Ensemble
+1
+MUSI 199
+0
+Foundations of Social Science Course
+3
+HUMA 303
+3
+SSFT
+2
+7 Credits General Electives
+7
+MUSI 476
+1
+Music Elective
+2
+Ensemble
+1
+MUSI 199
+0
+13 Credits General Electives
+13

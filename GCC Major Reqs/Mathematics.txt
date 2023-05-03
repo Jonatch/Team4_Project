@@ -1,0 +1,72 @@
+MATH 125
+3
+MATH 161
+4
+HUMA 102
+3
+Foreign Language or 3 Credit General Elective
+3
+PHYE 100
+1
+3 Credits General Electives
+3
+MATH 162
+4
+Foundations of Social Science
+3
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+COMP 141
+3
+MATH 210
+3
+MATH 261
+4
+HUMA 200
+3
+HUMA 202
+3
+Foreign Language or 3 Credit General Elective
+3
+MATH 222
+4
+MATH 262
+3
+PHYS 101
+4
+SSFT
+2
+Foreign Language or 3 Credit General Elective
+3
+MATH 421
+3
+MATH Elective
+3
+HUMA 303
+3
+Natural Science with Lab
+4
+3 Credits General Electives
+3
+MATH 421
+3
+MATH Elective
+3
+HUMA 301
+3
+7 Credits General Electives
+7
+MATH 488
+2
+MATH Elective
+3
+10 Credits General Electives
+10
+MATH 488
+2
+MATH Elective
+3
+10 Credits General Electives
+10

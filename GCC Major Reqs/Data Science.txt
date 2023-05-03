@@ -1,0 +1,74 @@
+COMP 141
+3
+COMP 155
+3
+MATH 161
+4
+Natural Science with Lab
+4
+HUMA 102
+3
+COMP 220
+3
+MATH 162
+4
+Natural Science with Laab
+4
+WRIT 101
+3
+PHYE 101
+1
+COMP 244
+3
+MATH 213
+4
+STAT 131
+3
+Domain Emphasis Course
+3
+Foundations of Social Science Course
+3
+1 Credit General Electives
+1
+DSCI 201
+3
+MATH 214
+4
+STAT 132
+3
+Domain Emphasis Course
+3
+HUMA 200
+3
+COMP 222
+3
+Domain Emphasis Course
+3
+HUMA 202
+3
+SSFT
+2
+6 Credits General Electives
+6
+COMP 435
+3
+Domain Emphasis Course
+3
+HUMA 301
+3
+Technical Elective
+3
+4 Credits General Electives
+4
+Domain Emphasis Course
+3
+HUMA 303
+3
+9 Credits General Electives
+9
+DSCI 431
+3
+DSCI 450
+3
+9 Credits General Electives
+9

@@ -1,0 +1,92 @@
+CHEM 105
+4
+MATH 161
+4
+MECE 107
+2
+MECE 109
+2
+HUMA 102
+3
+PHYE 100
+1
+ENGR 156
+2
+MATH 162
+4
+ENGR 120
+3
+PHYS 101
+4
+WRIT 101
+3
+MATH 261
+4
+MECE 201
+3
+MECE 211
+3
+MECE 251
+1
+PHYS 102
+4
+SSFT
+2
+MATH 262
+3
+MECE 210
+3
+MECE 212
+3
+MECE 214
+3
+MECE 252
+1
+HUMA 202
+3
+MECE 311
+3
+MECE 325
+3
+MECE 351
+1
+3 Credits General Electives
+3
+ENGR 274
+3
+HUMA 200
+3
+MECE 312
+3
+MECE 316
+3
+MECE 326
+3
+MECE 352
+1
+ELEE 210
+3
+Foundations of Social Science
+3
+MECE 401
+3
+MECE 451
+1
+Mechanical Engineering Elective
+3
+Mechanical Engineering Elective
+3
+Mechanical Engineering Elective
+3
+HUMA 301
+3
+MECE 452
+3
+Mechanical Engineering Elective
+4
+ENGR 402
+1
+HUMA 303
+3
+4 Credits General Electives
+4

@@ -1,0 +1,78 @@
+BIOL 101
+4
+CHEM 111
+3
+CHEM 113
+1
+WRIT 101
+3
+PHYE 100
+1
+4 Credits General Electives
+4
+BIOL 102
+4
+BIOL 180
+1
+CHEM 112
+3
+CHEM 114
+1
+HUMA 102
+3
+MATH 161
+4
+BIOL 233
+4
+BIOL 328
+4
+HUMA 200
+3
+SSFT
+2
+4 Credits General Electives
+4
+BIOL 234
+4
+BIOL 320
+4
+HUMA 202
+3
+Quantitative/Logical Reasoning Course
+3
+3 Credits General Electives
+3
+BIOL 305
+4
+BIOL 331
+3
+BIOL 332
+1
+Conservation Group 2 Elective
+3
+HUMA 301
+3
+3 Credits General Electives
+3
+BIOL 326
+3
+Conservation Group 2 Elective
+3
+HUMA 303
+3
+6 Credits General Electives
+6
+Conservation Group 2 Elective
+3
+7 Credits Biology Electives
+7
+Foundations of Social Science
+3
+3 Credits General Electives
+3
+BIOL 488
+1
+7 Credits General Electives
+7
+6 Credits General Electives
+6

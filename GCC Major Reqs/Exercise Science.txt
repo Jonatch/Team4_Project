@@ -1,0 +1,86 @@
+EXER 101
+2
+Exercise Science Elective
+3
+BIOL 101
+4
+CHEM 111
+3
+CHEM 113
+1
+HUMA 102
+3
+EXER 203
+3
+Exercise Science Elective
+3
+MATH 111
+3
+Foundations of Social Science
+3
+WRIT 101
+3
+PHYE 100
+1
+EXER 230
+3
+EXER 244
+3
+EXER 253
+4
+HUMA 200
+3
+PSYC 201
+3
+EXER 256
+4
+EXER 258
+4
+EXER 306
+2
+Exercise Science Elective
+3
+HUMA 202
+3
+EXER 307
+3
+EXER 377
+3
+3 Credits General Electives
+3
+PHYS 121
+4
+SSFT
+2
+EXER 304
+3
+EXER 310
+3
+EXER 407
+4
+Exercise Science Elective
+3
+HUMA 301
+3
+EXER 480
+5
+EXER 254
+3
+EXER 309
+3
+EXER 313
+3
+Exercise Science Elective
+3
+3 Credits General Electives
+3
+EXER 312
+3
+EXER 404
+1
+Exercise Science Elective
+3
+HUMA 303
+3
+4 Credits General Electives
+4

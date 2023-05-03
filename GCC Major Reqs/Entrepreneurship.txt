@@ -1,0 +1,82 @@
+ENTR 101
+3
+ENTR 102
+1
+MARK 104
+3
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+4 Credits General Electives
+4
+ENTR 201
+3
+ECON 101
+3
+HUMA 102
+3
+PHYE 100
+1
+Foreign Language or 3 Credit General Elective
+3
+3 Credits General Electives
+3
+ENTR 308
+3
+ENTR 309
+3
+ACCT 201
+3
+HUMA 202
+3
+Entrepreneurial Elective
+3
+ACCT 202
+3
+FNCE 301
+3
+MATH 141
+4
+Entrepreneurial Elective
+3
+HUMA 200
+3
+ENTR 306
+3
+ENTR 312
+3
+ENTR 430
+3
+Entrepreneurial Elective
+3
+Natural Science with Lab
+4
+ENTR 302
+3
+ENTR 303
+3
+Foundations of Social Science Course
+3
+Natural Science with Lab
+4
+3 Credits General Electives
+3
+ENTR 467
+3
+STAT 131
+3
+HUMA 301
+3
+SSFT
+2
+5 Credits General Electives
+5
+ENTR 466
+3
+Entrepreneurship Elective
+3
+HUMA 303
+3
+7 Credits General Electives
+7
