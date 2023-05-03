@@ -10,7 +10,6 @@ public class SearchSuggestions {
     public SearchSuggestions(ArrayList<Course> courses) {
         this.courses = courses;
         initTree();
-        getQuery();
     }
 
     public void getQuery() {
@@ -25,12 +24,13 @@ public class SearchSuggestions {
     }
 
     public List<String> getSuggestions() {
+        getQuery();
         List<String> suggestions = new ArrayList<>();
         TrieNode currNode = tree.getRoot();
         Queue<String> queue = new LinkedList<>();
 
         //move currNode to the lowest position of query
-        //i.e.: if query is soft, move currNode from s down to t assuming that is in the trie
+        //i.e.: if the query is "soft", move currNode from s down to t assuming that is in the trie
         for (int i = 0; i < query.length(); i++) {
             char val = query.toUpperCase().charAt(i);
             int index = getIndex(val);

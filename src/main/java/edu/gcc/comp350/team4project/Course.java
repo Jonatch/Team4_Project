@@ -7,13 +7,10 @@ import java.util.*;
 
 record DepartmentInfo(String department, String courseLevel, char section) {}
 public class Course extends ScheduleElement {
-    private String name;
     private DepartmentInfo departmentInfo;
-    private int refNum;
-    private int credits;
-    private String professor;
+    private int refNum, credits;
+    private String name, professor, courseLevel, description;
     private Semester semester;
-    private String description;
     private TimeInfo timeInfo;
 
     public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
@@ -24,6 +21,7 @@ public class Course extends ScheduleElement {
         this.professor = professor;
         this.description = description;
         this.semester = semester;
+        this.courseLevel = courseLevel;
         this.timeInfo = new TimeInfo(days,startTime,endTime);
         this.departmentInfo = new DepartmentInfo(department,courseLevel,section);
     }
@@ -42,6 +40,8 @@ public class Course extends ScheduleElement {
         return "REFNUM: " + refNum + ", DEPARTMENT_INFO: " + departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + ", NAME: " + name + ", SEMESTER: "+ semester.toString().toLowerCase() +", DAYS: " + timeInfo.days() + ", TIME: " + timeInfo.startTime() + "-" + timeInfo.endTime() + ", PROF: " + professor + ", CREDITS: " + credits + ", DESCRIPTION: "+ description ;
     }
 
+    public String getLevel() { return courseLevel; }
+    public boolean isAnEvent() { return false; }
     @Override
     public int hashCode() { return refNum; }
     public int getRefNum() { return refNum; }
@@ -49,4 +49,28 @@ public class Course extends ScheduleElement {
     public String getProfessor() { return professor; }
     public String getDescription() { return description; }
     public DepartmentInfo getDepartmentInfo(){ return this.departmentInfo; }
+    public String getCourseLabel(){
+        String daysFormatted = "";
+        if(days.contains("MONDAY")){
+            daysFormatted += "M";
+        }
+        if(days.contains("TUESDAY")){
+            daysFormatted += "T";
+        }
+        if(days.contains("WEDNESDAY")){
+            daysFormatted += "W";
+        }
+        if(days.contains("THURSDAY")){
+            daysFormatted += "R";
+        }
+        if(days.contains("FRIDAY")){
+            daysFormatted += "F";
+        }
+
+        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + " \n"
+                + name + " \n"
+                + daysFormatted + " \n"
+                + timeInfo.startTime() + "-" + timeInfo.endTime();
+    }
+
 }
