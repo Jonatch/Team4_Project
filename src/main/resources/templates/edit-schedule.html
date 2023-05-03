@@ -20,175 +20,60 @@
 
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-4 p-5">
-                <button type="button" class="btn btn-primary btn-lg">Save and exit</button>
-            </div>
-            <div class="col text-center">
-                <!--Title-->
-                <h1 class="display-4" th:text="${schedule.getScheduleName}"></h1>
-                <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
-                <br>
-                <p class="float-right" th:text="${'credits: ' + schedule.getTotalCreditsString}"></p>
-                <button class="btn btn-outline-primary float-left">remove all courses</button>
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4 p-5">
+            <button type="button" class="btn btn-primary btn-lg">Save and exit</button>
         </div>
-        <div class="row">
-            <div class="col-3">
-                <div class="row p-1">
-                    <div class="input-group">
-                        <div class="col">
-                            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                        </div>
-                        <div class="col-3">
-                            <button type="button" class="btn btn-outline-primary">search</button>
-                        </div>
-                        <div class="col-3">
-                            <button type="button" class="btn btn-outline-primary">filters</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row scrollable" style="height: 650px; overflow-y: auto;">
-                    <ul class="list-group">
-                        <div class="list-group-item" th:each="course: ${courses}">
-                            <li th:text="${course.getCourseLabel}">
-                            </li>
-                            <button class="btn btn-primary" onclick="addCourse(${course})">add</button>
-                        </div>
-                    </ul>
-                </div>
-            </div>
-            <div class="col scrollable" style="height: 700px; overflow-y: auto;">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Monday</th>
-                        <th>Tuesday</th>
-                        <th>Wednesday</th>
-                        <th>Thursday</th>
-                        <th>Friday</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>8:00 AM</td>
-                        <td>Class A</td>
-                        <td>Class B</td>
-                        <td>Class C</td>
-                        <td>Class D</td>
-                        <td>Class E</td>
-                    </tr>
-                    <tr>
-                        <td>9:00 AM</td>
-                        <td>Class F</td>
-                        <td>Class G</td>
-                        <td>Class H</td>
-                        <td>Class I</td>
-                        <td>Class J</td>
-                    </tr>
-                    <tr>
-                        <td>10:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>11:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>12:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>1:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>2:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>3:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>4:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>5:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>6:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>7:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>8:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <tr>
-                        <td>9:00 AM</td>
-                        <td>Class K</td>
-                        <td>Class L</td>
-                        <td>Class M</td>
-                        <td>Class N</td>
-                        <td>Class O</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="col text-center">
+            <!--Title-->
+            <h1 class="display-4" th:text="${scheduleName}"></h1>
+            <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
+            <p class="float-right" th:text="'credits: ' + ${schedule.getTotalCreditsString}"></p>
+            <button class="btn btn-outline-primary float-left">remove all courses</button>
         </div>
     </div>
+    <div class="row">
+        <div class="col-3">
+            <div class="row p-1">
+                <div class="input-group">
+                    <div class="col">
+                        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-outline-primary">search</button>
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-outline-primary">filters</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row scrollable" style="height: 650px; overflow-y: auto;">
+                <ul class="list-group">
+                    <div class="list-group-item" th:each="course: ${courses}">
+                        <li th:text="${course.getCourseLabel}">
+                        </li>
+                        <button class="btn btn-primary" onclick="addCourse(${course})">add</button>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <div class="col scrollable" style="height: 700px; overflow-y: auto;">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th th:each="header : ${header}" th:text="${header}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row, rowIdx : ${times}">
+                    <td th:each="cell, cellIdx : ${row}" th:text="${cell}"
+                        th:classappend="${cellIdx != 0 && (cell != null and cell != '')} ? 'shaded' : ''"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>
