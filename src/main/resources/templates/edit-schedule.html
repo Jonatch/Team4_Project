@@ -14,6 +14,10 @@
 
     <!-- FullCalendar CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"/>
+
+    <!--    Personal JS-->
+    <script src="../../../../..resources/static/edit-schedule.js"></script>
+
 </head>
 <body>
     <div class="container-fluid">
@@ -50,7 +54,7 @@
                         <div class="list-group-item" th:each="course: ${courses}">
                             <li th:text="${course.getCourseLabel}">
                             </li>
-                            <button class="btn btn-primary">add</button>
+                            <button class="btn btn-primary" onclick="addCourse(${course})">add</button>
                         </div>
                     </ul>
                 </div>
