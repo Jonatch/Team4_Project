@@ -28,15 +28,15 @@ public class WebController {
      */
     private class RegisterFormData{
         @NotEmpty(message = "Username cannot be empty")
-        @Size(min = 5, max = 250)
+        @Size(min = 5, max = 250, message="username has to be at least 5 characters long")
         private String username;
 
         @NotEmpty(message = "Password cannot be empty")
-        @Size(min = 8)
+        @Size(min = 8, message="password has to be at least 8 characters long")
         private String password;
 
         @NotEmpty(message = "Confirm password cannot be empty")
-        @Size(min = 8)
+        @Size(min = 8, message="password has to be at least 8 characters long")
         private String confirm_password;
 
         private String year;
@@ -86,11 +86,11 @@ public class WebController {
      */
     private class LoginFormData{
         @NotEmpty(message = "Username cannot be empty")
-        @Size(min = 5, max = 250)
+        @Size(min = 5, max = 250, message="username has to be at least 5 characters long")
         private String username;
 
         @NotEmpty(message = "Password cannot be empty")
-        @Size(min = 8)
+        @Size(min = 8, message="password has to be at least 8 characters long")
         private String password;
 
         public LoginFormData(){
@@ -143,8 +143,6 @@ public class WebController {
         totalCourses = new ArrayList<>();
         String longCSV = "large_courses.csv"; //pulls from csv of all courses
         importCoursesFromCSV(longCSV); //imports information as data we can use
-        currentUser = new User("admin", "senior", "pass", false);
-
     }
     public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
         String csvFile =  "src/main/java/edu/gcc/comp350/team4project/" + ext;
@@ -254,6 +252,9 @@ public class WebController {
     @RequestMapping("/")
     public String home(Model model) {
         // TODO: add code to display home page
+        if (currentUser == null){
+            return "redirect:/login";
+        }
 //        User newUser = currentUser; // Replace with your implementation to get the current user object
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("schedules", currentUser.getSchedules()); // Replace with your implementation to get the schedules
@@ -317,8 +318,8 @@ public class WebController {
     @GetMapping("/editschedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         // TODO: add code to display edit schedule page for a specific schedule
-        model.addAttribute("schedule", tempSchedule);
-        model.addAttribute("courses", totalCourses);
+//        model.addAttribute("schedule", tempSchedule);
+//        model.addAttribute("courses", totalCourses);
         return "edit-schedule";
     }
 
