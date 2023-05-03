@@ -1,4 +1,5 @@
 package edu.gcc.comp350.team4project;
+import edu.gcc.comp350.team4project.forms.*;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,127 +24,186 @@ import java.util.List;
 @SpringBootApplication
 @Controller
 public class WebController {
-    /**
-     * This class holds together form data for a User
-     */
-    private class RegisterFormData{
-        @NotEmpty(message = "Username cannot be empty")
-        @Size(min = 5, max = 250, message="username has to be at least 5 characters long")
-        private String username;
-
-        @NotEmpty(message = "Password cannot be empty")
-        @Size(min = 8, message="password has to be at least 8 characters long")
-        private String password;
-
-        @NotEmpty(message = "Confirm password cannot be empty")
-        @Size(min = 8, message="password has to be at least 8 characters long")
-        private String confirm_password;
-
-        private String year;
-
-        public RegisterFormData(){
-            this.username = "";
-            this.password = "";
-            this.confirm_password = "";
-            this.year = "";
-        }
-
-        public String getConfirm_password() {
-            return confirm_password;
-        }
-
-        public void setConfirm_password(String confirm_password) {
-            this.confirm_password = confirm_password;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getYear() {
-            return year;
-        }
-
-        public void setYear(String year) {
-            this.year = year;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-    }
-
-    /**
-     * This class holds together form data for the login form
-     */
-    private class LoginFormData{
-        @NotEmpty(message = "Username cannot be empty")
-        @Size(min = 5, max = 250, message="username has to be at least 5 characters long")
-        private String username;
-
-        @NotEmpty(message = "Password cannot be empty")
-        @Size(min = 8, message="password has to be at least 8 characters long")
-        private String password;
-
-        public LoginFormData(){
-            this.username = "";
-            this.password = "";
-        }
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-    }
-
-    private class ScheduleFormData{
-        private String name;
-        private String semester;
-
-        public ScheduleFormData(){
-            this.name = "";
-            this.semester = "";
-        }
-        public String getName() {return name;}
-
-        public void setName(String name) {this.name = name;}
-        public String getSemester() {return semester;}
-
-        public void setSemester(String semester) {this.semester = semester;}
-    }
-
     //Session Data
     private static User currentUser;
     private static SearchController searchBox;
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
 
-    public static void initialize(){
-        //Importing Courses
-        currentUser = new User("admin", "admin", "admin", false);
+    @RequestMapping("/")
+    public String home(Model model) {
+        //If there are is no current user then redirect to the login form
+        if (currentUser == null){
+            return "redirect:/login";
+        }
+        //If we have a user then return the home template for that user and the user's schedules
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("schedules", currentUser.getSchedules()); // Replace with your implementation to get the schedules
+        return "home";
+    }
 
+    @GetMapping("/login")
+    public String login(Model model, RedirectAttributes redirectAttributes) {
+        //If we have some errors to show, add them to the model to be showed
+        if (redirectAttributes.containsAttribute("errors")) {
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
+        //send Fields data to be filled (LoginFormData() object holds together)
+        model.addAttribute("formData", new LoginFormData());
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
+        //Checks if the username and password provided are in the database. Flash an error message
+        if(!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
+            result.rejectValue("username", "username.invalid", "The username and password do not match");
+        }
+        //If there is any other error (e.g. password is too short) flash them and return the login form again
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
+            System.out.println(result.getAllErrors().toString());
+            return "redirect:/login";
+        }
+        //If there are no errors then load the user data. Redirect to Home page
+        currentUser = DatabaseController.pullUser(formData.getUsername());
+        return "redirect:/";
+    }
+
+    @GetMapping("/schedules")
+    public String schedules(Model model) {
+        // TODO: add code to display schedules page
+        return "schedules";
+    }
+
+    @GetMapping("/create-schedule")
+    public String createSchedule(Model model) {
+        model.addAttribute("scheduleFormData", new ScheduleFormData());
+        return "create-schedule";
+    }
+
+    @PostMapping("/create-schedule")
+    public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
+        Semester semester = null;
+        if(scheduleFormData.getSemester().equalsIgnoreCase("spring")){
+            semester = Semester.SPRING;
+        }else if(scheduleFormData.getSemester().equalsIgnoreCase("fall")){
+            semester = Semester.FALL;
+        }
+
+        Schedule newSchedule = new Schedule(scheduleFormData.getName(), semester);
+        tempSchedule = newSchedule;
+        currentUser.saveScheduleToUser(tempSchedule);
+
+        return "redirect:/editschedule/" + newSchedule.getScheduleName();
+    }
+
+
+
+    @GetMapping("/editschedule/{scheduleName}")
+    public String editSchedule(@PathVariable String scheduleName, Model model) {
+        //Getting all the courses loaded into totalCourses\
+        initialize();
+        //Adding all courses to the model
+        model.addAttribute("courses", totalCourses);
+        //Adding the current schedule being modified
+        model.addAttribute("schedule", currentUser.getSchedule(scheduleName));
+        return "edit-schedule";
+    }
+
+    @PostMapping("/editschedule/{scheduleName}")
+    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule) {
+        // TODO: add code to handle form submission for editing a schedule
+        return "redirect:/schedules";
+    }
+
+    @GetMapping("/viewschedule/{scheduleName}")
+    public String viewSchedule(@PathVariable String scheduleName, Model model) {
+        // TODO: add code to display edit schedule page for a specific schedule
+        ArrayList<Schedule> schedules = currentUser.getSchedules();
+        for (Schedule schedule : schedules) {
+            if (schedule.getScheduleName().equals(scheduleName)) {
+                tempSchedule = schedule;
+                break;
+            }
+        }
+        model.addAttribute("schedule", tempSchedule);
+        return "schedule";
+    }
+
+    @GetMapping("/register")
+    public String register(Model model, RedirectAttributes redirectAttributes) {
+        //If there are any errors from previous submission of form flash them
+        if (redirectAttributes.containsAttribute("errors")){
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
+        //Else send the Form holding the fields to be filled and return form
+        model.addAttribute("formData", new RegisterFormData());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
+        //If the 'password' field is not the same as the 'Confirm password' field, flash and error
+        if (!formData.getPassword().equals(formData.getConfirm_password())){
+            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
+        }
+        //If the user already exist, flash that user already exist
+        if(DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
+            result.rejectValue("username", "username.invalid", "This account already exist");
+        }
+        //If there are any other errors (e.g. password is too short), flash them
+        if(result.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
+            System.out.println(result.getAllErrors().toString());
+            return "redirect:/register";
+        }
+        //If everything is gucci then create a new user and add it to the database. Redirect to login form for user to login!
+        User newUser = new User(formData.getUsername(), formData.getYear(), formData.getPassword(), false);
+        DatabaseController.insert(newUser);
+        return "redirect:/login";
+    }
+
+    @GetMapping("/select-courses-completed")
+    public String showForm(Model model) {
+        ClassListRead c = new ClassListRead();
+        c.ReadTextFile("Chemistry");
+        ArrayList<String> classes = c.classes;
+        model.addAttribute("options", classes);
+        return "select-courses";
+    }
+
+    @PostMapping("/select-courses-completed")
+    public String processForm(@ModelAttribute("selectedOptions") List<String> selectedOptions) {
+        // Handle the form submission
+        return "result";
+    }
+
+    @PostMapping("/logout")
+    public String doLogout() {
+        // TODO: add code to handle logout
+        return "redirect:/login";
+    }
+
+    @PostMapping("/deleteschedule/{scheduleName}")
+    public String doDeleteSchedule(@PathVariable String scheduleName) {
+        // TODO: add code to handle deleting a specific schedule
+        return "redirect:/schedules";
+    }
+
+    /**
+     * Helper method to load courses into the totalCourses array
+     */
+    public static void initialize(){
         totalCourses = new ArrayList<>();
         String longCSV = "large_courses.csv"; //pulls from csv of all courses
         importCoursesFromCSV(longCSV); //imports information as data we can use
     }
+
+    /**
+     * Helper method to import courses from csv file
+     * @param ext: name of file (has to be in: src/main/java/edu/gcc/comp350/team4project/)
+     */
     public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
         String csvFile =  "src/main/java/edu/gcc/comp350/team4project/" + ext;
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -248,157 +308,5 @@ public class WebController {
             System.out.println("CSV_FILE not found!");
         }
     }
-
-    @RequestMapping("/")
-    public String home(Model model) {
-        // TODO: add code to display home page
-        if (currentUser == null){
-            return "redirect:/login";
-        }
-//        User newUser = currentUser; // Replace with your implementation to get the current user object
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("schedules", currentUser.getSchedules()); // Replace with your implementation to get the schedules
-        return "home";
-    }
-
-    @GetMapping("/login")
-    public String login(Model model, RedirectAttributes redirectAttributes) {
-        // TODO: add code to display login page
-        if (redirectAttributes.containsAttribute("errors")) {
-            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
-        }
-        model.addAttribute("formData", new LoginFormData());
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
-        // TODO: add code to handle login form submission
-        if(!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
-            result.rejectValue("username", "username.invalid", "The username and password do not match");
-        }
-        if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
-            System.out.println(result.getAllErrors().toString());
-            return "redirect:/login";
-        }
-        currentUser = DatabaseController.pullUser(formData.getUsername());
-        return "redirect:/";
-    }
-
-    @GetMapping("/schedules")
-    public String schedules(Model model) {
-        // TODO: add code to display schedules page
-        return "schedules";
-    }
-
-    @GetMapping("/create-schedule")
-    public String createSchedule(Model model) {
-        model.addAttribute("scheduleFormData", new ScheduleFormData());
-        return "create-schedule";
-    }
-
-    @PostMapping("/create-schedule")
-    public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
-        Semester semester = null;
-        if(scheduleFormData.getSemester().equalsIgnoreCase("spring")){
-            semester = Semester.SPRING;
-        }else if(scheduleFormData.getSemester().equalsIgnoreCase("fall")){
-            semester = Semester.FALL;
-        }
-
-        Schedule newSchedule = new Schedule(scheduleFormData.name, semester);
-        tempSchedule = newSchedule;
-
-        return "redirect:/editschedule/" + newSchedule.getScheduleName();
-    }
-
-
-
-    @GetMapping("/editschedule/{scheduleName}")
-    public String editSchedule(@PathVariable String scheduleName, Model model) {
-        // TODO: add code to display edit schedule page for a specific schedule
-//        model.addAttribute("schedule", tempSchedule);
-//        model.addAttribute("courses", totalCourses);
-        return "edit-schedule";
-    }
-
-    @PostMapping("/editschedule/{scheduleName}")
-    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule) {
-        // TODO: add code to handle form submission for editing a schedule
-        return "redirect:/schedules";
-    }
-
-    @GetMapping("/viewschedule/{scheduleName}")
-    public String viewSchedule(@PathVariable String scheduleName, Model model) {
-        // TODO: add code to display edit schedule page for a specific schedule
-        ArrayList<Schedule> schedules = currentUser.getSchedules();
-        for (Schedule schedule : schedules) {
-            if (schedule.getScheduleName().equals(scheduleName)) {
-                tempSchedule = schedule;
-                break;
-            }
-        }
-        model.addAttribute("schedule", tempSchedule);
-        return "schedule";
-    }
-
-    @GetMapping("/register")
-    public String register(Model model, RedirectAttributes redirectAttributes) {
-        // TODO: add code to display registration page
-        if (redirectAttributes.containsAttribute("errors")){
-            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
-        }
-        model.addAttribute("formData", new RegisterFormData());
-        return "register";
-    }
-
-    @GetMapping("/select-courses-completed")
-    public String showForm(Model model) {
-        ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Chemistry");
-        ArrayList<String> classes = c.classes;
-        model.addAttribute("options", classes);
-        return "select-courses";
-    }
-
-    @PostMapping("/select-courses-completed")
-    public String processForm(@ModelAttribute("selectedOptions") List<String> selectedOptions) {
-        // Handle the form submission
-        return "result";
-    }
-
-
-    @PostMapping("/register")
-    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
-        // TODO: add code to handle registration form submission
-        if (!formData.getPassword().equals(formData.getConfirm_password())){
-            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
-        }
-        if(DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())){
-            result.rejectValue("username", "username.invalid", "This account already exist");
-        }
-        if(result.hasErrors()){
-            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
-            System.out.println(result.getAllErrors().toString());
-            return "redirect:/register";
-        }
-        User newUser = new User(formData.username, formData.year, formData.password, false);
-        DatabaseController.insert(newUser);
-        return "redirect:/login";
-    }
-
-    @PostMapping("/logout")
-    public String doLogout() {
-        // TODO: add code to handle logout
-        return "redirect:/login";
-    }
-
-    @PostMapping("/deleteschedule/{scheduleName}")
-    public String doDeleteSchedule(@PathVariable String scheduleName) {
-        // TODO: add code to handle deleting a specific schedule
-        return "redirect:/schedules";
-    }
-
 
 }

@@ -55,6 +55,15 @@ public class User {
         return schedules;
     }
 
+    public Schedule getSchedule(String scheduleName){
+        for (Schedule s : schedules){
+            if (s.getScheduleName().equals(scheduleName)){
+                return s;
+            }
+        }
+        return new Schedule("Schedule not found", Semester.FALL);
+    }
+
     public void saveScheduleToUser(Schedule newSchedule) { //Shouldn't this just pass in a schedule? and be called save schedule?
         schedules.add(newSchedule);
 //        if (newSchedule.getTotalCredits() < 12) {
