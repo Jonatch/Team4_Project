@@ -170,49 +170,6 @@ public class WebController {
         return "home";
     }
 
-    @GetMapping("/login")
-    public String login(Model model, RedirectAttributes redirectAttributes) {
-        // If we have some errors to show, add them to the model to be showed
-        if (redirectAttributes.containsAttribute("errors")) {
-            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
-        }
-        // send Fields data to be filled (LoginFormData() object holds together)
-        model.addAttribute("formData", new LoginFormData());
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result,
-            RedirectAttributes redirectAttributes) {
-        // Checks if the username and password provided are in the database. Flash an
-        // error message
-        if (!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
-            result.rejectValue("username", "username.invalid", "The username and password do not match");
-        }
-        // If there is any other error (e.g. password is too short) flash them and
-        // return the login form again
-        if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
-            System.out.println(result.getAllErrors().toString());
-            return "redirect:/login";
-        }
-        // If there are no errors then load the user data. Redirect to Home page
-        currentUser = DatabaseController.pullUser(formData.getUsername());
-        return "redirect:/";
-    }
-
-    @GetMapping("/schedules")
-    public String schedules(Model model) {
-        // TODO: add code to display schedules page
-        return "schedules";
-    }
-
-    @GetMapping("/create-schedule")
-    public String createSchedule(Model model) {
-        model.addAttribute("scheduleFormData", new ScheduleFormData());
-        return "create-schedule";
-    }
-
     @PostMapping("/create-schedule")
     public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
         Semester semester = null;
@@ -227,73 +184,6 @@ public class WebController {
         currentUser.saveScheduleToUser(tempSchedule);
 
         return "redirect:/editschedule/" + newSchedule.getScheduleName();
-    }
-
-    @GetMapping("/editschedule/{scheduleName}")
-    public String editSchedule(@PathVariable String scheduleName, Model model) {
-        // Getting all the courses loaded into totalCourses\
-        initialize();
-        // Adding all courses to the model
-        model.addAttribute("courses", totalCourses);
-        // Adding the current schedule being modified
-        model.addAttribute("schedule", currentUser.getSchedule(scheduleName));
-        return "edit-schedule";
-    }
-
-    @PostMapping("/editschedule/{scheduleName}")
-    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule) {
-        // TODO: add code to handle form submission for editing a schedule
-        return "redirect:/schedules";
-    }
-
-    @GetMapping("/viewschedule/{scheduleName}")
-    public String viewSchedule(@PathVariable String scheduleName, Model model) {
-        // TODO: add code to display edit schedule page for a specific schedule
-        ArrayList<Schedule> schedules = currentUser.getSchedules();
-        for (Schedule schedule : schedules) {
-            if (schedule.getScheduleName().equals(scheduleName)) {
-                tempSchedule = schedule;
-                break;
-            }
-        }
-        model.addAttribute("schedule", tempSchedule);
-        return "schedule";
-    }
-
-    @GetMapping("/register")
-    public String register(Model model, RedirectAttributes redirectAttributes) {
-        // If there are any errors from previous submission of form flash them
-        if (redirectAttributes.containsAttribute("errors")) {
-            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
-        }
-        // Else send the Form holding the fields to be filled and return form
-        model.addAttribute("formData", new RegisterFormData());
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result,
-            RedirectAttributes redirectAttributes) {
-        // If the 'password' field is not the same as the 'Confirm password' field,
-        // flash and error
-        if (!formData.getPassword().equals(formData.getConfirm_password())) {
-            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
-        }
-        // If the user already exist, flash that user already exist
-        if (DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
-            result.rejectValue("username", "username.invalid", "This account already exist");
-        }
-        // If there are any other errors (e.g. password is too short), flash them
-        if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
-            System.out.println(result.getAllErrors().toString());
-            return "redirect:/register";
-        }
-        // If everything is gucci then create a new user and add it to the database.
-        // Redirect to login form for user to login!
-        User newUser = new User(formData.getUsername(), formData.getYear(), formData.getPassword(), false);
-        DatabaseController.insert(newUser);
-        return "redirect:/login";
     }
 
     @GetMapping("/select-courses-completed")
@@ -437,17 +327,6 @@ public class WebController {
         } catch (IOException ignored) {
             System.out.println("CSV_FILE not found!");
         }
-    }
-
-    @RequestMapping("/")
-    public String home(Model model) {
-        // TODO: add code to display home page
-        // User newUser = currentUser; // Replace with your implementation to get the
-        // current user object
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("schedules", currentUser.getSchedules()); // Replace with your implementation to get the
-                                                                     // schedules
-        return "home";
     }
 
     @GetMapping("/login")

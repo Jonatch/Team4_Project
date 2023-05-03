@@ -8,7 +8,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">My App</a>
+    <a class="navbar-brand" href="#">Team 4</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -17,9 +17,15 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Welcome, <span th:text="${currentUser.username}"></span>!</a>
             </li>
+            <li class="nav-item">
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </li>
         </ul>
     </div>
 </nav>
+
 <div class="container mt-5">
     <h2 class="mb-3">Your Schedules</h2>
     <table class="table">
@@ -42,7 +48,7 @@
                     <form th:action="@{/viewschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
                         <button class="btn btn-success mr-2" type="submit">View</button>
                     </form>
-                    <form th:action="@{/deleteschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
+                    <form th:action="@{/deleteschedule/{scheduleName}(scheduleName=${schedule.scheduleName})}" method="post" onsubmit="return confirm('Are you sure you want to delete this schedule?')">
                         <button class="btn btn-danger mr-2" type="submit">Delete</button>
                     </form>
                 </div>

@@ -24,8 +24,9 @@
             <div class="col text-center">
                 <!--Title-->
                 <h1 class="display-4" th:text="${schedule.getScheduleName}"></h1>
-                <p class="float-right" th:text="${schedule.getSemesterString}"></p>
-                <p class="float-right" th:text="${schedule.getTotalCreditsString}"></p>
+                <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
+                <br>
+                <p class="float-right" th:text="${'credits: ' + schedule.getTotalCreditsString}"></p>
                 <button class="btn btn-outline-primary float-left">remove all courses</button>
             </div>
         </div>
