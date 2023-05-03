@@ -23,8 +23,9 @@
             </div>
             <div class="col text-center">
                 <!--Title-->
-                <h1 class="display-4">$Schedule Name</h1>
-                <p class="float-right">semester: $semester<br>credits: $num_credits</p>
+                <h1 class="display-4" th:text="${schedule.getScheduleName}"></h1>
+                <p class="float-right" th:text="${schedule.getSemesterString}"></p>
+                <p class="float-right" th:text="${schedule.getTotalCreditsString}"></p>
                 <button class="btn btn-outline-primary float-left">remove all courses</button>
             </div>
         </div>
@@ -45,69 +46,11 @@
                 </div>
                 <div class="row scrollable" style="height: 650px; overflow-y: auto;">
                     <ul class="list-group">
-                        <li th: each="course: ${totalCourses}" th:text="${course.name}" class="list-group-item">
+                        <div class="list-group-item" th:each="course: ${courses}">
+                            <li th:text="${course.getCourseLabel}">
+                            </li>
                             <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
-                        <li class="list-group-item">
-                            COMP 350 - Software Engineering - 1-2pm
-                            <button class="btn btn-primary">add</button>
-                        </li>
+                        </div>
                     </ul>
                 </div>
             </div>
