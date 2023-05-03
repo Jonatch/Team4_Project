@@ -49,4 +49,28 @@ public class Course extends ScheduleElement {
     public String getProfessor() { return professor; }
     public String getDescription() { return description; }
     public DepartmentInfo getDepartmentInfo(){ return this.departmentInfo; }
+    public String getCourseLabel(){
+        String daysFormatted = "";
+        if(days.contains("MONDAY")){
+            daysFormatted += "M";
+        }
+        if(days.contains("TUESDAY")){
+            daysFormatted += "T";
+        }
+        if(days.contains("WEDNESDAY")){
+            daysFormatted += "W";
+        }
+        if(days.contains("THURSDAY")){
+            daysFormatted += "R";
+        }
+        if(days.contains("FRIDAY")){
+            daysFormatted += "F";
+        }
+
+        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + " \n"
+                + name + " \n"
+                + daysFormatted + " \n"
+                + timeInfo.startTime() + "-" + timeInfo.endTime();
+    }
+
 }

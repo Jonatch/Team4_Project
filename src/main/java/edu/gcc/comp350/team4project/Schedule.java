@@ -41,6 +41,16 @@ public class Schedule {
     public Semester getSemester() { return semester; }
     public ArrayList<ScheduleElement> getEvents() { return events; }
     public ArrayList<Course> getCourses() { return courses; }
+    public void setTotalCredits(int totalCredits) {
+        this.totalCredits = totalCredits;
+    }
+    public String getSemesterString(){
+        return getSemester().toString();
+    }
+
+    public String getTotalCreditsString(){
+        return ""+getTotalCredits();
+    }
 
     public void addCourse(Course newCourse) throws Exception{ //adds courses and throws an exception if there are conflicts
         for(Course course : courses){
