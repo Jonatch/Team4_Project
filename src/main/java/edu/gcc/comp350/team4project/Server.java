@@ -17,7 +17,7 @@ public class Server {
         DatabaseController.createNewDatabase("team4_project.db");
         DatabaseController.drop();
         DatabaseController.createNewTable();
-        User jonah = new User("Jonah_Dybas", "Junior", "Password", false);
+        User jonah = new User("jonah_dybas", "Junior", "Password", false);
         Schedule schedule = new Schedule("test_sched", Semester.SPRING);
         Schedule schedule2 = new Schedule("test_sched2", Semester.SPRING);
         ArrayList<DayOfWeek> days1 = new ArrayList<>();

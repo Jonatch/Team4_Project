@@ -121,6 +121,16 @@ public class WebController {
         return "redirect:/";
     }
 
+    //helper page to redirect from log in if a Guest
+    @GetMapping("/guest-user")
+    public String guestUser(Model model, RedirectAttributes redirectAttributes) {
+        if (redirectAttributes.containsAttribute("errors")) {
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
+        currentUser = new User("Guest","","",true);
+        return "redirect:/";
+    }
+
     @GetMapping("/schedules")
     public String schedules(Model model) {
         // TODO: add code to display schedules page
@@ -135,89 +145,14 @@ public class WebController {
 
     @GetMapping("/editschedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
-        // TODO: add code to display edit schedule page for a specific
-        String[][] array = new String[80][6];
-        String[] header = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
-
-        LocalTime beginning = LocalTime.of(4, 0);
-        LocalTime ending = LocalTime.MIDNIGHT;
-        int j = 0;
-        while (beginning != ending) {
-            array[j][0] = beginning.toString();
-            beginning = beginning.plusMinutes(15);
-            j = j + 1;
-        }
-        List<String> course_info = new ArrayList<>();
-        for (Course c : tempSchedule.getCourses()) {
-            List<DayOfWeek> course_days = c.getDays();
-            LocalTime course_start_time = c.getStartTime();
-            LocalTime course_end_time = c.getEndTime();
-            int start_row = (course_start_time.getHour() - 4) * 4 + course_start_time.getMinute() / 15;
-            int end_row = (course_end_time.getHour() - 4) * 4 + course_end_time.getMinute() / 15;
-            int[] columns = new int[3];
-            int col_idx = 0;
-            for (int i = 0; i < course_days.size(); i++) {
-                switch (course_days.get(i)) {
-                    case MONDAY:
-                        columns[col_idx] = 1;
-                        col_idx++;
-                        break;
-                    case WEDNESDAY:
-                        columns[col_idx] = 3;
-                        col_idx++;
-                        break;
-                    case FRIDAY:
-                        columns[col_idx] = 5;
-                        col_idx++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            for (int i = start_row; i <= end_row; i++) {
-                for (int k = 0; k < columns.length; k++) {
-                    if (columns[k] == 0 || columns[k] % 6 == 0) {
-                        continue;
-                    }
-                    array[i][columns[k]] = c.getName();
-                }
-            }
-
-            int[] tr_columns = new int[2];
-            int tr_col_idx = 0;
-            for (int i = 0; i < course_days.size(); i++) {
-                switch (course_days.get(i)) {
-                    case TUESDAY:
-                        tr_columns[tr_col_idx] = 2;
-                        tr_col_idx++;
-                        break;
-                    case THURSDAY:
-                        tr_columns[tr_col_idx] = 4;
-                        tr_col_idx++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            for (int i = start_row; i <= end_row; i++) {
-                for (int k = 0; k < tr_columns.length; k++) {
-                    if (tr_columns[k] == 0 || tr_columns[k] % 6 == 0) {
-                        continue;
-                    }
-                    array[i][tr_columns[k]] = c.getName();
-                }
-            }
-        }
-        model.addAttribute("header", header);
-        model.addAttribute("times", array);
+        printCalendarView(scheduleName,model);
 
         //Getting all the courses loaded into totalCourses\
         initialize();
         //Adding all courses to the model
         model.addAttribute("courses", totalCourses);
         //Adding the current schedule being modified
-        model.addAttribute("schedule", currentUser.getSchedule(scheduleName));
+        model.addAttribute("schedule", tempSchedule);
         return "edit-schedule";
     }
 
@@ -237,6 +172,78 @@ public class WebController {
 
     @GetMapping("/viewschedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
+        printCalendarView(scheduleName,model);
+        return "schedule";
+    }
+
+    @GetMapping("/register")
+    public String register(Model model, RedirectAttributes redirectAttributes) {
+        // TODO: add code to display registration page
+        if (redirectAttributes.containsAttribute("errors")) {
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
+        model.addAttribute("formData", new RegisterFormData());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result,
+                             RedirectAttributes redirectAttributes) {
+        // TODO: add code to handle registration form submission
+        if (!formData.getPassword().equals(formData.getConfirm_password())) {
+            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
+        }
+        if (DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
+            result.rejectValue("username", "username.invalid", "This account already exist");
+        }
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
+            System.out.println(result.getAllErrors().toString());
+            return "redirect:/register";
+        }
+        User newUser = new User(formData.getUsername(), formData.getYear(), formData.getPassword(), false);
+        DatabaseController.insert(newUser);
+        return "redirect:/login";
+    }
+
+    @PostMapping("/logout")
+    public String doLogout() {
+        // TODO: add code to handle logout
+        currentUser = null;
+        return "redirect:/login";
+    }
+
+    @PostMapping("/deleteschedule/{scheduleName}")
+    public String doDeleteSchedule(@PathVariable String scheduleName) {
+        // Find the index of the schedule to be removed
+        int index = -1;
+        List<Schedule> schedules = currentUser.getSchedules();
+        for (int i = 0; i < schedules.size(); i++) {
+            if (schedules.get(i).getScheduleName().equals(scheduleName)) {
+                index = i;
+                break;
+            }
+        }
+
+        // Remove the schedule if it was found
+        if (index != -1) {
+            currentUser.removeSchedule(index);
+            updateUser(currentUser);
+        }
+
+        return "redirect:/";
+    }
+
+    /**
+     * Helper method to load courses into the totalCourses array
+     */
+    public static void initialize() {
+        totalCourses = new ArrayList<>();
+        String longCSV = "large_courses.csv"; // pulls from csv of all courses
+        importCoursesFromCSV(longCSV); // imports information as data we can use
+    }
+
+    public static void printCalendarView(String scheduleName, Model model){
         for (Schedule s : currentUser.getSchedules()) {
             if (s.getScheduleName().equals(scheduleName)) {
                 tempSchedule = s;
@@ -318,76 +325,7 @@ public class WebController {
         model.addAttribute("header", header);
         model.addAttribute("times", array);
 
-        return "schedule";
     }
-
-    @GetMapping("/register")
-    public String register(Model model, RedirectAttributes redirectAttributes) {
-        // TODO: add code to display registration page
-        if (redirectAttributes.containsAttribute("errors")) {
-            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
-        }
-        model.addAttribute("formData", new RegisterFormData());
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result,
-                             RedirectAttributes redirectAttributes) {
-        // TODO: add code to handle registration form submission
-        if (!formData.getPassword().equals(formData.getConfirm_password())) {
-            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
-        }
-        if (DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
-            result.rejectValue("username", "username.invalid", "This account already exist");
-        }
-        if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
-            System.out.println(result.getAllErrors().toString());
-            return "redirect:/register";
-        }
-        User newUser = new User(formData.getUsername(), formData.getYear(), formData.getPassword(), false);
-        DatabaseController.insert(newUser);
-        return "redirect:/login";
-    }
-
-    @PostMapping("/logout")
-    public String doLogout() {
-        // TODO: add code to handle logout
-        currentUser = null;
-        return "redirect:/login";
-    }
-
-    @PostMapping("/deleteschedule/{scheduleName}")
-    public String doDeleteSchedule(@PathVariable String scheduleName) {
-        // Find the index of the schedule to be removed
-        int index = -1;
-        List<Schedule> schedules = currentUser.getSchedules();
-        for (int i = 0; i < schedules.size(); i++) {
-            if (schedules.get(i).getScheduleName().equals(scheduleName)) {
-                index = i;
-                break;
-            }
-        }
-
-        // Remove the schedule if it was found
-        if (index != -1) {
-            currentUser.removeSchedule(index);
-            updateUser(currentUser);
-        }
-
-        return "redirect:/";
-    }
-
-    /**
-     * Helper method to load courses into the totalCourses array
-     */
-    public static void initialize() {
-        totalCourses = new ArrayList<>();
-        String longCSV = "large_courses.csv"; // pulls from csv of all courses
-        importCoursesFromCSV(longCSV); // imports information as data we can use
-    }
-
     /**
      * Helper method to import courses from csv file
      *
