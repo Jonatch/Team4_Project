@@ -260,14 +260,17 @@ public class WebController {
                 tempSchedule = s;
             }
         }
-        String[][] array = new String[80][6];
+        String[][] array = new String[53][6];
         String[] header = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
-        LocalTime beginning = LocalTime.of(4, 0);
-        LocalTime ending = LocalTime.MIDNIGHT;
+
+        LocalTime beginning = LocalTime.of(8, 0);
+        LocalTime ending = LocalTime.of(21, 0);
         int j = 0;
-        while (beginning != ending) {
-            array[j][0] = beginning.toString();
+        while (beginning.isBefore(ending.plusMinutes(15))) {
+            String timeString = beginning.format(formatter);
+            array[j][0] = timeString;
             beginning = beginning.plusMinutes(15);
             j = j + 1;
         }
@@ -276,8 +279,8 @@ public class WebController {
             List<DayOfWeek> course_days = c.getDays();
             LocalTime course_start_time = c.getStartTime();
             LocalTime course_end_time = c.getEndTime();
-            int start_row = (course_start_time.getHour() - 4) * 4 + course_start_time.getMinute() / 15;
-            int end_row = (course_end_time.getHour() - 4) * 4 + course_end_time.getMinute() / 15;
+            int start_row = (course_start_time.getHour() - 8) * 4 + course_start_time.getMinute() / 15;
+            int end_row = (course_end_time.getHour() - 8) * 4 + course_end_time.getMinute() / 15;
             int[] columns = new int[3];
             int col_idx = 0;
             for (int i = 0; i < course_days.size(); i++) {
