@@ -1,6 +1,7 @@
 package edu.gcc.comp350.team4project;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,11 +11,13 @@ import java.util.regex.Pattern;
 public class ClassListRead {
     public ArrayList<String> classes;
     public static ArrayList<Course> totalCourses;
+    public static ArrayList<String> classesToDo;
+    int credits;
 
-    public static void main(String[] args) {
-        ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Accounting");
-    }
+//    public static void main(String[] args) {
+//        ClassListRead c = new ClassListRead();
+//        c.ReadTextFile("Accounting");
+//    }
 
     public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
         totalCourses = new ArrayList<>();
@@ -167,8 +170,71 @@ public class ClassListRead {
                 }
             }
         }
-//        for (int i = 0; i < classes.size(); i++) {
-//            System.out.println(classes.get(i));
-//        }
+    }
+
+    public void ClassesSuggest(Semester semester) {
+        credits = 0;
+        WebController w = new WebController();
+        classesToDo = w.getArrayList();
+        while (credits <= 16) {
+            for (int i = 0; i < classesToDo.size(); i++) {
+                System.out.println(classesToDo.get(i));
+                if (Pattern.matches("[A-Z]{4}\s\\d{3}", classesToDo.get(i))) {
+                    if (sameSemester(classesToDo.get(i), semester)) {
+                        getCredits(classesToDo.get(i), semester);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean sameSemester(String s, Semester semester) {
+        String longCSV = "large_courses.csv"; //pulls from csv of all courses
+        importCoursesFromCSV(longCSV); //imports information as data we can use
+        if (semester == Semester.FALL) {
+            SearchController sFall = new SearchController(totalCourses, Semester.FALL);
+            String dept = s.substring(0,4);
+            String courseNum = s.substring(5,8);
+            sFall.filterByDept(dept);
+            sFall.filterByExactLevel(courseNum);
+            if (!sFall.getFilteredCourses().isEmpty()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            SearchController sSpring = new SearchController(totalCourses, Semester.SPRING);
+            String dept = s.substring(0, 4);
+            String courseNum = s.substring(5, 8);
+            sSpring.filterByDept(dept);
+            sSpring.filterByExactLevel(courseNum);
+            if (!sSpring.getFilteredCourses().isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    public int getCredits(String s, Semester semester) {
+        String longCSV = "large_courses.csv"; //pulls from csv of all courses
+        importCoursesFromCSV(longCSV); //imports information as data we can use
+
+        if (semester == Semester.FALL) {
+            SearchController sFall = new SearchController(totalCourses, Semester.FALL);
+            String dept = s.substring(0,4);
+            String courseNum = s.substring(5,8);
+            sFall.filterByDept(dept);
+            sFall.filterByExactLevel(courseNum);
+            return sFall.getFilteredCourses().get(0).getCredits();
+        }
+
+        SearchController sSpring = new SearchController(totalCourses, Semester.SPRING);
+        String dept = s.substring(0,4);
+        String courseNum = s.substring(5,8);
+        sSpring.filterByDept(dept);
+        sSpring.filterByExactLevel(courseNum);
+        return sSpring.getFilteredCourses().get(0).getCredits();
     }
 }
