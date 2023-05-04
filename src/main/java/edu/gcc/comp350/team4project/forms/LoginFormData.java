@@ -5,11 +5,11 @@ import javax.validation.constraints.Size;
 
 public class LoginFormData {
     @NotEmpty(message = "Username cannot be empty")
-    @Size(min = 5, max = 250, message="username has to be at least 5 characters long")
+    @Size(max = 250, message="Attempted username too long")
     private String username;
 
     @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 8, message="password has to be at least 8 characters long")
+    @Size(max = 250, message="Attempted password too long")
     private String password;
 
     public LoginFormData(){

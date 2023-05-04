@@ -6,8 +6,8 @@ import java.util.HashSet;
 
 public class User {
     private String username;
-    private String year;
     private String password;
+    private String year;
     private boolean isGuest;
     private ArrayList<Schedule> schedules;
     private static final int MAX_SCHEDULES = 5;
@@ -15,8 +15,8 @@ public class User {
 
     public User(String username, String year, String password, boolean isGuest) {
         this.username = username;
-        this.year = year;
         this.password = password;
+        this.year = year;
         this.isGuest = isGuest;
         this.schedules = new ArrayList<>();
     }
