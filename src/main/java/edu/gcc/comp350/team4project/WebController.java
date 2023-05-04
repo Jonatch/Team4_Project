@@ -97,7 +97,10 @@ public class WebController {
 
     @GetMapping("/login")
     public String login(Model model, RedirectAttributes redirectAttributes) {
-        // TODO: add code to display login page
+        // If there are is a current user then redirect to the main page
+        if (currentUser != null) {
+            return "redirect:/";
+        }
         if (redirectAttributes.containsAttribute("errors")) {
             model.addAttribute("errors", redirectAttributes.getFlashAttributes());
         }
@@ -108,9 +111,11 @@ public class WebController {
     @PostMapping("/login")
     public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result,
                           RedirectAttributes redirectAttributes) {
-        // TODO: add code to handle login form submission
-        if (!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
-            result.rejectValue("username", "username.invalid", "The username and password do not match");
+        // Checks to see if any fields are empty before authenticating to avoid sending extra errors
+        if(!(formData.getUsername().isEmpty() || formData.getPassword().isEmpty())){
+            if (!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
+                result.rejectValue("username", "username.invalid", "Username and password combination does not exist");
+            }
         }
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
@@ -121,15 +126,6 @@ public class WebController {
         return "redirect:/";
     }
 
-    //helper page to redirect from log in if a Guest
-    @GetMapping("/guest-user")
-    public String guestUser(Model model, RedirectAttributes redirectAttributes) {
-        if (redirectAttributes.containsAttribute("errors")) {
-            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
-        }
-        currentUser = new User("Guest","","",true);
-        return "redirect:/";
-    }
 
     @GetMapping("/schedules")
     public String schedules(Model model) {
@@ -178,7 +174,10 @@ public class WebController {
 
     @GetMapping("/register")
     public String register(Model model, RedirectAttributes redirectAttributes) {
-        // TODO: add code to display registration page
+        // If there are is a current user then redirect to the main page
+        if (currentUser != null) {
+            return "redirect:/";
+        }
         if (redirectAttributes.containsAttribute("errors")) {
             model.addAttribute("errors", redirectAttributes.getFlashAttributes());
         }
@@ -189,12 +188,14 @@ public class WebController {
     @PostMapping("/register")
     public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result,
                              RedirectAttributes redirectAttributes) {
-        // TODO: add code to handle registration form submission
-        if (!formData.getPassword().equals(formData.getConfirm_password())) {
-            result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
-        }
-        if (DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
-            result.rejectValue("username", "username.invalid", "This account already exist");
+        //If any data fields in registering are empty, form throws error and do not bother authenticating
+        if(!(formData.getUsername().isEmpty() || formData.getPassword().isEmpty() || formData.getConfirm_password().isEmpty() || formData.getYear().isEmpty())){
+            if (!formData.getPassword().equals(formData.getConfirm_password())) {
+                result.rejectValue("confirm_password", "confirm_password.invalid", "The passwords do not match");
+            }
+            if (DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
+                result.rejectValue("username", "username.invalid", "This account already exist");
+            }
         }
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
@@ -206,9 +207,19 @@ public class WebController {
         return "redirect:/login";
     }
 
+    @GetMapping("/guest-user")
+    public String guestUser(Model model, RedirectAttributes redirectAttributes) {
+        if (redirectAttributes.containsAttribute("errors")) {
+            model.addAttribute("errors", redirectAttributes.getFlashAttributes());
+        }
+        //Only sets user to guest if no one is logged in
+        if(currentUser==null){
+            currentUser = new User("Guest","","",true);
+        }
+        return "redirect:/";
+    }
     @PostMapping("/logout")
     public String doLogout() {
-        // TODO: add code to handle logout
         currentUser = null;
         return "redirect:/login";
     }

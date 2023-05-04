@@ -4,18 +4,15 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class RegisterFormData {
-    @NotEmpty(message = "Username cannot be empty")
-    @Size(min = 5, max = 250, message="username has to be at least 5 characters long")
+    @Size(min = 5, max = 250, message="Username must be at least 5 characters")
     private String username;
 
-    @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 8, message="password has to be at least 8 characters long")
+    @Size(min = 8, max = 250, message="Password must at least 8 characters")
     private String password;
 
-    @NotEmpty(message = "Confirm password cannot be empty")
-    @Size(min = 8, message="password has to be at least 8 characters long")
     private String confirm_password;
 
+    @NotEmpty(message = "Must select a year")
     private String year;
 
     public RegisterFormData(){
