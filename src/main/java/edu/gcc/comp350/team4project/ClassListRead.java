@@ -175,7 +175,7 @@ public class ClassListRead {
     public void ClassesSuggest(Semester semester) {
         credits = 0;
         WebController w = new WebController();
-        //classesToDo = w.getArrayList();
+        classesToDo = w.getArrayList();
         while (credits <= 16) {
             for (int i = 0; i < classesToDo.size(); i++) {
                 System.out.println(classesToDo.get(i));
