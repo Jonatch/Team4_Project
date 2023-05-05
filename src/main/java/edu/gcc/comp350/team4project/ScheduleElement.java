@@ -49,9 +49,7 @@ public abstract class ScheduleElement {
     public abstract String toString();
     public abstract String getLevel();
     public abstract int getRefNum();
-    public boolean conflictsWith(ScheduleElement event) {
-        return this.equals(event);
-    }
+    //public boolean conflictsWith(ScheduleElement event) { return this.equals(event); }
     public String getName() { return name; }
     public int getCredits() { return credits; }
     public ArrayList<DayOfWeek> getDays() { return days; }
