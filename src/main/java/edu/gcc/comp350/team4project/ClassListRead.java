@@ -14,6 +14,8 @@ public class ClassListRead {
     public static ArrayList<String> classesToDo;
     int credits;
 
+    public ArrayList<String> otherCourseTypes;
+
 //    public static void main(String[] args) {
 //        ClassListRead c = new ClassListRead();
 //        c.ReadTextFile("Accounting");
@@ -173,18 +175,92 @@ public class ClassListRead {
     }
 
     public void ClassesSuggest(Semester semester) {
+        otherCourseTypes = new ArrayList<>();
         credits = 0;
         WebController w = new WebController();
         classesToDo = w.getArrayList();
-        while (credits <= 16) {
-            for (int i = 0; i < classesToDo.size(); i++) {
-                System.out.println(classesToDo.get(i));
-                if (Pattern.matches("[A-Z]{4}\s\\d{3}", classesToDo.get(i))) {
-                    if (sameSemester(classesToDo.get(i), semester)) {
-                        getCredits(classesToDo.get(i), semester);
+        for (int i = 0; i < classesToDo.size(); i++) {
+                String currClass = classesToDo.get(i);
+                if (Pattern.matches("[A-Z]{4}\s\\d{3}", currClass)) {
+                    if (sameSemester(currClass, semester)) {
+                        int courseCredits = getCredits(currClass, semester);
+                        if (credits + courseCredits <= 17) {
+                            otherCourseTypes.add(currClass);
+                            credits += courseCredits;
+                        }
+                    }
+                }
+                else if (Character.isDigit(currClass.charAt(0)) && Character.isDigit(currClass.charAt(1))) {
+                    int genCredits;
+                    String numCredits = currClass.substring(0,2);
+                    genCredits = Integer.parseInt(numCredits);
+                    if (credits + genCredits <= 17) {
+                        credits += genCredits;
+                        otherCourseTypes.add(currClass);
+                    }
+                    else if (credits <= 16){
+                        credits = 17;
+                        otherCourseTypes.add((17-credits) + " Credit(s) of General Electives");
+                    }
+                }
+                else if (Character.isDigit(currClass.charAt(0))) {
+                    int genCredits;
+                    String numCredits = currClass.substring(0,1);
+                    genCredits = Integer.parseInt(numCredits);
+                    if (credits + genCredits <= 17) {
+                        credits += genCredits;
+                        otherCourseTypes.add(currClass);
+                    }
+                    else if (credits <= 16){
+                        otherCourseTypes.add((17-credits) + " Credit(s) of General Electives");
+                        credits = 17;
+                    }
+                }
+                else if (currClass.equals("Music Method Block Elective")) {
+                    if (credits <= 16) {
+                        credits += 1;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Natural Science with Lab")) {
+                    if (credits <= 13) {
+                        credits += 4;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("SSFT")) {
+                    if (credits <= 15) {
+                        credits += 2;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Applied Music")) {
+                    if (credits <= 15) {
+                        credits += 2;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Ensemble")) {
+                    if (credits <= 16) {
+                        credits += 1;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Music Elective")) {
+                    if (credits <= 15) {
+                        credits += 2;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else {
+                    if (credits <= 14) {
+                        credits += 3;
+                        otherCourseTypes.add(currClass);
                     }
                 }
             }
+        for (int i = 0; i < otherCourseTypes.size(); i++) {
+            System.out.println(otherCourseTypes.get(i));
         }
     }
 
