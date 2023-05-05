@@ -1,0 +1,72 @@
+POLS 101
+3
+HUMA 102
+3
+Quantitative/Logical Reasoning Course
+3
+Foreign Language or 3 Credit General Elective
+3
+3 Credits General Electives
+3
+POLS 104
+3
+POLS 205
+3
+Quantitative/Logical Reasoning Course
+3
+WRIT 101
+3
+PHYE 101
+1
+Foreign Language or 3 Credit General Elective
+3
+POLS 201
+3
+HUMA 202
+3
+Natural Science with Lab
+4
+Foreign Language or 3 Credit General Elective
+3
+3 Credits General Electives
+3
+POLS 204
+3
+POLS 277
+3
+HUMA 200
+3
+SSFT
+2
+Foreign Language or 3 Credit General Elective
+3
+Political Science Elective
+3
+Political Science Elective
+3
+HUMA 301
+3
+Natural Science with lab
+4
+4 Credits General Electives
+4
+Political Science Elective
+3
+Political Science Elective
+3
+HUMA 303
+3
+8 Credits General Electives
+8
+Political Science Elective
+3
+Political Science Elective
+3
+11 Credits General Electives
+11
+Political Science Elective
+3
+Political Science Elective
+3
+10 Credits General Electives
+10

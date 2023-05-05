@@ -4,7 +4,7 @@ COMP 155
 3
 MATH 161
 4
-Science Elective
+Natural Science with Lab
 4
 HUMA 102
 3
@@ -12,7 +12,7 @@ COMP 220
 3
 MATH 162
 4
-Science Elective
+Natural Science with Lab
 4
 WRIT 101
 3
@@ -26,7 +26,7 @@ MATH 213
 4
 HUMA 200
 3
-Foundations of Social Science Course
+Foundations of Social Science
 3
 1 Credit General Elective
 1
