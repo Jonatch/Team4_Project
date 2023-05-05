@@ -1,0 +1,70 @@
+PSYC 101
+3
+HUMA 102
+3
+PHYE 100
+1
+Foreign Language or 3 Credit General Elective
+3
+6 Credits General Electives
+6
+PSYC 208
+3
+Quantitative/Logical Reasoning Course
+3
+WRIT 101
+3
+Foreign Language or 3 Credit General Elective
+3
+4 Credits General Electives
+4
+PSYC 201
+3
+Psychology Elective
+3
+BIOL 101
+3
+HUMA 200
+4
+Foreign Language or 3 Credit General Elective
+3
+PSYC 204
+4
+BIOL 102
+4
+HUMA 202
+3
+SSFT
+2
+Foreign Language or 3 Credit General Elective
+3
+PSYC 316
+3
+PSYC 404
+4
+Psychology Elective
+3
+BIOL 233
+4
+HUMA 301
+3
+PSYC 310
+3
+Psychology Elective
+3
+HUMA 303
+3
+7 Credits General Electives
+7
+PSYC 301
+3
+PSYC 318
+3
+PSYC 319
+1
+PSYC 401
+3
+6 Credits General Electives
+6
+15 Credits General Electives
+15

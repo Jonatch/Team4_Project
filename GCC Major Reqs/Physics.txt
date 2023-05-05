@@ -1,0 +1,78 @@
+PHYS 101
+4
+PHYS 135
+1
+COMP 141
+3
+MATH 161
+4
+HUMA 102
+3
+PHYS 102
+4
+ASTR 207
+3
+MATH 162
+4
+WRIT 101
+3
+PHYE 100
+1
+PHYS 210
+4
+MATH 261
+4
+HUMA 202
+3
+SSFT
+2
+4 Credits General Electives
+4
+PHYS 242
+3
+PHYS 234
+3
+PHYS 288
+2
+HUMA 200
+3
+6 Credits General Electives
+6
+CHEM 105
+4
+PHYS 303
+3
+PHYS 305
+3
+Technical Electives
+3
+HUMA 301
+3
+PHYS 321
+2
+PHYS 431
+3
+Physics Elective
+3
+MATH 262
+3
+MATH 263
+1
+HUMA 303
+3
+Physics Elective
+3
+Technical Electives
+4
+Foundations of Social Science
+3
+6 Credits General Electives
+6
+Physics Elective
+3
+Physics Elective
+3
+Technical Elective
+4
+7 Credits General Electives
+7

@@ -38,6 +38,8 @@ public class WebController {
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
 
+    private static ArrayList<String> unCheckedItems;
+
     @RequestMapping("/")
     public String home(Model model) {
         // If there are is no current user then redirect to the login form
@@ -79,19 +81,17 @@ public class WebController {
 
     @PostMapping("/select-courses-completed")
     public String processForm(@RequestParam(value = "selected", required = false) ArrayList<String> selectedStrings, Model model) {
-        ArrayList<String> uncheckedItems = new ArrayList<>();
+        unCheckedItems = new ArrayList<>();
         ClassListRead c = new ClassListRead();
         c.ReadTextFile("Psychology BA");
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
             if (!selectedStrings.contains(s)) {
-                uncheckedItems.add(s);
+                unCheckedItems.add(s);
             }
         }
-        for (int i = 0; i < uncheckedItems.size(); i++) {
-            System.out.println(uncheckedItems.get(i));
-        }
-        model.addAttribute("uncheckedItems", uncheckedItems);
+        c.ClassesSuggest(Semester.FALL);
+        model.addAttribute("uncheckedItems", unCheckedItems);
         return "redirect:/login";
     }
 
@@ -196,7 +196,42 @@ public class WebController {
 
     @GetMapping("/viewschedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
+        List<String> mon = new ArrayList<>();
+        List<String> tues = new ArrayList<>();
+        List<String> wed = new ArrayList<>();
+        List<String> thur = new ArrayList<>();
+        List<String> fri = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+
+        for (Schedule s : currentUser.getSchedules()){
+            if(s.getScheduleName().equals(scheduleName)){
+                tempSchedule = s;
+            }
+        }
+        for (Course c : tempSchedule.getCourses()){
+            String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
+            if(c.getDays().contains(DayOfWeek.MONDAY)){
+                mon.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.TUESDAY)){
+                tues.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.WEDNESDAY)){
+                wed.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.THURSDAY)){
+                thur.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.FRIDAY)){
+                fri.add(course_info);
+            }
+        }
         printCalendarView(scheduleName,model);
+        model.addAttribute("mon", mon);
+        model.addAttribute("tues", tues);
+        model.addAttribute("wed", wed);
+        model.addAttribute("thur", thur);
+        model.addAttribute("fri", fri);
         return "schedule";
     }
 
@@ -288,14 +323,17 @@ public class WebController {
                 tempSchedule = s;
             }
         }
-        String[][] array = new String[80][6];
+        String[][] array = new String[53][6];
         String[] header = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
-        LocalTime beginning = LocalTime.of(4, 0);
-        LocalTime ending = LocalTime.MIDNIGHT;
+
+        LocalTime beginning = LocalTime.of(8, 0);
+        LocalTime ending = LocalTime.of(21, 0);
         int j = 0;
-        while (beginning != ending) {
-            array[j][0] = beginning.toString();
+        while (beginning.isBefore(ending.plusMinutes(15))) {
+            String timeString = beginning.format(formatter);
+            array[j][0] = timeString;
             beginning = beginning.plusMinutes(15);
             j = j + 1;
         }
@@ -304,8 +342,8 @@ public class WebController {
             List<DayOfWeek> course_days = c.getDays();
             LocalTime course_start_time = c.getStartTime();
             LocalTime course_end_time = c.getEndTime();
-            int start_row = (course_start_time.getHour() - 4) * 4 + course_start_time.getMinute() / 15;
-            int end_row = (course_end_time.getHour() - 4) * 4 + course_end_time.getMinute() / 15;
+            int start_row = (course_start_time.getHour() - 8) * 4 + course_start_time.getMinute() / 15;
+            int end_row = (course_end_time.getHour() - 8) * 4 + course_end_time.getMinute() / 15;
             int[] columns = new int[3];
             int col_idx = 0;
             for (int i = 0; i < course_days.size(); i++) {
@@ -483,4 +521,73 @@ public class WebController {
             System.out.println("CSV_FILE not found!");
         }
     }
+    public ArrayList<String> getArrayList() {
+        return unCheckedItems;
+    }
+
+    /*
+public boolean addEvent(ScheduleElement newEvent) {
+    for (ScheduleElement event: events) {
+        if (event.equals(newEvent)) { //event is already added, do not add
+            System.out.println("THIS EVENT IS ALREADY ADDED");
+            return false;
+        }
+        else if (event.doesCourseConflict(newEvent)) { //
+            if (newEvent.isAnEvent()) {
+                System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
+                return false;
+            }
+            Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+            SearchController sb = new SearchController(totalCourses, semester);
+            HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+
+            ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, events);
+            Course course = chooseSuggestions(suggestions);
+            events.add(course);
+            totalCredits += course.getCredits();
+            return true;
+        }
+    }
+    events.add(newEvent);
+    totalCredits += newEvent.getCredits();
+    return true;
+}
+
+private ArrayList<Course> suggestOtherCourses(HashSet<Course> potentialCourses, ArrayList<ScheduleElement> events) {
+    ArrayList<Course> suggestions = new ArrayList<>();
+
+    for (Course course : potentialCourses) {
+        boolean conflict = false;
+        for (ScheduleElement event : events) {
+            if (course.doesCourseConflict(event)) {
+                conflict = true;
+                break;
+            }
+        }
+        if (!conflict) suggestions.add(course);
+    }
+    return suggestions;
+}
+
+private HashSet<Course> getAllOtherSections(Course course, ArrayList<Course> courses) {
+    HashSet<Course> set = new HashSet<>();
+
+    for (Course c: courses) {
+        if (c.getRefNum() == course.getRefNum() && c.getSection() != course.getSection()) set.add(c);
+    }
+
+    return set;
+}
+
+private Course chooseSuggestions(ArrayList<Course> suggestions) {
+    Scanner input = new Scanner(System.in);
+    for (int i = 0; i < suggestions.size(); i++) {
+        System.out.println(i + ": " + suggestions.get(i));
+    }
+    System.out.println("Input the number corresponding to the course you wish to add: ");
+    int i = input.nextInt();
+
+    return suggestions.get(i);
+}
+ */
 }
