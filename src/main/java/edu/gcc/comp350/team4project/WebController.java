@@ -38,6 +38,8 @@ public class WebController {
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
 
+    private static ArrayList<String> unCheckedItems;
+
     @RequestMapping("/")
     public String home(Model model) {
         // If there are is no current user then redirect to the login form
@@ -79,13 +81,13 @@ public class WebController {
 
     @PostMapping("/select-courses-completed")
     public String processForm(@RequestParam(value = "selected", required = false) ArrayList<String> selectedStrings, Model model) {
-        ArrayList<String> uncheckedItems = new ArrayList<>();
+        unCheckedItems = new ArrayList<>();
         ClassListRead c = new ClassListRead();
         c.ReadTextFile("Psychology BA");
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
             if (!selectedStrings.contains(s)) {
-                uncheckedItems.add(s);
+                unCheckedItems.add(s);
             }
         }
         c.ClassesSuggest(Semester.FALL);
@@ -494,5 +496,9 @@ public class WebController {
         } catch (IOException ignored) {
             System.out.println("CSV_FILE not found!");
         }
+    }
+
+    public ArrayList<String> getArrayList() {
+        return unCheckedItems;
     }
 }
