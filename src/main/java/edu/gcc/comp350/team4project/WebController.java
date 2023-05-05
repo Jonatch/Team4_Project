@@ -145,15 +145,19 @@ public class WebController {
 
         //Getting all the courses loaded into totalCourses\
         initialize();
+        //Creating the search object
+        searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
         //Adding all courses to the model
-        model.addAttribute("courses", totalCourses);
+        model.addAttribute("courses", searchBox);
         //Adding the current schedule being modified
         model.addAttribute("schedule", tempSchedule);
+        //Filtering Form
+        model.addAttribute("filterForm", new FilterFormData());
         return "edit-schedule";
     }
 
     @PostMapping("/editschedule/{scheduleName}")
-    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule) {
+    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule, @ModelAttribute FilterFormData filterForm) {
         // TODO: add code to handle form submission for editing a schedule
         return "redirect:/schedules";
     }
