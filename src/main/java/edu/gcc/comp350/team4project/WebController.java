@@ -158,8 +158,32 @@ public class WebController {
 
     @PostMapping("/editschedule/{scheduleName}")
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule, @ModelAttribute FilterFormData filterForm) {
-        // TODO: add code to handle form submission for editing a schedule
+        gettingFilters(filterForm);
         return "redirect:/schedules";
+    }
+
+    public static void gettingFilters(FilterFormData form){
+        if(!form.getProfessor().equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.PROF);
+            searchBox.filterByProf(form.getProfessor());
+        }
+        if(!form.getDepartment().equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.DEPT);
+            searchBox.filterByDept(form.getDepartment());
+        }
+        if(!form.getStartTime().equals("") && !form.getEndTime().equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.TIME);
+            String[] startTokens = form.getStartTime().split(":");
+            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+            String[] endTokens = form.getEndTime().split(":");
+            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+            searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
+        }
+        if(!form.getDays().equals("")) {
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+
+        }
+
     }
 
     // This map stores the schedules by name
