@@ -72,74 +72,6 @@ public class Schedule {
         }
     }
 
-//    public boolean addEvent(ScheduleElement newEvent) {
-//        for (ScheduleElement event: events) {
-//            if (event.equals(newEvent)) { //event is already added, do not add
-//                System.out.println("THIS EVENT IS ALREADY ADDED");
-//                return false;
-//            }
-//            else if (event.doesCourseConflict(newEvent)) { //
-//                if (newEvent.isAnEvent()) {
-//                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
-//                    return false;
-//                }
-//                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-//                SearchController sb = new SearchController(totalCourses, semester);
-//                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
-//
-//                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, events);
-//                Course course = chooseSuggestions(suggestions);
-//                events.add(course);
-//                totalCredits += course.getCredits();
-//                return true;
-//            }
-//        }
-//        events.add(newEvent);
-//        totalCredits += newEvent.getCredits();
-//        return true;
-//    }
-
-    private ArrayList<Course> suggestOtherCourses(HashSet<Course> potentialCourses, ArrayList<ScheduleElement> events) {
-        ArrayList<Course> suggestions = new ArrayList<>();
-
-        for (Course course : potentialCourses) {
-            boolean conflict = false;
-            for (ScheduleElement event : events) {
-                if (course.doesCourseConflict(event)) {
-                    conflict = true;
-                    break;
-                }
-            }
-            if (!conflict) suggestions.add(course);
-        }
-        return suggestions;
-    }
-
-    private HashSet<Course> getAllOtherSections(Course course, ArrayList<Course> courses) {
-        HashSet<Course> set = new HashSet<>();
-
-        for (Course c: courses) {
-            if (c.getRefNum() == course.getRefNum() && c.getSection() != course.getSection()) set.add(c);
-        }
-
-        return set;
-    }
-
-    private Course chooseSuggestions(ArrayList<Course> suggestions) {
-        Scanner input = new Scanner(System.in);
-        for (int i = 0; i < suggestions.size(); i++) {
-            System.out.println(i + ": " + suggestions.get(i));
-        }
-        System.out.println("Input the number corresponding to the course you wish to add: ");
-        int i = input.nextInt();
-
-        return suggestions.get(i);
-    }
-
-//    public void addEvents(ArrayList<ScheduleElement> events) throws Exception {
-//        for (ScheduleElement event: events) addEvent(event);
-//    }
-
     public void addCourses(ArrayList<Course> courses) throws Exception {//adds multiple courses if possible
         for(Course course : courses){
             try{
@@ -298,5 +230,68 @@ public class Schedule {
         // Convert StringBuilder to String and return
         return sb.toString();
     }
-}
 
+//    public boolean addEvent(ScheduleElement newEvent) {
+//        for (ScheduleElement event: events) {
+//            if (event.equals(newEvent)) { //event is already added, do not add
+//                System.out.println("THIS EVENT IS ALREADY ADDED");
+//                return false;
+//            }
+//            else if (event.doesCourseConflict(newEvent)) { //
+//                if (newEvent.isAnEvent()) {
+//                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
+//                    return false;
+//                }
+//                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+//                SearchController sb = new SearchController(totalCourses, semester);
+//                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+//
+//                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, events);
+//                Course course = chooseSuggestions(suggestions);
+//                events.add(course);
+//                totalCredits += course.getCredits();
+//                return true;
+//            }
+//        }
+//        events.add(newEvent);
+//        totalCredits += newEvent.getCredits();
+//        return true;
+//    }
+//
+//    private ArrayList<Course> suggestOtherCourses(HashSet<Course> potentialCourses, ArrayList<ScheduleElement> events) {
+//        ArrayList<Course> suggestions = new ArrayList<>();
+//
+//        for (Course course : potentialCourses) {
+//            boolean conflict = false;
+//            for (ScheduleElement event : events) {
+//                if (course.doesCourseConflict(event)) {
+//                    conflict = true;
+//                    break;
+//                }
+//            }
+//            if (!conflict) suggestions.add(course);
+//        }
+//        return suggestions;
+//    }
+//
+//    private HashSet<Course> getAllOtherSections(Course course, ArrayList<Course> courses) {
+//        HashSet<Course> set = new HashSet<>();
+//
+//        for (Course c: courses) {
+//            if (c.getRefNum() == course.getRefNum() && c.getSection() != course.getSection()) set.add(c);
+//        }
+//
+//        return set;
+//    }
+//
+//    private Course chooseSuggestions(ArrayList<Course> suggestions) {
+//        Scanner input = new Scanner(System.in);
+//        for (int i = 0; i < suggestions.size(); i++) {
+//            System.out.println(i + ": " + suggestions.get(i));
+//        }
+//        System.out.println("Input the number corresponding to the course you wish to add: ");
+//        int i = input.nextInt();
+//
+//        return suggestions.get(i);
+//    }
+}
