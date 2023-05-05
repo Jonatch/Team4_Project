@@ -13,7 +13,18 @@
             background-color: #d94040;
         }
         table td {
-        font-weight: bold;
+            font-weight: bold;
+        }
+        .course-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <style>
+        .view-toggle.active {
+        background-color: #007bff;
+        border-color: #007bff;
         }
     </style>
 </head>
@@ -23,20 +34,86 @@
 </nav>
 <div class="container my-5">
     <h1 class="text-center mb-5" th:text="${scheduleName}"></h1>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th th:each="header : ${header}" th:text="${header}"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="row, rowIdx : ${times}">
-                <td th:each="cell, cellIdx : ${row}" th:text="${cell}"
-                    th:classappend="${cellIdx != 0 && (cell != null and cell != '')} ? 'shaded' : ''"></td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="row mb-4">
+        <button class="btn btn-primary view-toggle active" data-view="calendar">Calendar View</button>
+        <button class="btn btn-primary view-toggle" data-view="table">Table View</button>
+    </div>
+    <div class="view-container">
+        <!-- Calendar View -->
+        <div class="calendar-view">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th th:each="header : ${header}" th:text="${header}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row, rowIdx : ${times}">
+                        <td th:each="cell, cellIdx : ${row}" th:text="${cell}"
+                            th:classappend="${cellIdx != 0 && (cell != null and cell != '')} ? 'shaded' : ''"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Table View -->
+        <!-- Table View -->
+        <!-- Table View -->
+        <div class="table-view" style="display: none;">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Day</th>
+                        <th>Courses</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Monday</td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <li th:each="course : ${mon}" class="py-2" th:text="${course}"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tuesday</td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <li th:each="course : ${tues}" class="py-2" th:text="${course}"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Wednesday</td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <li th:each="course : ${wed}" class="py-2" th:text="${course}"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Thursday</td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <li th:each="course : ${thur}" class="py-2" th:text="${course}"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Friday</td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <li th:each="course : ${fri}" class="py-2" th:text="${course}"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 <script th:inline="javascript">
@@ -45,6 +122,48 @@
     firstColumnCells.forEach(function(cell) {
         cell.classList.remove("shaded");
     });
+
+    // Show/hide views based on button selection
+    var viewToggleButtons = document.querySelectorAll(".view-toggle");
+    viewToggleButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+    var viewToShow = button.getAttribute("data-view");
+    var views = document.querySelectorAll(".view-container > div");
+    views.forEach(function(view) {
+    if (view.classList.contains(viewToShow + "-view")) {
+    view.style.display = "block";
+    } else {
+    view.style.display = "none";
+}
+});
+});
+});
+</script>
+<!-- Update your script to toggle the active class -->
+<script th:inline="javascript">
+  // Show/hide views based on button selection
+  var viewToggleButtons = document.querySelectorAll(".view-toggle");
+  viewToggleButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var viewToShow = button.getAttribute("data-view");
+      var views = document.querySelectorAll(".view-container > div");
+      views.forEach(function(view) {
+        if (view.classList.contains(viewToShow + "-view")) {
+          view.style.display = "block";
+        } else {
+          view.style.display = "none";
+        }
+      });
+      // Toggle active state of buttons
+      viewToggleButtons.forEach(function(btn) {
+        if (btn === button) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+    });
+  });
 </script>
 </body>
 </html>

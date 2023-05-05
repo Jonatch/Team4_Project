@@ -38,8 +38,6 @@ public class WebController {
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
 
-    private static ArrayList<String> unCheckedItems;
-
     @RequestMapping("/")
     public String home(Model model) {
         // If there are is no current user then redirect to the login form
@@ -81,17 +79,19 @@ public class WebController {
 
     @PostMapping("/select-courses-completed")
     public String processForm(@RequestParam(value = "selected", required = false) ArrayList<String> selectedStrings, Model model) {
-        unCheckedItems = new ArrayList<>();
+        ArrayList<String> uncheckedItems = new ArrayList<>();
         ClassListRead c = new ClassListRead();
         c.ReadTextFile("Psychology BA");
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
             if (!selectedStrings.contains(s)) {
-                unCheckedItems.add(s);
+                uncheckedItems.add(s);
             }
         }
-//        c.ClassesSuggest();
-        model.addAttribute("uncheckedItems", unCheckedItems);
+        for (int i = 0; i < uncheckedItems.size(); i++) {
+            System.out.println(uncheckedItems.get(i));
+        }
+        model.addAttribute("uncheckedItems", uncheckedItems);
         return "redirect:/login";
     }
 
@@ -168,7 +168,42 @@ public class WebController {
 
     @GetMapping("/viewschedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
+        List<String> mon = new ArrayList<>();
+        List<String> tues = new ArrayList<>();
+        List<String> wed = new ArrayList<>();
+        List<String> thur = new ArrayList<>();
+        List<String> fri = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+
+        for (Schedule s : currentUser.getSchedules()){
+            if(s.getScheduleName().equals(scheduleName)){
+                tempSchedule = s;
+            }
+        }
+        for (Course c : tempSchedule.getCourses()){
+            String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
+            if(c.getDays().contains(DayOfWeek.MONDAY)){
+                mon.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.TUESDAY)){
+                tues.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.WEDNESDAY)){
+                wed.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.THURSDAY)){
+                thur.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.FRIDAY)){
+                fri.add(course_info);
+            }
+        }
         printCalendarView(scheduleName,model);
+        model.addAttribute("mon", mon);
+        model.addAttribute("tues", tues);
+        model.addAttribute("wed", wed);
+        model.addAttribute("thur", thur);
+        model.addAttribute("fri", fri);
         return "schedule";
     }
 
@@ -458,9 +493,4 @@ public class WebController {
             System.out.println("CSV_FILE not found!");
         }
     }
-    public ArrayList<String> getArrayList() {
-        return unCheckedItems;
-    }
-
-
 }
