@@ -90,7 +90,7 @@ public class WebController {
                 unCheckedItems.add(s);
             }
         }
-//        c.ClassesSuggest();
+        c.ClassesSuggest(Semester.FALL);
         model.addAttribute("uncheckedItems", unCheckedItems);
         return "redirect:/login";
     }
