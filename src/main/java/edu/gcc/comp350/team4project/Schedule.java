@@ -72,32 +72,32 @@ public class Schedule {
         }
     }
 
-    public boolean addEvent(ScheduleElement newEvent) {
-        for (ScheduleElement event: events) {
-            if (event.equals(newEvent)) { //event is already added, do not add
-                System.out.println("THIS EVENT IS ALREADY ADDED");
-                return false;
-            }
-            else if (event.doesCourseConflict(newEvent)) { //
-                if (newEvent.isAnEvent()) {
-                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
-                    return false;
-                }
-                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-                SearchController sb = new SearchController(totalCourses, semester);
-                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
-
-                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, events);
-                Course course = chooseSuggestions(suggestions);
-                events.add(course);
-                totalCredits += course.getCredits();
-                return true;
-            }
-        }
-        events.add(newEvent);
-        totalCredits += newEvent.getCredits();
-        return true;
-    }
+//    public boolean addEvent(ScheduleElement newEvent) {
+//        for (ScheduleElement event: events) {
+//            if (event.equals(newEvent)) { //event is already added, do not add
+//                System.out.println("THIS EVENT IS ALREADY ADDED");
+//                return false;
+//            }
+//            else if (event.doesCourseConflict(newEvent)) { //
+//                if (newEvent.isAnEvent()) {
+//                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
+//                    return false;
+//                }
+//                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+//                SearchController sb = new SearchController(totalCourses, semester);
+//                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+//
+//                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, events);
+//                Course course = chooseSuggestions(suggestions);
+//                events.add(course);
+//                totalCredits += course.getCredits();
+//                return true;
+//            }
+//        }
+//        events.add(newEvent);
+//        totalCredits += newEvent.getCredits();
+//        return true;
+//    }
 
     private ArrayList<Course> suggestOtherCourses(HashSet<Course> potentialCourses, ArrayList<ScheduleElement> events) {
         ArrayList<Course> suggestions = new ArrayList<>();
@@ -136,9 +136,9 @@ public class Schedule {
         return suggestions.get(i);
     }
 
-    public void addEvents(ArrayList<ScheduleElement> events) throws Exception {
-        for (ScheduleElement event: events) addEvent(event);
-    }
+//    public void addEvents(ArrayList<ScheduleElement> events) throws Exception {
+//        for (ScheduleElement event: events) addEvent(event);
+//    }
 
     public void addCourses(ArrayList<Course> courses) throws Exception {//adds multiple courses if possible
         for(Course course : courses){
