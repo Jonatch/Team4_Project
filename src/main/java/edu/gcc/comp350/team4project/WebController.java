@@ -88,10 +88,8 @@ public class WebController {
                 uncheckedItems.add(s);
             }
         }
-        for (int i = 0; i < uncheckedItems.size(); i++) {
-            System.out.println(uncheckedItems.get(i));
-        }
-        model.addAttribute("uncheckedItems", uncheckedItems);
+        c.ClassesSuggest(Semester.FALL);
+        model.addAttribute("uncheckedItems", unCheckedItems);
         return "redirect:/login";
     }
 

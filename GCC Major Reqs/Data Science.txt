@@ -12,7 +12,7 @@ COMP 220
 3
 MATH 162
 4
-Natural Science with Laab
+Natural Science with Lab
 4
 WRIT 101
 3
@@ -26,7 +26,7 @@ STAT 131
 3
 Domain Emphasis Course
 3
-Foundations of Social Science Course
+Foundations of Social Science
 3
 1 Credit General Electives
 1
