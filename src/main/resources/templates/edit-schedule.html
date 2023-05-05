@@ -42,7 +42,7 @@
     <div class="card-body">
         <form th:object="${removeForm}" th:action="@{/edit-schedule/${scheduleName}}" method="post">
             <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
-            <button class="btn btn-secondary" onclick="closeRemovePopup()">Cancel</button>
+            <button class="btn btn-secondary" type = "button" onclick="closeRemovePopup()">Cancel</button>
         </form>
     </div>
 </div>
@@ -83,7 +83,7 @@
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeFilterPopup()">Filter</button>
             <button class="btn btn-secondary" type="button" onclick="closeFilterPopup()">Cancel</button>
-            <button class="btn btn-outline-primary" type="reset">Clear</button>
+            <button class="btn btn-outline-primary" type="reset">Clear All</button>
         </form>
     </div>
 </div>

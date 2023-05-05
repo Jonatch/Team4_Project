@@ -139,6 +139,17 @@ public class WebController {
         return "create-schedule";
     }
 
+    @GetMapping("/remove-courses")
+    public void sendRemoveCourses(Model model) {
+        model.addAttribute("courses", tempSchedule.getCourses());
+    }
+
+    @PostMapping("/remove-courses")
+    public void processRemoveCourses(@RequestParam(value = "selected", required = false) ArrayList<Course> selectedCourses, Model model) {
+        for(Course c : selectedCourses){
+            System.out.println(c);
+        }
+    }
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         printCalendarView(scheduleName,model);
@@ -194,7 +205,7 @@ public class WebController {
         schedules.put(name, schedule);
     }
 
-    @GetMapping("/viewschedule/{scheduleName}")
+    @GetMapping("/view-schedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
         List<String> mon = new ArrayList<>();
         List<String> tues = new ArrayList<>();
@@ -287,7 +298,7 @@ public class WebController {
         return "redirect:/login";
     }
 
-    @PostMapping("/deleteschedule/{scheduleName}")
+    @PostMapping("/delete-schedule/{scheduleName}")
     public String doDeleteSchedule(@PathVariable String scheduleName) {
         // Find the index of the schedule to be removed
         int index = -1;
