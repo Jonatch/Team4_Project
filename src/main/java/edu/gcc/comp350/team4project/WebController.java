@@ -168,7 +168,42 @@ public class WebController {
 
     @GetMapping("/viewschedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
+        List<String> mon = new ArrayList<>();
+        List<String> tues = new ArrayList<>();
+        List<String> wed = new ArrayList<>();
+        List<String> thur = new ArrayList<>();
+        List<String> fri = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+
+        for (Schedule s : currentUser.getSchedules()){
+            if(s.getScheduleName().equals(scheduleName)){
+                tempSchedule = s;
+            }
+        }
+        for (Course c : tempSchedule.getCourses()){
+            String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
+            if(c.getDays().contains(DayOfWeek.MONDAY)){
+                mon.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.TUESDAY)){
+                tues.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.WEDNESDAY)){
+                wed.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.THURSDAY)){
+                thur.add(course_info);
+            }
+            if(c.getDays().contains(DayOfWeek.FRIDAY)){
+                fri.add(course_info);
+            }
+        }
         printCalendarView(scheduleName,model);
+        model.addAttribute("mon", mon);
+        model.addAttribute("tues", tues);
+        model.addAttribute("wed", wed);
+        model.addAttribute("thur", thur);
+        model.addAttribute("fri", fri);
         return "schedule";
     }
 
@@ -260,14 +295,17 @@ public class WebController {
                 tempSchedule = s;
             }
         }
-        String[][] array = new String[80][6];
+        String[][] array = new String[53][6];
         String[] header = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
-        LocalTime beginning = LocalTime.of(4, 0);
-        LocalTime ending = LocalTime.MIDNIGHT;
+
+        LocalTime beginning = LocalTime.of(8, 0);
+        LocalTime ending = LocalTime.of(21, 0);
         int j = 0;
-        while (beginning != ending) {
-            array[j][0] = beginning.toString();
+        while (beginning.isBefore(ending.plusMinutes(15))) {
+            String timeString = beginning.format(formatter);
+            array[j][0] = timeString;
             beginning = beginning.plusMinutes(15);
             j = j + 1;
         }
@@ -276,8 +314,8 @@ public class WebController {
             List<DayOfWeek> course_days = c.getDays();
             LocalTime course_start_time = c.getStartTime();
             LocalTime course_end_time = c.getEndTime();
-            int start_row = (course_start_time.getHour() - 4) * 4 + course_start_time.getMinute() / 15;
-            int end_row = (course_end_time.getHour() - 4) * 4 + course_end_time.getMinute() / 15;
+            int start_row = (course_start_time.getHour() - 8) * 4 + course_start_time.getMinute() / 15;
+            int end_row = (course_end_time.getHour() - 8) * 4 + course_end_time.getMinute() / 15;
             int[] columns = new int[3];
             int col_idx = 0;
             for (int i = 0; i < course_days.size(); i++) {
