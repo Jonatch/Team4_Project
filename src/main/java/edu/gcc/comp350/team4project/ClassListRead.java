@@ -212,8 +212,8 @@ public class ClassListRead {
                         otherCourseTypes.add(currClass);
                     }
                     else if (credits <= 16){
-                        credits = 17;
                         otherCourseTypes.add((17-credits) + " Credit(s) of General Electives");
+                        credits = 17;
                     }
                 }
                 else if (currClass.equals("Music Method Block Elective")) {
