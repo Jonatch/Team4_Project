@@ -5,6 +5,7 @@ import edu.gcc.comp350.team4project.forms.*;
 import org.apache.tomcat.jni.Local;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +54,17 @@ public class WebController {
         // schedules
         return "home";
     }
+
+    @GetMapping("/remove-courses")
+    public String sendRemoveCourses(Model model) {
+        ArrayList<String> courseNames = new ArrayList<>();
+//        for (Course c : tempSchedule.getCourses()){
+//            courseNames.add(c.getFormattedCourseTitle());
+//        }
+        model.addAttribute("coursesRemove", tempSchedule.getCourses());
+        return "remove-courses";
+    }
+
 
     @PostMapping("/create-schedule")
     public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
@@ -127,35 +139,41 @@ public class WebController {
     }
 
 
-    @GetMapping("/schedules")
-    public String schedules(Model model) {
-        // TODO: add code to display schedules page
-        return "schedules";
-    }
-
     @GetMapping("/create-schedule")
     public String createSchedule(Model model) {
         model.addAttribute("scheduleFormData", new ScheduleFormData());
         return "create-schedule";
     }
 
-    @GetMapping("/remove-courses")
-    public void sendRemoveCourses(Model model) {
-        model.addAttribute("courses", tempSchedule.getCourses());
-    }
 
     @PostMapping("/remove-courses")
-    public void processRemoveCourses(@RequestParam(value = "selected", required = false) ArrayList<Course> selectedCourses, Model model) {
-        for(Course c : selectedCourses){
-            System.out.println(c);
+    public String processRemoveCourses(@RequestParam(value = "selected", required = false) String[] selectedCourses, Model model) {
+        // Create an ArrayList to hold the selected course names
+        List<String> selectedCourseNames = new ArrayList<>();
+        // Loop through the selectedCourses array and add the course name to the list
+        for (String courseName : selectedCourses) {
+            selectedCourseNames.add(courseName);
         }
+        // Do something with the selectedCourseNames, such as remove the courses from the database or update some fields
+        //courseService.removeCourses(selectedCourseNames);
+        // Add a success message to the model
+        // Return the name of the view to display after processing
+        return "remove-courses-success";
     }
+
+
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         printCalendarView(scheduleName,model);
 
         //Getting all the courses loaded into totalCourses\
-        initialize();
+        initializeCSVCourses();
+        //set temp Schedule of current user
+        for (Schedule s : currentUser.getSchedules()){
+            if(s.getScheduleName().equals(scheduleName)){
+                tempSchedule = s;
+            }
+        }
         //Creating the search object
         searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
         //Adding all courses to the model
@@ -168,9 +186,10 @@ public class WebController {
     }
 
     @PostMapping("/edit-schedule/{scheduleName}")
-    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule, @ModelAttribute FilterFormData filterForm) {
+    public String doEditSchedule(@RequestParam(value = "selectedCourses", required = false) int[] selectedCourses, @PathVariable String scheduleName, @ModelAttribute Schedule schedule, @ModelAttribute FilterFormData filterForm) {
         gettingFilters(filterForm);
-        return "redirect:/schedules";
+        System.out.println(selectedCourses);
+        return "edit-schedule";
     }
 
     public static void gettingFilters(FilterFormData form){
@@ -214,12 +233,13 @@ public class WebController {
         List<String> fri = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
+        Schedule viewSchedule = null;
         for (Schedule s : currentUser.getSchedules()){
             if(s.getScheduleName().equals(scheduleName)){
-                tempSchedule = s;
+                viewSchedule = s;
             }
         }
-        for (Course c : tempSchedule.getCourses()){
+        for (Course c : viewSchedule.getCourses()){
             String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
             if(c.getDays().contains(DayOfWeek.MONDAY)){
                 mon.add(course_info);
@@ -243,7 +263,7 @@ public class WebController {
         model.addAttribute("wed", wed);
         model.addAttribute("thur", thur);
         model.addAttribute("fri", fri);
-        return "schedule";
+        return "view-schedule";
     }
 
     @GetMapping("/register")
@@ -322,7 +342,7 @@ public class WebController {
     /**
      * Helper method to load courses into the totalCourses array
      */
-    public static void initialize() {
+    public static void initializeCSVCourses() {
         totalCourses = new ArrayList<>();
         String longCSV = "updated_courses_2324.csv"; // pulls from csv of all courses
         importCoursesFromCSV(longCSV); // imports information as data we can use

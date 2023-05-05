@@ -52,6 +52,9 @@ public class Course extends ScheduleElement {
     public String getProfessor() { return professor; }
     public String getDescription() { return description; }
     public DepartmentInfo getDepartmentInfo(){ return this.departmentInfo; }
+    public String getFormattedCourseTitle(){
+        return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section()+ ": " + this.name.toUpperCase();
+    }
     public String getCourseLabel(){
         String daysFormatted = "";
         if(days.contains("MONDAY")){

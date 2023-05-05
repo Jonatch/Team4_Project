@@ -40,12 +40,19 @@
         <h2>Remove Courses</h2>
     </div>
     <div class="card-body">
-        <form th:object="${removeForm}" th:action="@{/edit-schedule/${scheduleName}}" method="post">
+        <form th:action="@{/remove-courses" method="post">
+            <div th:each="courseRemove : ${coursesRemove}">
+                <div>
+                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum}" th:checked="false" />
+                    <label th:text="${courseRemove.getFormattedCourseTitle}"></label>
+                </div>
+            </div>
             <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
-            <button class="btn btn-secondary" type = "button" onclick="closeRemovePopup()">Cancel</button>
+            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
         </form>
     </div>
 </div>
+
 <div class="card" id="popup-container">
     <div class="card-header">
         <h2>Filter</h2>
