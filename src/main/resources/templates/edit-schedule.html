@@ -34,8 +34,18 @@
     </style>
 
 </head>
-
 <body>
+<div class="card" id="remove-popup-container">
+    <div class="card-header">
+        <h2>Remove Courses</h2>
+    </div>
+    <div class="card-body">
+        <form th:object="${removeForm}" th:action="@{/edit-schedule/${scheduleName}}" method="post">
+            <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
+            <button class="btn btn-secondary" onclick="closeRemovePopup()">Cancel</button>
+        </form>
+    </div>
+</div>
 <div class="card" id="popup-container">
     <div class="card-header">
         <h2>Filter</h2>
@@ -72,7 +82,7 @@
                 <input type="number" class="form-control" id="level" name="level" placeholder="200">
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeFilterPopup()">Filter</button>
-            <button class="btn btn-secondary" type="submit" onclick="closeFilterPopup()">Cancel</button>
+            <button class="btn btn-secondary" onclick="closeFilterPopup()">Cancel</button>
         </form>
     </div>
 </div>
@@ -86,7 +96,7 @@
             <h1 class="display-4" th:text="${scheduleName}"></h1>
             <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
             <p class="float-right" th:text="'credits: ' + ${schedule.getTotalCreditsString}"></p>
-            <button class="btn btn-outline-primary float-left">remove all courses</button>
+            <button class="btn btn-outline-primary float-left" onclick="openRemovePopup()" >Remove Courses</button>
         </div>
     </div>
     <div class="row">

@@ -67,7 +67,7 @@ public class WebController {
         tempSchedule = newSchedule;
         currentUser.saveScheduleToUser(tempSchedule);
 
-        return "redirect:/editschedule/" + newSchedule.getScheduleName();
+        return "redirect:/edit-schedule/" + newSchedule.getScheduleName();
     }
 
     @GetMapping("/select-courses-completed")
@@ -139,7 +139,7 @@ public class WebController {
         return "create-schedule";
     }
 
-    @GetMapping("/editschedule/{scheduleName}")
+    @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         printCalendarView(scheduleName,model);
 
@@ -156,7 +156,7 @@ public class WebController {
         return "edit-schedule";
     }
 
-    @PostMapping("/editschedule/{scheduleName}")
+    @PostMapping("/edit-schedule/{scheduleName}")
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute Schedule schedule, @ModelAttribute FilterFormData filterForm) {
         // TODO: add code to handle form submission for editing a schedule
         return "redirect:/schedules";
