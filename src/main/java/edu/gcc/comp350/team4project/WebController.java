@@ -5,6 +5,7 @@ import edu.gcc.comp350.team4project.forms.*;
 import org.apache.tomcat.jni.Local;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +46,7 @@ public class WebController {
     @RequestMapping("/")
     public String home(Model model) {
         //Getting all the courses loaded into totalCourses\
-        initialize();
+        initializeCSVCourses();
         // If there are is no current user then redirect to the login form
         if (currentUser == null) {
             return "redirect:/login";
@@ -132,12 +133,6 @@ public class WebController {
     }
 
 
-    @GetMapping("/schedules")
-    public String schedules(Model model) {
-        // TODO: add code to display schedules page
-        return "schedules";
-    }
-
     @GetMapping("/create-schedule")
     public String createSchedule(Model model) {
         model.addAttribute("scheduleFormData", new ScheduleFormData());
@@ -146,12 +141,19 @@ public class WebController {
 
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
-        printCalendarView(scheduleName,model);
 
-        //Creating the search object
-        if(!tempSchedule.getScheduleName().equals(scheduleName)){
-            searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
+        //Getting all the courses loaded into totalCourses\
+        initializeCSVCourses();
+        //set temp Schedule of current user
+        for (Schedule s : currentUser.getSchedules()){
+            if(s.getScheduleName().equals(scheduleName)){
+                tempSchedule = s;
+            }
         }
+        printCalendarView(scheduleName,model);
+        //Creating the search object
+        searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
+
         //Adding all courses to the model (or filtered ones)
         model.addAttribute("courses", searchBox);
         //adding previous value of each filter
@@ -242,7 +244,7 @@ public class WebController {
         schedules.put(name, schedule);
     }
 
-    @GetMapping("/viewschedule/{scheduleName}")
+    @GetMapping("/view-schedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
         List<String> mon = new ArrayList<>();
         List<String> tues = new ArrayList<>();
@@ -251,12 +253,13 @@ public class WebController {
         List<String> fri = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
+        Schedule viewSchedule = null;
         for (Schedule s : currentUser.getSchedules()){
             if(s.getScheduleName().equals(scheduleName)){
-                tempSchedule = s;
+                viewSchedule = s;
             }
         }
-        for (Course c : tempSchedule.getCourses()){
+        for (Course c : viewSchedule.getCourses()){
             String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
             if(c.getDays().contains(DayOfWeek.MONDAY)){
                 mon.add(course_info);
@@ -280,7 +283,7 @@ public class WebController {
         model.addAttribute("wed", wed);
         model.addAttribute("thur", thur);
         model.addAttribute("fri", fri);
-        return "schedule";
+        return "view-schedule";
     }
 
     @GetMapping("/register")
@@ -335,7 +338,7 @@ public class WebController {
         return "redirect:/login";
     }
 
-    @PostMapping("/deleteschedule/{scheduleName}")
+    @PostMapping("/delete-schedule/{scheduleName}")
     public String doDeleteSchedule(@PathVariable String scheduleName) {
         // Find the index of the schedule to be removed
         int index = -1;
@@ -359,9 +362,9 @@ public class WebController {
     /**
      * Helper method to load courses into the totalCourses array
      */
-    public static void initialize() {
+    public static void initializeCSVCourses() {
         totalCourses = new ArrayList<>();
-        String longCSV = "large_courses.csv"; // pulls from csv of all courses
+        String longCSV = "updated_courses_2324.csv"; // pulls from csv of all courses
         importCoursesFromCSV(longCSV); // imports information as data we can use
     }
 
@@ -466,7 +469,7 @@ public class WebController {
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
                 String courseName, departmentName, courseLevel, professorName;
-                StringBuilder description = new StringBuilder();
+                String description;
                 char courseSection = ' ';
                 int refNum = 0, numCredits = 0;
                 Semester semester = null;
@@ -474,94 +477,115 @@ public class WebController {
                 LocalTime startTime = null;
                 LocalTime endTime = null;
 
+
                 try {
-                    if (Integer.parseInt(data[0]) == 10)
+                    refNum = Integer.parseInt(data[0]);
+                } catch (Exception ignore) {
+                    continue;
+                }
+
+                try {
+                    if (data[1].equals("F"))
                         semester = Semester.FALL;
-                    else if (Integer.parseInt(data[0]) == 30)
+                    else if (data[1].equals("S"))
                         semester = Semester.SPRING;
                 } catch (Exception ignored) {
                     continue;
                 }
 
-                departmentName = data[1];
-                courseLevel = data[2];
-
+                String[] departmentInfo = data[2].split(" ");
+                departmentName = departmentInfo[0];
+                courseLevel = departmentInfo[1];
                 try {
-                    courseSection = data[3].charAt(0);
+                    courseSection = departmentInfo[3].charAt(0);
                 } catch (Exception ignored) {
                 }
 
-                courseName = data[4];
+                courseName = data[3];
 
+                //Only if there is time data
+                if(data[4].length()>0){
+                    try {
+                        Scanner parser = new Scanner(data[4]);
+                        char[] dayChars = parser.next().toCharArray();
+                        for(char d : dayChars){
+                            if(d=='M'){
+                                days.add(DayOfWeek.MONDAY);
+                            }
+                            else if(d=='T'){
+                                days.add(DayOfWeek.TUESDAY);
+                            }
+                            else if(d=='W'){
+                                days.add(DayOfWeek.WEDNESDAY);
+                            }
+                            else if(d=='R'){
+                                days.add(DayOfWeek.THURSDAY);
+                            }
+                            else if(d=='F'){
+                                days.add(DayOfWeek.FRIDAY);
+                            }
+                        }
+                        // 1:00 PM-1:50 PM
+                        String sTimeTemp = parser.next();
+                        String[] sTimeTempSplit = sTimeTemp.split(":");
+                        int sTimeHour = Integer.parseInt(sTimeTempSplit[0]);
+                        int sTimeMin = Integer.parseInt(sTimeTempSplit[1]);
+                        String midTimeTemp = parser.next();
+                        String eTimeTemp = midTimeTemp.substring(3);
+                        String[] eTimeTempSplit = eTimeTemp.split(":");
+                        int eTimeHour = Integer.parseInt(eTimeTempSplit[0]);
+                        int eTimeMin = Integer.parseInt(eTimeTempSplit[1]);
+                        String eTimeAMPM = parser.next();
+
+                        if(midTimeTemp.charAt(0)=='A'){
+                            if(sTimeHour==12){
+                                startTime = LocalTime.of(0,sTimeMin);
+                            }
+                            else{
+                                startTime = LocalTime.of(sTimeHour,sTimeMin);
+                            }
+                        }
+                        if(midTimeTemp.charAt(0)=='P'){
+                            if(sTimeHour<12){
+                                startTime = LocalTime.of(sTimeHour+12,sTimeMin);
+                            }
+                            else{
+                                startTime = LocalTime.of(12,sTimeMin);
+                            }
+                        }
+
+                        if(eTimeAMPM.charAt(0)=='A'){
+                            if(eTimeHour==12){
+                                endTime = LocalTime.of(0,eTimeMin);
+                            }
+                            else{
+                                endTime = LocalTime.of(eTimeHour,eTimeMin);
+                            }
+                        }
+                        if(eTimeAMPM.charAt(0)=='P'){
+                            if(eTimeHour<12){
+                                endTime = LocalTime.of(eTimeHour+12,eTimeMin);
+                            }
+                            else{
+                                endTime = LocalTime.of(12,eTimeMin);
+                            }
+                        }
+                    }catch(Exception ignored){}
+                }
                 try {
                     numCredits = Integer.parseInt(data[5]);
                 } catch (Exception ignored) {
                     continue;
                 }
 
-                if (data[6].equals("M"))
-                    days.add(DayOfWeek.MONDAY);
-
-                if (data[7].equals("T"))
-                    days.add(DayOfWeek.TUESDAY);
-
-                if (data[8].equals("W"))
-                    days.add(DayOfWeek.WEDNESDAY);
-
-                if (data[9].equals("R"))
-                    days.add(DayOfWeek.THURSDAY);
-
-                if (data[10].equals("F"))
-                    days.add(DayOfWeek.FRIDAY);
+                professorName = data[6];
 
                 try {
-                    String[] tempTime = data[11].split(":");
-                    int min;
-                    int hour = Integer.parseInt(tempTime[0]);
-                    if (tempTime[2].charAt(3) == 'A') {// these convert the time to 24 hour time
-                        if (hour == 12) {
-                            hour = 0;
-                        }
-                    } else if (tempTime[2].charAt(3) == 'P') {
-                        if (hour != 12) {
-                            hour += 12;
-                        }
-                    }
-                    min = Integer.parseInt(tempTime[1]);
-                    startTime = LocalTime.of(hour, min);
-                } catch (Exception ignore) {
+                    description = data[7];
+                } catch (Exception ignored) {
                     continue;
                 }
 
-                try {
-                    String[] tempTime = data[12].split(":");
-                    int hour = Integer.parseInt(tempTime[0]);
-                    int min = 0;
-
-                    if (tempTime[2].charAt(3) == 'A') { // these convert the time to 24 hour time
-                        if (hour == 12)
-                            hour = 0;
-                    } else if (tempTime[2].charAt(3) == 'P') {
-                        if (hour != 12)
-                            hour += 12;
-                    }
-                    min = Integer.parseInt(tempTime[1]);
-                    endTime = LocalTime.of(hour, min);
-                } catch (Exception ignore) {
-                    continue;
-                }
-
-                professorName = data[13];
-
-                try {
-                    refNum = Integer.parseInt(data[14]);
-                } catch (Exception ignore) {
-                    continue;
-                }
-
-                for (int i = 15; i < data.length; i++) {
-                    description.append(data[i]).append(" ");
-                }
                 totalCourses.add(new Course(refNum, departmentName, semester, courseLevel, courseSection, courseName,
                         numCredits, professorName, description.toString(), days, startTime, endTime));
             }

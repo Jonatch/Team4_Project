@@ -231,6 +231,14 @@ public class Schedule {
         return sb.toString();
     }
 
+    public ArrayList<String> getRefNumsAsStrings(){
+        ArrayList<String> refNumsAsStrings = new ArrayList<>();
+        for(Course c : this.courses){
+            refNumsAsStrings.add(String.valueOf(c.getRefNum()));
+        }
+        return refNumsAsStrings;
+    }
+
 //    public boolean addEvent(ScheduleElement newEvent) {
 //        for (ScheduleElement event: events) {
 //            if (event.equals(newEvent)) { //event is already added, do not add

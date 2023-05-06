@@ -26,16 +26,40 @@
             margin-top: 20px;
         }
         .shaded {
-            background-color: #d94040;
+            background-color: #E6676B;
         }
         table td {
         font-weight: bold;
         }
+       .btn {
+            background-color: #CC0000;
+            border-color: #CC0000;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #990000;
+        }
     </style>
 
 </head>
-
 <body>
+<div class="card" id="remove-popup-container">
+    <div class="card-header">
+        <h2>Remove Courses</h2>
+    </div>
+    <div class="card-body">
+        <form th:action="@{/edit-schedule/${scheduleName}}" method="post">
+            <div th:each="courseRemove : ${coursesRemove}">
+                <div>
+                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum}" th:checked="false" />
+                    <label th:text="${courseRemove.getFormattedCourseTitle}"></label>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
+            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
+        </form>
+    </div>
+</div>
 <div class="card" id="popup-container">
     <div class="card-header">
         <h2>Filter</h2>
@@ -70,21 +94,21 @@
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeFilterPopup()">Filter</button>
             <button class="btn btn-secondary" type="button" onclick="closeFilterPopup()">Cancel</button>
-            <button class="btn btn-outline-primary" type="reset">Clear</button>
+            <button class="btn btn-outline-primary" type="reset">Clear All</button>
         </form>
     </div>
 </div>
 <div class="container-fluid" id="blur">
     <div class="row">
         <div class="col-4 p-5">
-            <button type="button" class="btn btn-primary btn-lg">Save and exit</button>
+            <button type="button" class="btn btn-danger btn-primary btn-lg">Save and exit</button>
         </div>
         <div class="col text-center">
             <!--Title-->
             <h1 class="display-4" th:text="${scheduleName}"></h1>
             <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
             <p class="float-right" th:text="'credits: ' + ${schedule.getTotalCreditsString}"></p>
-            <button class="btn btn-outline-primary float-left">remove all courses</button>
+            <button class="btn btn-danger btn-primary" onclick="openRemovePopup()" >Remove Courses</button>
         </div>
     </div>
     <div class="row">
@@ -95,19 +119,25 @@
                         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn btn-outline-primary">search</button>
+                        <button type="button" class="btn btn-danger btn-primary">search</button>
                     </div>
                     <div class="col-3">
-                        <button type="button" onclick="openFilterPopup()" class="btn btn-outline-primary">filters</button>
+                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
                     </div>
                 </div>
             </div>
             <div class="row scrollable" style="height: 650px; overflow-y: auto;">
                 <ul class="list-group">
                     <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
-                        <li th:text="${course.getCourseLabel}">
-                        </li>
-                        <button class="btn btn-primary">add</button>
+                        <div class="course-details">
+                            <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
+                            <div class="course-info" th:text="${course.getTimeLabel}"></div>
+                        </div>
+                        <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <div class="d-flex justify-content-between">
+                            <a href="" style="color: #cc0000;">More Info</a>
+                            <button id = "plus-button" class="btn btn-danger btn-primary btn-sm">+</button>
+                        </div>
                     </div>
                 </ul>
             </div>
