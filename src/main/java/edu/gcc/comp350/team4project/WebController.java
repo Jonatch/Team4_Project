@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.sound.midi.Soundbank;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -20,6 +21,7 @@ import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -43,6 +45,8 @@ public class WebController {
 
     @RequestMapping("/")
     public String home(Model model) {
+        //Getting all the courses loaded into totalCourses\
+        initializeCSVCourses();
         // If there are is no current user then redirect to the login form
         if (currentUser == null) {
             return "redirect:/login";
@@ -55,8 +59,6 @@ public class WebController {
         return "home";
     }
 
-
-
     @PostMapping("/create-schedule")
     public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
         Semester semester = null;
@@ -68,6 +70,7 @@ public class WebController {
 
         Schedule newSchedule = new Schedule(scheduleFormData.getName(), semester);
         tempSchedule = newSchedule;
+        searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
         currentUser.saveScheduleToUser(tempSchedule);
 
         return "redirect:/edit-schedule/" + newSchedule.getScheduleName();
@@ -136,9 +139,6 @@ public class WebController {
         return "create-schedule";
     }
 
-
-
-
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
         printCalendarView(scheduleName,model);
@@ -152,9 +152,16 @@ public class WebController {
             }
         }
         //Creating the search object
-        searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
-        //Adding all courses to the model
+        if(!tempSchedule.getScheduleName().equals(scheduleName)){
+            searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
+        }
+        //Adding all courses to the model (or filtered ones)
         model.addAttribute("courses", searchBox);
+        //adding previous value of each filter
+        for(Filter f: searchBox.getCurrentFilters()){
+            model.addAttribute(f.getType().toString(), f);
+            System.out.println(f.getType().toString());
+        }
         //Adding the current schedule being modified
         model.addAttribute("schedule", tempSchedule);
         //Filtering Form
@@ -163,22 +170,22 @@ public class WebController {
     }
 
     @PostMapping("/edit-schedule/{scheduleName}")
-    public String doEditSchedule(@RequestParam(value = "selectedCourses", required = false) int[] selectedCourses, @PathVariable String scheduleName, @ModelAttribute Schedule schedule, @ModelAttribute FilterFormData filterForm) {
+    public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute FilterFormData filterForm) {
         gettingFilters(filterForm);
-        System.out.println(selectedCourses);
-        return "edit-schedule";
+        return "redirect:/edit-schedule/" + scheduleName + "";
     }
 
     public static void gettingFilters(FilterFormData form){
-        if(!form.getProfessor().equals("")){
-            searchBox.removeSpecificFilter(FilterTypes.PROF);
-            searchBox.filterByProf(form.getProfessor());
-        }
         if(!form.getDepartment().equals("")){
             searchBox.removeSpecificFilter(FilterTypes.DEPT);
             searchBox.filterByDept(form.getDepartment());
+            System.out.println(searchBox.getFilteredCourses());
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.DEPT);
         }
         if(!form.getStartTime().equals("") && !form.getEndTime().equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.TIME);
             searchBox.removeSpecificFilter(FilterTypes.TIME);
             String[] startTokens = form.getStartTime().split(":");
             LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
@@ -186,11 +193,48 @@ public class WebController {
             LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
             searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
         }
-        if(!form.getDays().equals("")) {
-            searchBox.removeSpecificFilter(FilterTypes.DAYS);
-
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.TIME);
         }
-
+        if(!form.getDays().isEmpty()) {
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+            HashSet<DayOfWeek> setOfDays = new HashSet<>();
+            for(String s: form.getDays()){
+                if(s.equals("M")){
+                    setOfDays.add(DayOfWeek.MONDAY);
+                }
+                if(s.equals("T")){
+                    setOfDays.add(DayOfWeek.TUESDAY);
+                }
+                if(s.equals("W")){
+                    setOfDays.add(DayOfWeek.WEDNESDAY);
+                }
+                if(s.equals("R")){
+                    setOfDays.add(DayOfWeek.THURSDAY);
+                }
+                if(s.equals("F")){
+                    setOfDays.add(DayOfWeek.FRIDAY);
+                }
+            }
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+        }
+        if(!form.getCredits().equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.CRED);
+            searchBox.filterByCredits(form.getCredits());
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.CRED);
+        }
+        if(!form.getLevel().equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.LVL);
+            searchBox.filterByLevel(form.getLevel());
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.LVL);
+        }
     }
 
     // This map stores the schedules by name
@@ -543,6 +587,9 @@ public class WebController {
                     continue;
                 }
 
+                for (int i = 15; i < data.length; i++) {
+                    description.append(data[i]).append(" ");
+                }
                 totalCourses.add(new Course(refNum, departmentName, semester, courseLevel, courseSection, courseName,
                         numCredits, professorName, description.toString(), days, startTime, endTime));
             }
