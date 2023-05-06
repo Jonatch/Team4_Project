@@ -1,6 +1,7 @@
 package edu.gcc.comp350.team4project;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,11 +11,15 @@ import java.util.regex.Pattern;
 public class ClassListRead {
     public ArrayList<String> classes;
     public static ArrayList<Course> totalCourses;
+    public static ArrayList<String> classesToDo;
+    int credits;
 
-    public static void main(String[] args) {
-        ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Accounting");
-    }
+    public ArrayList<String> otherCourseTypes;
+
+//    public static void main(String[] args) {
+//        ClassListRead c = new ClassListRead();
+//        c.ReadTextFile("Accounting");
+//    }
 
     public static void importCoursesFromCSV(String ext) {//handles importing a course from csv. Takes all csv values and converts to data types. Only takes in good data
         totalCourses = new ArrayList<>();
@@ -167,8 +172,145 @@ public class ClassListRead {
                 }
             }
         }
-//        for (int i = 0; i < classes.size(); i++) {
-//            System.out.println(classes.get(i));
-//        }
+    }
+
+    public void ClassesSuggest(Semester semester) {
+        otherCourseTypes = new ArrayList<>();
+        credits = 0;
+        WebController w = new WebController();
+        classesToDo = w.getArrayList();
+        for (int i = 0; i < classesToDo.size(); i++) {
+                String currClass = classesToDo.get(i);
+                if (Pattern.matches("[A-Z]{4}\s\\d{3}", currClass)) {
+                    if (sameSemester(currClass, semester)) {
+                        int courseCredits = getCredits(currClass, semester);
+                        if (credits + courseCredits <= 17) {
+                            otherCourseTypes.add(currClass);
+                            credits += courseCredits;
+                        }
+                    }
+                }
+                else if (Character.isDigit(currClass.charAt(0)) && Character.isDigit(currClass.charAt(1))) {
+                    int genCredits;
+                    String numCredits = currClass.substring(0,2);
+                    genCredits = Integer.parseInt(numCredits);
+                    if (credits + genCredits <= 17) {
+                        credits += genCredits;
+                        otherCourseTypes.add(currClass);
+                    }
+                    else if (credits <= 16){
+                        credits = 17;
+                        otherCourseTypes.add((17-credits) + " Credit(s) of General Electives");
+                    }
+                }
+                else if (Character.isDigit(currClass.charAt(0))) {
+                    int genCredits;
+                    String numCredits = currClass.substring(0,1);
+                    genCredits = Integer.parseInt(numCredits);
+                    if (credits + genCredits <= 17) {
+                        credits += genCredits;
+                        otherCourseTypes.add(currClass);
+                    }
+                    else if (credits <= 16){
+                        otherCourseTypes.add((17-credits) + " Credit(s) of General Electives");
+                        credits = 17;
+                    }
+                }
+                else if (currClass.equals("Music Method Block Elective")) {
+                    if (credits <= 16) {
+                        credits += 1;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Natural Science with Lab")) {
+                    if (credits <= 13) {
+                        credits += 4;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("SSFT")) {
+                    if (credits <= 15) {
+                        credits += 2;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Applied Music")) {
+                    if (credits <= 15) {
+                        credits += 2;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Ensemble")) {
+                    if (credits <= 16) {
+                        credits += 1;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else if (currClass.equals("Music Elective")) {
+                    if (credits <= 15) {
+                        credits += 2;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+                else {
+                    if (credits <= 14) {
+                        credits += 3;
+                        otherCourseTypes.add(currClass);
+                    }
+                }
+            }
+        for (int i = 0; i < otherCourseTypes.size(); i++) {
+            System.out.println(otherCourseTypes.get(i));
+        }
+    }
+
+    public boolean sameSemester(String s, Semester semester) {
+        String longCSV = "large_courses.csv"; //pulls from csv of all courses
+        importCoursesFromCSV(longCSV); //imports information as data we can use
+        if (semester == Semester.FALL) {
+            SearchController sFall = new SearchController(totalCourses, Semester.FALL);
+            String dept = s.substring(0,4);
+            String courseNum = s.substring(5,8);
+            sFall.filterByDept(dept);
+            sFall.filterByExactLevel(courseNum);
+            if (!sFall.getFilteredCourses().isEmpty()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            SearchController sSpring = new SearchController(totalCourses, Semester.SPRING);
+            String dept = s.substring(0, 4);
+            String courseNum = s.substring(5, 8);
+            sSpring.filterByDept(dept);
+            sSpring.filterByExactLevel(courseNum);
+            if (!sSpring.getFilteredCourses().isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    public int getCredits(String s, Semester semester) {
+        String longCSV = "large_courses.csv"; //pulls from csv of all courses
+        importCoursesFromCSV(longCSV); //imports information as data we can use
+
+        if (semester == Semester.FALL) {
+            SearchController sFall = new SearchController(totalCourses, Semester.FALL);
+            String dept = s.substring(0,4);
+            String courseNum = s.substring(5,8);
+            sFall.filterByDept(dept);
+            sFall.filterByExactLevel(courseNum);
+            return sFall.getFilteredCourses().get(0).getCredits();
+        }
+
+        SearchController sSpring = new SearchController(totalCourses, Semester.SPRING);
+        String dept = s.substring(0,4);
+        String courseNum = s.substring(5,8);
+        sSpring.filterByDept(dept);
+        sSpring.filterByExactLevel(courseNum);
+        return sSpring.getFilteredCourses().get(0).getCredits();
     }
 }

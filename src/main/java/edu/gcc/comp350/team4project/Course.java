@@ -12,6 +12,7 @@ public class Course extends ScheduleElement {
     private String name, professor, courseLevel, description;
     private Semester semester;
     private TimeInfo timeInfo;
+    private char section;
 
     public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
         super(name, days, startTime, endTime, description);
@@ -22,6 +23,7 @@ public class Course extends ScheduleElement {
         this.description = description;
         this.semester = semester;
         this.courseLevel = courseLevel;
+        this.section = section;
         this.timeInfo = new TimeInfo(days,startTime,endTime);
         this.departmentInfo = new DepartmentInfo(department,courseLevel,section);
     }
@@ -41,6 +43,7 @@ public class Course extends ScheduleElement {
     }
 
     public String getLevel() { return courseLevel; }
+    public char getSection() { return section; }
     public boolean isAnEvent() { return false; }
     @Override
     public int hashCode() { return refNum; }
