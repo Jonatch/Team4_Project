@@ -1,5 +1,7 @@
 package edu.gcc.comp350.team4project;
 
+import com.healthmarketscience.jackcess.Database;
+
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -55,27 +57,28 @@ public class Course extends ScheduleElement {
     public String getFormattedCourseTitle(){
         return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section()+ ": " + this.name.toUpperCase();
     }
-    public String getCourseLabel(){
+    public String getNameLabel(){
+        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + " \n" + name;
+    }
+    public String getTimeLabel(){
         String daysFormatted = "";
-        if(days.contains("MONDAY")){
+        if(days.contains(DayOfWeek.MONDAY)){
             daysFormatted += "M";
         }
-        if(days.contains("TUESDAY")){
+        if(days.contains(DayOfWeek.TUESDAY)){
             daysFormatted += "T";
         }
-        if(days.contains("WEDNESDAY")){
+        if(days.contains(DayOfWeek.WEDNESDAY)){
             daysFormatted += "W";
         }
-        if(days.contains("THURSDAY")){
+        if(days.contains(DayOfWeek.THURSDAY)){
             daysFormatted += "R";
         }
-        if(days.contains("FRIDAY")){
+        if(days.contains(DayOfWeek.FRIDAY)){
             daysFormatted += "F";
         }
 
-        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + " \n"
-                + name + " \n"
-                + daysFormatted + " \n"
+        return daysFormatted + " \n"
                 + timeInfo.startTime() + "-" + timeInfo.endTime();
     }
 

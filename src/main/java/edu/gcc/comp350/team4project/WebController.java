@@ -55,15 +55,6 @@ public class WebController {
         return "home";
     }
 
-    @GetMapping("/remove-courses")
-    public String sendRemoveCourses(Model model) {
-        ArrayList<String> courseNames = new ArrayList<>();
-//        for (Course c : tempSchedule.getCourses()){
-//            courseNames.add(c.getFormattedCourseTitle());
-//        }
-        model.addAttribute("coursesRemove", tempSchedule.getCourses());
-        return "remove-courses";
-    }
 
 
     @PostMapping("/create-schedule")
@@ -146,20 +137,6 @@ public class WebController {
     }
 
 
-    @PostMapping("/remove-courses")
-    public String processRemoveCourses(@RequestParam(value = "selected", required = false) String[] selectedCourses, Model model) {
-        // Create an ArrayList to hold the selected course names
-        List<String> selectedCourseNames = new ArrayList<>();
-        // Loop through the selectedCourses array and add the course name to the list
-        for (String courseName : selectedCourses) {
-            selectedCourseNames.add(courseName);
-        }
-        // Do something with the selectedCourseNames, such as remove the courses from the database or update some fields
-        //courseService.removeCourses(selectedCourseNames);
-        // Add a success message to the model
-        // Return the name of the view to display after processing
-        return "remove-courses-success";
-    }
 
 
     @GetMapping("/edit-schedule/{scheduleName}")
