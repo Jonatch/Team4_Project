@@ -33,10 +33,12 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-4 p-5">
+        <div class="col-lg-4 col-md-12 p-5">
             <button type="button" class="btn btn-primary btn-lg">Save and exit</button>
+            <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='/'">Cancel</button>
+
         </div>
-        <div class="col text-center">
+        <div class="col-lg text-center">
             <!--Title-->
             <h1 class="display-4" th:text="${scheduleName}"></h1>
             <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
@@ -51,10 +53,10 @@
                     <div class="col">
                         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
                     </div>
-                    <div class="col-3">
+                    <div class="col-auto">
                         <button type="button" class="btn btn-outline-primary">search</button>
                     </div>
-                    <div class="col-3">
+                    <div class="col-auto">
                         <button type="button" class="btn btn-outline-primary">filters</button>
                     </div>
                 </div>
@@ -87,4 +89,23 @@
     </div>
 </div>
 </body>
+<!--unsaved changes notice script -->
+<script>
+    window.addEventListener('beforeunload', function (e) {
+        e.preventDefault();
+        e.returnValue = '';
+    });
+</script>
+<!--credit checking script-->
+<script>
+    window.addEventListener('beforeunload', function (event) {
+        const totalCredits = parseInt(document.querySelector('[th\\:text="${schedule.getTotalCreditsString}"]').textContent.split(' ')[1]);
+        if (totalCredits < 12 || totalCredits > 17) {
+            event.preventDefault();
+            event.returnValue = '';
+            alert('Warning: the total number of credits on your schedule is less than 12 or greater than 17.');
+        }
+    });
+</script>
+
 </html>
