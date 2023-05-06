@@ -2,32 +2,23 @@ package edu.gcc.comp350.team4project.forms;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 
 public class FilterFormData {
-    private String professor;
     private String department;
     private String startTime;
     private String endTime;
-    private String days;
+    private ArrayList<String> days;
     private String credits;
     private String level;
 
     public FilterFormData(){
-        this.professor = "";
         this.department = "";
         this.startTime = "";
         this.endTime = "";
-        this.days = "";
+        this.days = new ArrayList<>();
         this.credits = "";
         this.level = "";
-    }
-
-    public String getProfessor() {
-        return professor;
-    }
-
-    public void setProfessor(String professor) {
-        this.professor = professor;
     }
 
     public String getDepartment() {
@@ -54,11 +45,11 @@ public class FilterFormData {
         this.endTime = endTime;
     }
 
-    public String getDays() {
+    public ArrayList<String> getDays() {
         return days;
     }
 
-    public void setDays(String days) {
+    public void setDays(ArrayList<String> days) {
         this.days = days;
     }
 
