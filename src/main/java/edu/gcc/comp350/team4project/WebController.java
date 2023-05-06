@@ -141,7 +141,6 @@ public class WebController {
 
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
-        printCalendarView(scheduleName,model);
 
         //Getting all the courses loaded into totalCourses\
         initializeCSVCourses();
@@ -151,10 +150,10 @@ public class WebController {
                 tempSchedule = s;
             }
         }
+        printCalendarView(scheduleName,model);
         //Creating the search object
-        if(!tempSchedule.getScheduleName().equals(scheduleName)){
-            searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
-        }
+        searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
+
         //Adding all courses to the model (or filtered ones)
         model.addAttribute("courses", searchBox);
         //adding previous value of each filter
@@ -587,9 +586,6 @@ public class WebController {
                     continue;
                 }
 
-                for (int i = 15; i < data.length; i++) {
-                    description.append(data[i]).append(" ");
-                }
                 totalCourses.add(new Course(refNum, departmentName, semester, courseLevel, courseSection, courseName,
                         numCredits, professorName, description.toString(), days, startTime, endTime));
             }
