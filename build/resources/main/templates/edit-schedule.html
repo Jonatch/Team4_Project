@@ -119,10 +119,10 @@
                     <div class="col">
                         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
                     </div>
-                    <div class="col-3">
+                    <div class="col-auto">
                         <button type="button" class="btn btn-danger btn-primary">search</button>
                     </div>
-                    <div class="col-3">
+                    <div class="col-auto">
                         <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
                     </div>
                 </div>
@@ -167,5 +167,51 @@
         cell.classList.remove("shaded");
     });
 </script>
+<script>
+    $(document).ready(function() {
+    var formChanged = false;
+    $('form :input').change(function() {
+        formChanged = true;
+    });
+
+    // Warn user before leaving the page
+    $(window).on('beforeunload', function(e) {
+        if (formChanged) {
+            var message = "You have unsaved changes. Are you sure you want to leave this page?";
+            e.returnValue = message;
+            return message;
+        }
+    });
+
+    // Disable warning if the user submits the form
+    $('form').submit(function() {
+        formChanged = false;
+    });
+});
+</script>
+<!--this code commented out until we can actually add courses-->
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        var formChanged = false;-->
+<!--        $('form :input').change(function() {-->
+<!--        formChanged = true;-->
+<!--    });-->
+<!--    $(window).bind('beforeunload', function() {-->
+<!--        if (formChanged) {-->
+<!--            return "You have unsaved changes. Are you sure you want to leave this page?";-->
+<!--        }-->
+<!--    });-->
+<!--    $('form').submit(function(event) {-->
+<!--        var credits = 0;-->
+<!--        $('input[name="selectedCourses"]:checked').each(function() {-->
+<!--        credits += parseInt($(this).closest('div').find('.credits').text());-->
+<!--    });-->
+<!--        if (credits > 17 || credits < 12) {-->
+<!--            event.preventDefault();-->
+<!--            alert('Your schedule must be between 12 and 17 credits');-->
+<!--        }-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
 </body>
 </html>
