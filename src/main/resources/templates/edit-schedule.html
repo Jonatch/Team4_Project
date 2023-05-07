@@ -166,36 +166,42 @@
         <div class="col-3">
             <div class="row p-1">
                 <div class="input-group">
-                    <div class="col">
-                        <form id="search-form" action="/search-bar" method="POST">
-<!--                            aria-label="search-box" aria-describedby="search-addon"-->
+<!--                    <div class="col">-->
+<!--                        <form id="search-form" action="/search-bar" method="POST">-->
 <!--                            <input type="text" name="query" class="form-control rounded" id="search-box" placeholder="Search: "/>-->
-                            <input type="text" name="query" class="form-control rounded" id="search-box" placeholder="Search: "/>
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                    <div class="col-auto">-->
+<!--                        <button type="submit" class="btn btn-danger btn-primary">search</button>-->
+<!--                    </div>-->
+<!--                    <div class="col-auto">-->
+<!--                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>-->
+<!--                    </div>-->
 
-                            <!--                            <button type="submit">Search</button>-->
+
+                    <div class="col">
+                        <form id="search-form">
+                            <input type="text" name="query" class="form-control rounded" id="search-input" placeholder="Search: " />
                         </form>
                     </div>
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-danger btn-primary">search</button>
+                        <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
                     </div>
-                    <div class="col-auto">
-                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
-                    </div>
+
+
                 </div>
             </div>
             <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
                 <ul class="list-group" >
-                    <div id="courses-list">
-                        <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
-                            <div class="course-details">
-                                <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
-                                <div class="course-info" th:text="${course.getTimeLabel}"></div>
-                            </div>
-                            <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                            <div class="d-flex justify-content-between">
-                                <button onclick="openInfoPopup()" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
-                                <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
-                            </div>
+                    <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
+                        <div class="course-details">
+                            <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
+                            <div class="course-info" th:text="${course.getTimeLabel}"></div>
+                        </div>
+                        <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <div class="d-flex justify-content-between">
+                            <button onclick="openInfoPopup()" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                            <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
                         </div>
                     </div>
                 </ul>

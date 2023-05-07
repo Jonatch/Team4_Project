@@ -81,10 +81,19 @@ public class WebController {
     }
     @PostMapping("/remove-courses")
     public String getRemoveCourses(Model model) {
+//        searchBox.
         ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
         model.addAttribute("coursesRemove", elements);
         return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
     }
+
+    @PostMapping("/search-box")
+    public String search(@RequestParam("query") String query, Model model) {
+        searchBox.filterByPhrase(query);
+        model.addAttribute("courses", searchBox);
+        return "fragments/search :: search-results";
+    }
+
 
     @PostMapping("/add-course")
     @ResponseBody
@@ -634,14 +643,6 @@ public class WebController {
     public ArrayList<String> getArrayList() {
         return unCheckedItems;
     }
-
-    @PostMapping("/search-box")
-    public String search(@RequestParam("query") String query, Model model) {
-        searchBox.filterByPhrase(query);
-        model.addAttribute("courses", searchBox);
-        return "search done";
-    }
-
 
     private ScheduleElement newEvent;
     public boolean addConflictingEvent() {
