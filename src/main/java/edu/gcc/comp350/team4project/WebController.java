@@ -57,19 +57,27 @@ public class WebController {
         // schedules
         return "home";
     }
+    @GetMapping("/remove-courses")
+    public String getRemoveCourses(Model model) {
+        ArrayList<Course> courses = tempSchedule.getCourses();
+        model.addAttribute("coursesRemove", courses);
+        return "edit-schedule";
+    }
 
     @PostMapping("/add-course")
     @ResponseBody
-    public String handleButtonClick(@RequestParam("parameter") int parameter) {
+    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) {
         Course c = searchBox.searchForRefNum(parameter);
         if (addEvent(c)) {
+            printCalendarView(tempSchedule,model);
             return c.getName() + " event added";
+
         }
         else {
             return "error adding " + c.getName();
         }
-        //return "" + parameter;
     }
+
 
     @PostMapping("/create-schedule")
     public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
@@ -160,7 +168,7 @@ public class WebController {
                 tempSchedule = s;
             }
         }
-        printCalendarView(scheduleName,model);
+        printCalendarView(tempSchedule,model);
         //Creating the search object
         searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
 
@@ -287,7 +295,7 @@ public class WebController {
                 fri.add(course_info);
             }
         }
-        printCalendarView(scheduleName,model);
+        printCalendarView(viewSchedule,model);
         model.addAttribute("mon", mon);
         model.addAttribute("tues", tues);
         model.addAttribute("wed", wed);
@@ -377,12 +385,7 @@ public class WebController {
         importCoursesFromCSV(longCSV); // imports information as data we can use
     }
 
-    public static void printCalendarView(String scheduleName, Model model){
-        for (Schedule s : currentUser.getSchedules()) {
-            if (s.getScheduleName().equals(scheduleName)) {
-                tempSchedule = s;
-            }
-        }
+    public static void printCalendarView(Schedule calendar, Model model){
         String[][] array = new String[53][6];
         String[] header = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
@@ -398,7 +401,7 @@ public class WebController {
             j = j + 1;
         }
         List<String> course_info = new ArrayList<>();
-        for (Course c : tempSchedule.getCourses()) {
+        for (Course c : calendar.getCourses()) {
             List<DayOfWeek> course_days = c.getDays();
             LocalTime course_start_time = c.getStartTime();
             LocalTime course_end_time = c.getEndTime();
@@ -608,7 +611,7 @@ public class WebController {
     }
 
     public boolean addEvent(ScheduleElement newEvent) {
-        for (ScheduleElement event: tempSchedule.getEvents()) {
+        for (ScheduleElement event : tempSchedule.getEvents()) {
             if (event.equals(newEvent)) { //event is already added, do not add
                 System.out.println("THIS EVENT IS ALREADY ADDED");
                 return false;

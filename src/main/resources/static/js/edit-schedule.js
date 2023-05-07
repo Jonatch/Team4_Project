@@ -6,6 +6,7 @@ function addCourse(parameter) {
         success: function(response) {
             // Handle the response from the controller
             console.log(response);
+             $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
         },
         error: function(xhr, status, error) {
             // Handle any errors that occurred during the AJAX request
@@ -36,6 +37,19 @@ function openRemovePopup(){
 
     var popup = document.getElementById("remove-popup-container");
     popup.classList.toggle("active");
+
+    $.ajax({
+            url: '/remove-courses',
+            method: 'get',
+            success: function(response) {
+                // Handle the response from the controller
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors that occurred during the AJAX request
+                console.error(error);
+            }
+        });
 }
 
 function closeRemovePopup(){

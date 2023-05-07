@@ -49,12 +49,13 @@
         <h2>Remove Courses</h2>
     </div>
     <div class="card-body">
-        <form th:action="@{/edit-schedule/${scheduleName}}" method="post">
+        <form th:action="@{/remove-courses}" method="post">
             <div th:each="courseRemove : ${coursesRemove}">
-                <div>
-                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum}" th:checked="false" />
-                    <label th:text="${courseRemove.getFormattedCourseTitle}"></label>
-                </div>
+<!--                <div>-->
+<!--                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum()}" th:checked="false" />-->
+<!--                    <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>-->
+<!--                </div>-->
+                <div class="course-info" th:text="${courseRemove.getFormattedCourseTitle}"></div>
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
             <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
@@ -107,11 +108,9 @@
         <div class="col text-center">
             <!--Title-->
             <h1 class="display-4" th:text="${scheduleName}"></h1>
-            <p class="float-right" th:text="'semester: ' + ${schedule.getSemesterString}"></p>
-            <p class="float-right" th:text="'credits: ' + ${schedule.getTotalCreditsString}"></p>
-            <button class="btn btn-danger btn-primary" onclick="openRemovePopup()" >Remove Courses</button>
         </div>
     </div>
+    <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;margin-top: -8px;">
     <div class="row">
         <div class="col-3">
             <div class="row p-1">
@@ -128,7 +127,7 @@
                 </div>
             </div>
             <div class="row scrollable" style="height: 650px; overflow-y: auto;">
-                <ul class="list-group">
+                <ul class="list-group" >
                     <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
                         <div class="course-details">
                             <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
@@ -136,36 +135,48 @@
                         </div>
                         <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                         <div class="d-flex justify-content-between">
-                            <a href="" style="color: #cc0000;">More Info</a>
-                            <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">+</button>
+                            <button th:onclick="" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                            <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
                         </div>
                     </div>
                 </ul>
             </div>
         </div>
-        <div class="col scrollable" style="height: 700px; overflow-y: auto;">
-            <table class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th th:each="header : ${header}" th:text="${header}"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="row, rowIdx : ${times}">
-                    <td th:each="cell, cellIdx : ${row}" th:text="${cell}"
-                        th:classappend="${cellIdx != 0 && (cell != null and cell != '')} ? 'shaded' : ''"></td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="col-9">
+            <div class="row p-1">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-danger btn-primary" style="display: inline-block;">Add Custom Event</button>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-danger btn-primary" onclick="openRemovePopup()" style="display: inline-block;">Remove Courses</button>
+                </div>
+                <div class="col text-right" style="margin-top: -4px;">
+                    <p class="mb-0" style="line-height: 1.5;">
+                        <span style="font-weight: bold;">Semester:</span> <span th:text="${schedule.getSemesterString}"></span>
+                    </p>
+                    <p class="mb-0" style="line-height: 1.5; padding-bottom: 8px;">
+                        <span style="font-weight: bold;">Credits:</span> <span th:text="${schedule.getTotalCreditsString}"></span>
+                    </p>
+                </div>
+            </div>
+<!--            <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;margin-top: -8px;">-->
+            <div class="col scrollable" style="height: 700px; overflow-y: auto; padding: 0;">
+                <table id="scheduleTable" class="table table-bordered" style="margin-top: 0;">
+                    <thead>
+                    <tr>
+                        <th th:each="header : ${header}" th:text="${header}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row, rowIdx : ${times}">
+                        <td th:each="cell, cellIdx : ${row}" th:text="${cell}"
+                            th:classappend="${cellIdx.index > 0 && (cell != null and cell != '')} ? 'shaded' : ''"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-<script th:inline="javascript">
-    /* Retroactively remove the shading from the first column */
-    var firstColumnCells = document.querySelectorAll("tbody td:nth-child(1)");
-    firstColumnCells.forEach(function(cell) {
-        cell.classList.remove("shaded");
-    });
-</script>
 </body>
 </html>
