@@ -1,0 +1,9 @@
+<div th:fragment="remove-popup-content">
+  <form method="get" id="remove-form">
+    <div th:each="courseRemove : ${coursesRemove}">
+      <div class="course-info" th:text="${courseRemove.getFormattedCourseTitle()}"></div>
+    </div>
+    <button class="btn btn-primary" type="button" onclick="closeRemovePopup()">Remove Courses</button>
+    <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
+  </form>
+</div>
