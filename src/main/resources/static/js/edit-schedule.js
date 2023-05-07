@@ -111,6 +111,9 @@ $(document).ready(function() {
         console.error(error);
       }
     });
+
+  var eventForm = $('#eventForm');
+      eventForm[0].reset();
   });
 });
 

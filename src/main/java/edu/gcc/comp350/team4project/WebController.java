@@ -61,8 +61,22 @@ public class WebController {
 
     @PostMapping("/create-event")
     @ResponseBody
-    public String doCreateEvent(@RequestParam("name") String name) {
-        System.out.println(name);
+    public String doCreateEvent(
+            @RequestParam("name") String name,
+            @RequestParam("startTime") String startTime,
+            @RequestParam("endTime") String endTime,
+            @RequestParam(value = "days", required = false) String[] days
+    ) {
+        System.out.println("Name: " + name);
+        System.out.println("Start Time: " + startTime);
+        System.out.println("End Time: " + endTime);
+
+        if (days != null) {
+            System.out.println("Days selected:");
+            for (String day : days) {
+                System.out.println(day);
+            }
+        }
         return "Form submitted successfully!";
     }
     @GetMapping("/remove-courses")

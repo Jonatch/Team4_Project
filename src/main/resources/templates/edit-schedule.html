@@ -80,8 +80,21 @@
     <div class="card-body">
         <form id="eventForm" action="/create-event" method="POST">
             <div class="form-group">
-                <label >Name:</label>
-                <input type="text" class="form-control" name="name" required>
+                <label>Name:</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter event name" required>
+            </div>
+            <div class="form-group">
+                <label>Days:</label><br>
+                <label><input type="checkbox" name="days" value="Monday"> Monday</label><br>
+                <label><input type="checkbox" name="days" value="Tuesday"> Tuesday</label><br>
+                <label><input type="checkbox" name="days" value="Wednesday"> Wednesday</label><br>
+                <label><input type="checkbox" name="days" value="Thursday"> Thursday</label><br>
+                <label><input type="checkbox" name="days" value="Friday"> Friday</label><br>
+            </div>
+            <div class="form-group">
+                <label>Time:</label>
+                <input type="time" class="form-control" name="startTime" min="08:00" max="21:00" step="900">
+                <input type="time" class="form-control" name="endTime" min="08:00" max="21:00" step="900">
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeEventPopup()">Add Event</button>
             <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Cancel</button>
