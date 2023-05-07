@@ -92,3 +92,26 @@ function closeEventPopup(){
     popup.classList.toggle("active");
 }
 
+$(document).ready(function() {
+
+  // Submit the form using AJAX when the form is submitted
+  $('#eventForm').submit(function(e) {
+    e.preventDefault(); // Prevent default form submission
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      method: form.attr('method'),
+      data: form.serialize(),
+      success: function(response) {
+        // Handle success response
+        console.log(response);
+      },
+      error: function(xhr, status, error) {
+        // Handle error response
+        console.error(error);
+      }
+    });
+  });
+});
+
+

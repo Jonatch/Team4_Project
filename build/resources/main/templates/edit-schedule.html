@@ -78,9 +78,13 @@
         <h2>Add Event</h2>
     </div>
     <div class="card-body">
-        <form  method="post">
-
-            <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Close</button>
+        <form id="eventForm" action="/create-event" method="POST">
+            <div class="form-group">
+                <label >Name:</label>
+                <input type="text" class="form-control" name="name" required>
+            </div>
+            <button class="btn btn-primary" type="submit" onclick="closeEventPopup()">Add Event</button>
+            <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Cancel</button>
         </form>
     </div>
 </div>
