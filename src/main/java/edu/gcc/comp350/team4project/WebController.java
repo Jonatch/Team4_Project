@@ -90,6 +90,7 @@ public class WebController {
     @ResponseBody
     public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) {
         Course c = searchBox.searchForRefNum(parameter);
+
         if (addEvent(c)) {
             printCalendarView(tempSchedule,model);
             return c.getName() + " event added";
@@ -423,7 +424,7 @@ public class WebController {
             j = j + 1;
         }
         List<String> course_info = new ArrayList<>();
-        for (Course c : calendar.getCourses()) {
+        for (ScheduleElement c : calendar.getEvents()) {
             List<DayOfWeek> course_days = c.getDays();
             LocalTime course_start_time = c.getStartTime();
             LocalTime course_end_time = c.getEndTime();
