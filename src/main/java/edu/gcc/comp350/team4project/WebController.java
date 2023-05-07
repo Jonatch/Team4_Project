@@ -57,6 +57,20 @@ public class WebController {
         // schedules
         return "home";
     }
+
+
+//    @PostMapping("/create-event")
+//    @ResponseBody
+//    public String doCreateEvent(@ModelAttribute @Valid EventFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
+//        // Checks to see if any fields are empty before authenticating to avoid sending extra errors
+//        if(!(formData.getUsername().isEmpty() || formData.getPassword().isEmpty())){
+//            if (!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
+//                result.rejectValue("username", "username.invalid", "Username and password combination does not exist");
+//            }
+//        }
+//        currentUser = DatabaseController.pullUser(formData.getUsername());
+//        return "redirect:/";
+//    }
     @GetMapping("/remove-courses")
     public String getRemoveCourses(Model model) {
         ArrayList<Course> courses = tempSchedule.getCourses();

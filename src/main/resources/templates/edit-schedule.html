@@ -49,7 +49,7 @@
         <h2>Remove Courses</h2>
     </div>
     <div class="card-body">
-        <form th:action="@{/remove-courses}" method="post">
+        <form method="post">
             <div th:each="courseRemove : ${coursesRemove}">
 <!--                <div>-->
 <!--                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum()}" th:checked="false" />-->
@@ -59,6 +59,28 @@
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
             <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
+        </form>
+    </div>
+</div>
+<div class="card" id="info-popup-container">
+    <div class="card-header">
+        <h2>More Info</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+
+            <button class="btn btn-secondary" type="button" onclick="closeInfoPopup()">Close</button>
+        </form>
+    </div>
+</div>
+<div class="card" id="event-popup-container">
+    <div class="card-header">
+        <h2>Add Event</h2>
+    </div>
+    <div class="card-body">
+        <form  method="post">
+
+            <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Close</button>
         </form>
     </div>
 </div>
@@ -119,10 +141,10 @@
                         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn btn-danger btn-primary">search</button>
+                        <button type="button" class="btn btn-danger btn-primary">Search</button>
                     </div>
                     <div class="col-3">
-                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
+                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">Filter</button>
                     </div>
                 </div>
             </div>
@@ -135,7 +157,7 @@
                         </div>
                         <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                         <div class="d-flex justify-content-between">
-                            <button th:onclick="" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                            <button onclick="openInfoPopup()" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
                             <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
                         </div>
                     </div>
@@ -145,7 +167,7 @@
         <div class="col-9">
             <div class="row p-1">
                 <div class="col-auto">
-                    <button type="button" class="btn btn-danger btn-primary" style="display: inline-block;">Add Custom Event</button>
+                    <button type="button" onclick="openEventPopup()" class="btn btn-danger btn-primary" style="display: inline-block;">Add Custom Event</button>
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-danger btn-primary" onclick="openRemovePopup()" style="display: inline-block;">Remove Courses</button>

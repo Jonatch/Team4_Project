@@ -25,6 +25,37 @@
     visibility: visible;
 }
 
+#info-popup-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  z-index: 9999;
+  visibility: hidden;
+}
+#info-popup-container.active{
+    visibility: visible;
+}
+#event-popup-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  z-index: 9999;
+  visibility: hidden;
+}
+#event-popup-container.active{
+    visibility: visible;
+}
+
+
+
+
+
 
 #blur.active{
     filter: blur(10px);

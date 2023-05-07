@@ -60,4 +60,35 @@ function closeRemovePopup(){
     popup.classList.toggle("active");
 }
 
+function openInfoPopup(){
+    var blur = document.getElementById("blur");
+    blur.classList.toggle("active");
+
+    var popup = document.getElementById("info-popup-container");
+    popup.classList.toggle("active");
+}
+
+function closeInfoPopup(){
+    var blur = document.getElementById("blur");
+    blur.classList.toggle("active");
+
+    var popup = document.getElementById("info-popup-container");
+    popup.classList.toggle("active");
+}
+
+function openEventPopup(){
+    var blur = document.getElementById("blur");
+    blur.classList.toggle("active");
+
+    var popup = document.getElementById("event-popup-container");
+    popup.classList.toggle("active");
+}
+
+function closeEventPopup(){
+    var blur = document.getElementById("blur");
+    blur.classList.toggle("active");
+
+    var popup = document.getElementById("event-popup-container");
+    popup.classList.toggle("active");
+}
 
