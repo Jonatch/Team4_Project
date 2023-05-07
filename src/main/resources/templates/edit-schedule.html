@@ -49,15 +49,16 @@
         <h2>Remove Courses</h2>
     </div>
     <div class="card-body">
-        <form method="post">
+        <form method="get" id="remove-form">
             <div th:each="courseRemove : ${coursesRemove}">
 <!--                <div>-->
 <!--                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum()}" th:checked="false" />-->
 <!--                    <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>-->
 <!--                </div>-->
-                <div class="course-info" th:text="${courseRemove.getFormattedCourseTitle}"></div>
+                    <div class="course-info" th:text="${courseRemove.getFormattedCourseTitle()}" ></div>
+<!--                th:text="${courseRemove.getFormattedCourseTitle()}"-->
             </div>
-            <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>
+            <button class="btn btn-primary" type="button" onclick="closeRemovePopup()">Remove Courses</button>
             <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
         </form>
     </div>
@@ -70,6 +71,17 @@
         <form method="post">
 
             <button class="btn btn-secondary" type="button" onclick="closeInfoPopup()">Close</button>
+        </form>
+    </div>
+</div>
+<div class="card" id="conflict-popup-container">
+    <div class="card-header">
+        <h2>Schedule Conflict!</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+
+            <button class="btn btn-secondary" type="button" onclick="closeConflictPopup()">Close</button>
         </form>
     </div>
 </div>
@@ -195,7 +207,7 @@
                     <button type="button" onclick="openEventPopup()" class="btn btn-danger btn-primary" style="display: inline-block;">Add Custom Event</button>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-danger btn-primary" onclick="openRemovePopup()" style="display: inline-block;">Remove Courses</button>
+                    <button class="btn btn-danger btn-primary" type = "submit" onclick="openRemovePopup()" style="display: inline-block;">Remove Courses</button>
                 </div>
                 <div class="col text-right" style="margin-top: -4px;">
                     <p class="mb-0" style="line-height: 1.5;">

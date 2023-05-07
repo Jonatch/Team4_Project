@@ -79,11 +79,11 @@ public class WebController {
         }
         return "Form submitted successfully!";
     }
-    @GetMapping("/remove-courses")
+    @PostMapping("/remove-courses")
     public String getRemoveCourses(Model model) {
-        ArrayList<Course> courses = tempSchedule.getCourses();
-        model.addAttribute("coursesRemove", courses);
-        return "edit-schedule";
+        ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
+        model.addAttribute("coursesRemove", elements);
+        return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
     }
 
     @PostMapping("/add-course")
@@ -93,11 +93,11 @@ public class WebController {
 
         if (addEvent(c)) {
             printCalendarView(tempSchedule,model);
-            return c.getName() + " event added";
+            return "true";
 
         }
         else {
-            return "error adding " + c.getName();
+            return "false";
         }
     }
 
@@ -182,6 +182,8 @@ public class WebController {
 
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
+
+
 
         //Getting all the courses loaded into totalCourses\
         initializeCSVCourses();
@@ -633,12 +635,12 @@ public class WebController {
         return unCheckedItems;
     }
 
-@PostMapping("/search-box")
-public String search(@RequestParam("query") String query, Model model) {
-    searchBox.filterByPhrase(query);
-    model.addAttribute("courses", searchBox);
-    return "search done";
-}
+    @PostMapping("/search-box")
+    public String search(@RequestParam("query") String query, Model model) {
+        searchBox.filterByPhrase(query);
+        model.addAttribute("courses", searchBox);
+        return "search done";
+    }
 
 
     private ScheduleElement newEvent;
@@ -656,6 +658,7 @@ public String search(@RequestParam("query") String query, Model model) {
         tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
         return true;
     }
+
     public boolean addEvent(ScheduleElement newEvent) {
         this.newEvent = newEvent;
         for (ScheduleElement event : tempSchedule.getEvents()) {
