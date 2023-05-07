@@ -34,13 +34,12 @@ import static edu.gcc.comp350.team4project.DatabaseController.updateUser;
 @SpringBootApplication
 @Controller
 public class WebController {
-
     // Session Data
     private static User currentUser;
+    private Semester semester;
     private static SearchController searchBox;
     private static Schedule tempSchedule;
     private static ArrayList<Course> totalCourses;
-
     private static ArrayList<String> unCheckedItems;
 
     @RequestMapping("/")
@@ -57,6 +56,19 @@ public class WebController {
         model.addAttribute("schedules", currentUser.getSchedules()); // Replace with your implementation to get the
         // schedules
         return "home";
+    }
+
+    @PostMapping("/add-course")
+    @ResponseBody
+    public String handleButtonClick(@RequestParam("parameter") int parameter) {
+        Course c = searchBox.searchForRefNum(parameter);
+        if (addEvent(c)) {
+            return c.getName() + " event added";
+        }
+        else {
+            return "error adding " + c.getName();
+        }
+        //return "" + parameter;
     }
 
     @PostMapping("/create-schedule")
@@ -115,8 +127,7 @@ public class WebController {
     }
 
     @PostMapping("/login")
-    public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result,
-                          RedirectAttributes redirectAttributes) {
+    public String doLogin(@ModelAttribute @Valid LoginFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
         // Checks to see if any fields are empty before authenticating to avoid sending extra errors
         if(!(formData.getUsername().isEmpty() || formData.getPassword().isEmpty())){
             if (!DatabaseController.authenticateUser(formData.getUsername(), formData.getPassword())) {
@@ -131,7 +142,6 @@ public class WebController {
         currentUser = DatabaseController.pullUser(formData.getUsername());
         return "redirect:/";
     }
-
 
     @GetMapping("/create-schedule")
     public String createSchedule(Model model) {
@@ -300,8 +310,7 @@ public class WebController {
     }
 
     @PostMapping("/register")
-    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result,
-                             RedirectAttributes redirectAttributes) {
+    public String doRegister(@ModelAttribute @Valid RegisterFormData formData, BindingResult result, RedirectAttributes redirectAttributes) {
         //If any data fields in registering are empty, form throws error and do not bother authenticating
         if(!(formData.getUsername().isEmpty() || formData.getPassword().isEmpty() || formData.getConfirm_password().isEmpty() || formData.getYear().isEmpty())){
             if (!formData.getPassword().equals(formData.getConfirm_password())) {
@@ -460,7 +469,8 @@ public class WebController {
      * @param ext: name of file (has to be in:
      *             src/main/java/edu/gcc/comp350/team4project/)
      */
-    public static void importCoursesFromCSV(String ext) {// handles importing a course from csv. Takes all csv values
+    public static void importCoursesFromCSV(String ext) {
+        // handles importing a course from csv. Takes all csv values
         // and converts to data types. Only takes in good data
         String csvFile = "src/main/java/edu/gcc/comp350/team4project/" + ext;
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -597,69 +607,67 @@ public class WebController {
         return unCheckedItems;
     }
 
-    /*
-public boolean addEvent(ScheduleElement newEvent) {
-    for (ScheduleElement event: events) {
-        if (event.equals(newEvent)) { //event is already added, do not add
-            System.out.println("THIS EVENT IS ALREADY ADDED");
-            return false;
-        }
-        else if (event.doesCourseConflict(newEvent)) { //
-            if (newEvent.isAnEvent()) {
-                System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
+    public boolean addEvent(ScheduleElement newEvent) {
+        for (ScheduleElement event: tempSchedule.getEvents()) {
+            if (event.equals(newEvent)) { //event is already added, do not add
+                System.out.println("THIS EVENT IS ALREADY ADDED");
                 return false;
             }
-            Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-            SearchController sb = new SearchController(totalCourses, semester);
-            HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+            else if (event.doesCourseConflict(newEvent)) { //
+                if (newEvent.isAnEvent()) {
+                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
+                    return false;
+                }
+                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+                SearchController sb = new SearchController(totalCourses, semester);
+                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
 
-            ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, events);
-            Course course = chooseSuggestions(suggestions);
-            events.add(course);
-            totalCredits += course.getCredits();
-            return true;
-        }
-    }
-    events.add(newEvent);
-    totalCredits += newEvent.getCredits();
-    return true;
-}
-
-private ArrayList<Course> suggestOtherCourses(HashSet<Course> potentialCourses, ArrayList<ScheduleElement> events) {
-    ArrayList<Course> suggestions = new ArrayList<>();
-
-    for (Course course : potentialCourses) {
-        boolean conflict = false;
-        for (ScheduleElement event : events) {
-            if (course.doesCourseConflict(event)) {
-                conflict = true;
-                break;
+                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
+                Course course = chooseSuggestions(suggestions);
+                tempSchedule.getEvents().add(course);
+                tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
+                return true;
             }
         }
-        if (!conflict) suggestions.add(course);
-    }
-    return suggestions;
-}
-
-private HashSet<Course> getAllOtherSections(Course course, ArrayList<Course> courses) {
-    HashSet<Course> set = new HashSet<>();
-
-    for (Course c: courses) {
-        if (c.getRefNum() == course.getRefNum() && c.getSection() != course.getSection()) set.add(c);
+        tempSchedule.getEvents().add(newEvent);
+        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + newEvent.getCredits());
+        return true;
     }
 
-    return set;
-}
+    private ArrayList<Course> suggestOtherCourses(HashSet<Course> potentialCourses, ArrayList<ScheduleElement> events) {
+        ArrayList<Course> suggestions = new ArrayList<>();
 
-private Course chooseSuggestions(ArrayList<Course> suggestions) {
-    Scanner input = new Scanner(System.in);
-    for (int i = 0; i < suggestions.size(); i++) {
-        System.out.println(i + ": " + suggestions.get(i));
+        for (Course course : potentialCourses) {
+            boolean conflict = false;
+            for (ScheduleElement event : events) {
+                if (course.doesCourseConflict(event)) {
+                    conflict = true;
+                    break;
+                }
+            }
+            if (!conflict) suggestions.add(course);
+        }
+        return suggestions;
     }
-    System.out.println("Input the number corresponding to the course you wish to add: ");
-    int i = input.nextInt();
 
-    return suggestions.get(i);
-}
- */
+    private HashSet<Course> getAllOtherSections(Course course, ArrayList<Course> courses) {
+        HashSet<Course> set = new HashSet<>();
+
+        for (Course c: courses) {
+            if (c.getRefNum() == course.getRefNum() && c.getSection() != course.getSection()) set.add(c);
+        }
+
+        return set;
+    }
+
+    private Course chooseSuggestions(ArrayList<Course> suggestions) {
+        Scanner input = new Scanner(System.in);
+        for (int i = 0; i < suggestions.size(); i++) {
+            System.out.println(i + ": " + suggestions.get(i));
+        }
+        System.out.println("Input the number corresponding to the course you wish to add: ");
+        int i = input.nextInt();
+
+        return suggestions.get(i);
+    }
 }
