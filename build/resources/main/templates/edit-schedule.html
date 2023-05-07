@@ -166,33 +166,19 @@
         <div class="col-3">
             <div class="row p-1">
                 <div class="input-group">
-<!--                    <div class="col">-->
-<!--                        <form id="search-form" action="/search-bar" method="POST">-->
-<!--                            <input type="text" name="query" class="form-control rounded" id="search-box" placeholder="Search: "/>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                    <div class="col-auto">-->
-<!--                        <button type="submit" class="btn btn-danger btn-primary">search</button>-->
-<!--                    </div>-->
-<!--                    <div class="col-auto">-->
-<!--                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>-->
-<!--                    </div>-->
-
-
-                    <div class="col">
-                        <form id="search-form">
+                    <div class="col" id="search-form">
                             <input type="text" name="query" class="form-control rounded" id="search-input" placeholder="Search: " />
-                        </form>
                     </div>
                     <div class="col-auto">
                         <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
                     </div>
-
-
+                    <div class="col-auto">
+                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
+                    </div>
                 </div>
             </div>
             <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
-                <ul class="list-group" >
+                <ul class="list-group" id="insertSearch" >
                     <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
                         <div class="course-details">
                             <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>

@@ -89,6 +89,7 @@ public class WebController {
 
     @PostMapping("/search-box")
     public String search(@RequestParam("query") String query, Model model) {
+        searchBox.removeSpecificFilter(FilterTypes.PHRASE);
         searchBox.filterByPhrase(query);
         model.addAttribute("courses", searchBox);
         return "fragments/search :: search-results";

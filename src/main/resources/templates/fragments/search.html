@@ -1,5 +1,4 @@
 <div th:fragment="search-results">
-    <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
         <ul class="list-group" >
             <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
                 <div class="course-details">
@@ -13,5 +12,4 @@
                 </div>
             </div>
         </ul>
-    </div>
 </div>

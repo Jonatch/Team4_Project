@@ -57,22 +57,6 @@ function search() {
   });
 }
 
-//function search() {
-//  $.ajax({
-//    url: '/search-box',
-//    method: 'post',
-//    success: function(response) {
-//      // Handle the response from the controller
-//      console.log(response);
-//      $("#courses-list").html(response); // Update the content of the popup
-//    },
-//    error: function(xhr, status, error) {
-//      // Handle any errors that occurred during the AJAX request
-//      console.error(error);
-//    }
-//  });
-//}
-
 function openConflictPopup(){
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
