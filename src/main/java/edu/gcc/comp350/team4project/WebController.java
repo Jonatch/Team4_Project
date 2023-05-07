@@ -79,12 +79,13 @@ public class WebController {
         }
         return "Form submitted successfully!";
     }
-    @GetMapping("/remove-courses")
+    @PostMapping("/remove-courses")
     public String getRemoveCourses(Model model) {
-        ArrayList<Course> courses = tempSchedule.getCourses();
-        model.addAttribute("coursesRemove", courses);
-        return "edit-schedule";
+        ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
+        model.addAttribute("coursesRemove", elements);
+        return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
     }
+
 
     @PostMapping("/add-course")
     @ResponseBody
@@ -93,11 +94,11 @@ public class WebController {
 
         if (addEvent(c)) {
             printCalendarView(tempSchedule,model);
-            return c.getName() + " event added";
+            return "true";
 
         }
         else {
-            return "error adding " + c.getName();
+            return "false";
         }
     }
 
@@ -182,6 +183,8 @@ public class WebController {
 
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
+
+
 
         //Getting all the courses loaded into totalCourses\
         initializeCSVCourses();
@@ -642,17 +645,17 @@ public class WebController {
             else if (event.doesCourseConflict(newEvent)) { //
                 if (newEvent.isAnEvent()) {
                     System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
-                    return false;
                 }
-                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-                SearchController sb = new SearchController(totalCourses, semester);
-                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
-
-                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
-                Course course = chooseSuggestions(suggestions);
-                tempSchedule.getEvents().add(course);
-                tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
-                return true;
+                return false;
+//                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+//                SearchController sb = new SearchController(totalCourses, semester);
+//                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+//
+//                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
+//                Course course = chooseSuggestions(suggestions);
+//                tempSchedule.getEvents().add(course);
+//                tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
+//                return true;
             }
         }
         tempSchedule.getEvents().add(newEvent);
@@ -686,14 +689,14 @@ public class WebController {
         return set;
     }
 
-    private Course chooseSuggestions(ArrayList<Course> suggestions) {
-        Scanner input = new Scanner(System.in);
-        for (int i = 0; i < suggestions.size(); i++) {
-            System.out.println(i + ": " + suggestions.get(i));
-        }
-        System.out.println("Input the number corresponding to the course you wish to add: ");
-        int i = input.nextInt();
-
-        return suggestions.get(i);
-    }
+//    private Course chooseSuggestions(ArrayList<Course> suggestions) {
+//        Scanner input = new Scanner(System.in);
+//        for (int i = 0; i < suggestions.size(); i++) {
+//            System.out.println(i + ": " + suggestions.get(i));
+//        }
+//        System.out.println("Input the number corresponding to the course you wish to add: ");
+//        int i = input.nextInt();
+//
+//        return suggestions.get(i);
+//    }
 }
