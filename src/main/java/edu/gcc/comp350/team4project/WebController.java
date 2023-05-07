@@ -633,26 +633,39 @@ public class WebController {
         return unCheckedItems;
     }
 
+@PostMapping("/search-box")
+public String search(@RequestParam("query") String query, Model model) {
+    searchBox.filterByPhrase(query);
+    model.addAttribute("courses", searchBox);
+    return "search done";
+}
+
+
+    private ScheduleElement newEvent;
+    public boolean addConflictingEvent() {
+        if (newEvent.isAnEvent()) return false;
+        Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+        SearchController sb = new SearchController(totalCourses, semester);
+
+        HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+        ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
+        if (suggestions.size() == 0) return false;
+
+        Course course = chooseSuggestions(suggestions);
+        tempSchedule.getEvents().add(course);
+        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
+        return true;
+    }
     public boolean addEvent(ScheduleElement newEvent) {
+        this.newEvent = newEvent;
         for (ScheduleElement event : tempSchedule.getEvents()) {
             if (event.equals(newEvent)) { //event is already added, do not add
                 System.out.println("THIS EVENT IS ALREADY ADDED");
                 return false;
             }
-            else if (event.doesCourseConflict(newEvent)) { //
-                if (newEvent.isAnEvent()) {
-                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
-                    return false;
-                }
-                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-                SearchController sb = new SearchController(totalCourses, semester);
-                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
-
-                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
-                Course course = chooseSuggestions(suggestions);
-                tempSchedule.getEvents().add(course);
-                tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
-                return true;
+            if (event.doesCourseConflict(newEvent)) { //
+                System.out.println("THIS EVENT TIMESLOT IS OCCUPIED");
+                return false;
             }
         }
         tempSchedule.getEvents().add(newEvent);
