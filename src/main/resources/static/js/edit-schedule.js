@@ -1,3 +1,19 @@
+function addCourse(parameter) {
+    $.ajax({
+        url: '/add-course',
+        method: 'POST',
+        data: { parameter: parameter },
+        success: function(response) {
+            // Handle the response from the controller
+            console.log(response);
+        },
+        error: function(xhr, status, error) {
+            // Handle any errors that occurred during the AJAX request
+            console.error(error);
+        }
+    });
+}
+
 function openFilterPopup(){
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
