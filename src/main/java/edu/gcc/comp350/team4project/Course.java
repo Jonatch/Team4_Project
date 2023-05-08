@@ -10,23 +10,16 @@ import java.util.*;
 record DepartmentInfo(String department, String courseLevel, char section) {}
 public class Course extends ScheduleElement {
     private DepartmentInfo departmentInfo;
-    private int refNum, credits;
-    private String name, professor, courseLevel, description;
+    private String professor, courseLevel;
     private Semester semester;
-    private TimeInfo timeInfo;
     private char section;
 
     public Course(int refNum, String department, Semester semester, String courseLevel, char section, String name, int credits, String professor, String description, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime) {
-        super(name, days, startTime, endTime, description);
-        this.name = name;
-        this.refNum = refNum;
-        this.credits = credits;
+        super(name, days, startTime, endTime, description, credits, refNum);
         this.professor = professor;
-        this.description = description;
         this.semester = semester;
         this.courseLevel = courseLevel;
         this.section = section;
-        this.timeInfo = new TimeInfo(days,startTime,endTime);
         this.departmentInfo = new DepartmentInfo(department,courseLevel,section);
     }
 

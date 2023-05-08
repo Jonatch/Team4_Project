@@ -79,11 +79,22 @@ public class WebController {
         }
         return "Form submitted successfully!";
     }
-    @PostMapping("/remove-courses")
+    @PostMapping("/remove-popup")
     public String getRemoveCourses(Model model) {
         ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
         model.addAttribute("coursesRemove", elements);
         return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
+    }
+
+    @PostMapping("/remove-course")
+    @ResponseBody
+    public String doRemoveCourses(@RequestBody Map<String, String[]> requestBody) {
+        String[] selectedCourses = requestBody.get("selectedCourses");
+        for(String s : selectedCourses){
+            int id = Integer.parseInt(s);
+            tempSchedule.removeEventByID(id);
+        }
+        return "Course removed!"; // Return the updated content of the popup
     }
 
 
@@ -94,6 +105,7 @@ public class WebController {
 
         if (addEvent(c)) {
             printCalendarView(tempSchedule,model);
+            System.out.println(c.getRefNum());
             return "true";
 
         }
@@ -659,7 +671,10 @@ public class WebController {
             }
         }
         tempSchedule.getEvents().add(newEvent);
-        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + newEvent.getCredits());
+        int value1 = newEvent.getCredits();
+        int value2 = tempSchedule.getTotalCredits();
+        int valueTotal = value1 + value2;
+        tempSchedule.setTotalCredits(valueTotal);
         return true;
     }
 
