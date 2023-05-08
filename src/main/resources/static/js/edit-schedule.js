@@ -6,7 +6,11 @@ function addCourse(parameter) {
         success: function(response) {
             // Handle the response from the controller
             console.log(response);
-             $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+             if (response === 'false') {
+                    openConflictPopup();
+             } else {
+                    $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+             }
         },
         error: function(xhr, status, error) {
             // Handle any errors that occurred during the AJAX request
@@ -31,25 +35,85 @@ function closeFilterPopup(){
     popup.classList.toggle("active");
 }
 
-function openRemovePopup(){
+function search() {
+  // Get the search query from the input field
+  const searchQuery = $("#search-input").val();
+
+  $.ajax({
+    url: '/search-box',
+    method: 'post',
+    data: {
+      query: searchQuery,
+    },
+    success: function(response) {
+      // Handle the response from the controller
+      console.log(response);
+      $("#searchResults").html(response); // Update the content of the search results
+    },
+    error: function(xhr, status, error) {
+      // Handle any errors that occurred during the AJAX request
+      console.error(error);
+    }
+  });
+}
+
+function openConflictPopup(){
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
-    var popup = document.getElementById("remove-popup-container");
+    var popup = document.getElementById("conflict-popup-container");
     popup.classList.toggle("active");
 
     $.ajax({
-            url: '/remove-courses',
-            method: 'get',
+            url: '/handle-conflict',
+            method: 'POST',
+            data: { parameter: parameter },
             success: function(response) {
                 // Handle the response from the controller
                 console.log(response);
+                 if (response === 'false') {
+                        openConflictPopup();
+                 } else {
+                        $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+                 }
             },
             error: function(xhr, status, error) {
                 // Handle any errors that occurred during the AJAX request
                 console.error(error);
             }
         });
+
+
+}
+
+function closeConflictPopup(){
+    var blur = document.getElementById("blur");
+    blur.classList.toggle("active");
+
+    var popup = document.getElementById("conflict-popup-container");
+    popup.classList.toggle("active");
+}
+
+function openRemovePopup() {
+  $.ajax({
+    url: '/remove-courses',
+    method: 'post',
+    success: function(response) {
+      // Handle the response from the controller
+      console.log(response);
+      $("#remove-popup-container").html(response); // Update the content of the popup
+    },
+    error: function(xhr, status, error) {
+      // Handle any errors that occurred during the AJAX request
+      console.error(error);
+    }
+  });
+
+  var blur = document.getElementById("blur");
+  blur.classList.toggle("active");
+
+  var popup = document.getElementById("remove-popup-container");
+  popup.classList.toggle("active");
 }
 
 function closeRemovePopup(){
@@ -58,6 +122,9 @@ function closeRemovePopup(){
 
     var popup = document.getElementById("remove-popup-container");
     popup.classList.toggle("active");
+
+    var removeForm = $('#remove-form');
+          removeForm[0].reset();
 }
 
 function openInfoPopup(){
@@ -115,6 +182,5 @@ $(document).ready(function() {
   var eventForm = $('#eventForm');
       eventForm[0].reset();
   });
+
 });
-
-

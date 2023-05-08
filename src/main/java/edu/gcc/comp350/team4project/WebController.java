@@ -81,25 +81,36 @@ public class WebController {
         }
         return "Form submitted successfully!";
     }
-    @GetMapping("/remove-courses")
+    @PostMapping("/remove-courses")
     public String getRemoveCourses(Model model) {
-        ArrayList<Course> courses = tempSchedule.getCourses();
-        model.addAttribute("coursesRemove", courses);
-        return "edit-schedule";
+//        searchBox.
+        ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
+        model.addAttribute("coursesRemove", elements);
+        return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
     }
+
+    @PostMapping("/search-box")
+    public String search(@RequestParam("query") String query, Model model) {
+        searchBox.removeSpecificFilter(FilterTypes.PHRASE);
+        searchBox.filterByPhrase(query);
+        model.addAttribute("courses", searchBox);
+        return "fragments/search :: search-results";
+    }
+
 
     @PostMapping("/add-course")
     @ResponseBody
-    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) {
+    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) throws Exception {
         Course c = searchBox.searchForRefNum(parameter);
 
         if (addEvent(c)) {
+            tempSchedule.addCourse(c);
             printCalendarView(tempSchedule,model);
-            return c.getName() + " event added";
+            return "true";
 
         }
         else {
-            return "error adding " + c.getName();
+            return "false";
         }
     }
 
@@ -193,6 +204,8 @@ public class WebController {
     @GetMapping("/edit-schedule/{scheduleName}")
     public String editSchedule(@PathVariable String scheduleName, Model model) {
 
+
+
         //Getting all the courses loaded into totalCourses\
         initializeCSVCourses();
         //set temp Schedule of current user
@@ -223,6 +236,12 @@ public class WebController {
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute FilterFormData filterForm) {
         gettingFilters(filterForm);
         return "redirect:/edit-schedule/" + scheduleName + "";
+    }
+
+    @PostMapping("/update-schedule")
+    public String saveAndExit(){
+        updateUser(currentUser);
+        return"redirect:/";
     }
 
     public static void gettingFilters(FilterFormData form){
@@ -643,26 +662,32 @@ public class WebController {
         return unCheckedItems;
     }
 
+    private ScheduleElement newEvent;
+    public boolean addConflictingEvent() {
+        if (newEvent.isAnEvent()) return false;
+        Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+        SearchController sb = new SearchController(totalCourses, semester);
+
+        HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+        ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
+        if (suggestions.size() == 0) return false;
+
+        Course course = chooseSuggestions(suggestions);
+        tempSchedule.getEvents().add(course);
+        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
+        return true;
+    }
+
     public boolean addEvent(ScheduleElement newEvent) {
+        this.newEvent = newEvent;
         for (ScheduleElement event : tempSchedule.getEvents()) {
             if (event.equals(newEvent)) { //event is already added, do not add
                 System.out.println("THIS EVENT IS ALREADY ADDED");
                 return false;
             }
-            else if (event.doesCourseConflict(newEvent)) { //
-                if (newEvent.isAnEvent()) {
-                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
-                    return false;
-                }
-                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-                SearchController sb = new SearchController(totalCourses, semester);
-                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
-
-                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
-                Course course = chooseSuggestions(suggestions);
-                tempSchedule.getEvents().add(course);
-                tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
-                return true;
+            if (event.doesCourseConflict(newEvent)) { //
+                System.out.println("THIS EVENT TIMESLOT IS OCCUPIED");
+                return false;
             }
         }
         tempSchedule.getEvents().add(newEvent);
