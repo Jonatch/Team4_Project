@@ -229,6 +229,8 @@ public class WebController {
         model.addAttribute("schedule", tempSchedule);
         //Filtering Form
         model.addAttribute("filterForm", new FilterFormData());
+        //Adding all departments for filtering form
+        model.addAttribute("departments", getAllDepartments(totalCourses));
         return "edit-schedule";
     }
 
@@ -238,10 +240,51 @@ public class WebController {
         return "redirect:/edit-schedule/" + scheduleName + "";
     }
 
-    @PostMapping("/update-schedule")
-    public String saveAndExit(){
-        updateUser(currentUser);
-        return"redirect:/";
+
+    public static ArrayList<String> getAllDepartments(ArrayList<Course> totalCourses){
+        ArrayList<String> allDepartments = new ArrayList<>();
+        for (Course c : totalCourses){
+            if (!allDepartments.contains(c.getDepartmentInfo().department())){
+                allDepartments.add(c.getDepartmentInfo().department());
+            }
+        }
+        return allDepartments;
+    }
+
+    @PostMapping("/more-info")
+    public String doLoadMoreInfo(@RequestParam("parameter") int parameter, Model model){
+        Course c = searchBox.searchForRefNum(parameter);
+
+        model.addAttribute("moreInfoCourse", c);
+
+        System.out.println(c.getNameLabel());
+
+        return "fragments/more-info-popup :: info-popup-content";
+    }
+
+    @PostMapping("/filter")
+    @ResponseBody
+    public String doFilterCourses(
+            @RequestParam(value="department", required = false) String department,
+            @RequestParam(value="startTime", required = false) String startTime,
+            @RequestParam(value="endTime", required = false) String endTime,
+            @RequestParam(value = "days", required = false) String[] days,
+            @RequestParam(value="credits", required = false) String credits,
+            @RequestParam(value = "level", required = false) String level
+    ) {
+        System.out.println("Department: " + department);
+        System.out.println("Start Time: " + startTime);
+        System.out.println("End Time: " + endTime);
+        System.out.println("Credits: " + credits);
+        System.out.println("Level: " + level);
+
+        if (days != null) {
+            System.out.println("Days selected:");
+            for (String day : days) {
+                System.out.println(day);
+            }
+        }
+        return "Courses Filtered successfully!";
     }
 
     public static void gettingFilters(FilterFormData form){
