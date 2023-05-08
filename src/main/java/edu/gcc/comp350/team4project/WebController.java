@@ -98,10 +98,11 @@ public class WebController {
 
     @PostMapping("/add-course")
     @ResponseBody
-    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) {
+    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) throws Exception {
         Course c = searchBox.searchForRefNum(parameter);
 
         if (addEvent(c)) {
+            tempSchedule.addCourse(c);
             printCalendarView(tempSchedule,model);
             return "true";
 
@@ -225,6 +226,12 @@ public class WebController {
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute FilterFormData filterForm) {
         gettingFilters(filterForm);
         return "redirect:/edit-schedule/" + scheduleName + "";
+    }
+
+    @PostMapping("/update-schedule")
+    public String saveAndExit(){
+        updateUser(currentUser);
+        return"redirect:/";
     }
 
     public static void gettingFilters(FilterFormData form){
