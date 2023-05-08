@@ -169,7 +169,23 @@ function closeRemovePopup(selectedCourses){
     popup.classList.toggle("active");
 }
 
-function openInfoPopup(){
+function openInfoPopup(parameter){
+
+    $.ajax({
+            url: '/more-info',
+            method: 'POST',
+            data: { parameter: parameter },
+            success: function(response) {
+                // Handle the response from the controller
+                console.log(response);
+                $("#info-popup-container").html(response);
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors that occurred during the AJAX request
+                console.error(error);
+            }
+        });
+
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
@@ -225,3 +241,49 @@ $(document).ready(function() {
       eventForm[0].reset();
   });
 });
+
+$(document).ready(function() {
+
+  // Submit the form using AJAX when the form is submitted
+  $('#filterForm').submit(function(e) {
+    e.preventDefault(); // Prevent default form submission
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      method: form.attr('method'),
+      data: form.serialize(),
+      success: function(response) {
+        // Handle success response
+        console.log(response);
+      },
+      error: function(xhr, status, error) {
+        // Handle error response
+        console.error(error);
+      }
+    });
+  });
+});
+
+$(document).ready(function() {
+
+  // Submit the form using AJAX when the form is submitted
+  $('#filterForm').submit(function(e) {
+    e.preventDefault(); // Prevent default form submission
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      method: form.attr('method'),
+      data: form.serialize(),
+      success: function(response) {
+        // Handle success response
+        console.log(response);
+      },
+      error: function(xhr, status, error) {
+        // Handle error response
+        console.error(error);
+      }
+    });
+  });
+});
+
+
