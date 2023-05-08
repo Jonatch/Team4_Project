@@ -1,3 +1,64 @@
+async function fetchSuggestions(query) {
+    const response = await fetch(`/suggestions?query=${encodeURIComponent(query)}`);
+    if (response.ok) {
+        return await response.json();
+    } else {
+        console.error('Failed to fetch suggestions:', response.status, response.statusText);
+        return [];
+    }
+}
+
+async function updateSuggestions() {
+    const searchInput = document.getElementById('search-input');
+
+    if (!searchInput) {
+        console.error('search-input element not found');
+        return;
+    }
+
+    const query = searchInput.value;
+    const suggestions = await fetchSuggestions(query);
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    dropdownMenu.innerHTML = '';
+
+    suggestions.forEach(suggestion => {
+        const item = document.createElement('a');
+        item.classList.add('dropdown-item');
+        item.href = '#';
+        item.textContent = suggestion;
+        item.addEventListener('click', () => {
+            searchInput.value = suggestion;
+        });
+        dropdownMenu.appendChild(item);
+    });
+}
+function init() {
+    const searchInput = document.getElementById('search-input');
+
+    // Call updateSuggestions() when the input field receives input
+    if (searchInput) {
+        searchInput.addEventListener('input', updateSuggestions);
+    } else {
+        console.error('search-input element not found');
+    }
+}
+
+// Call the init function when the DOM is fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+window.addEventListener("DOMContentLoaded", (event) => {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', updateSuggestions);
+    }
+});
+
 function addCourse(parameter) {
     if(parameter === 'remove'){
          $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");

@@ -215,15 +215,31 @@
         <div class="col-3">
             <div class="row p-1">
                 <div class="input-group">
-                    <div class="col" id="search-form">
-                            <input type="text" name="query" class="form-control rounded" id="search-input" placeholder="Search: " />
+                    <div class="row" id="search-form">
+                        <div class="col">
+                            <div class="dropdown">
+                                <input type="text" name="query" class="form-control rounded dropdown-toggle" data-toggle="dropdown" id="search-input" placeholder="Search:"/>
+                                <div class="dropdown-menu" aria-labelledby="search-input">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
-                    </div>
+                    <style>
+                        .dropdown {
+                            position: relative;
+                        }
+                        .dropdown-menu {
+                            position: absolute;
+                            z-index: 9999;
+                        }
+                    </style>
                 </div>
             </div>
             <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">

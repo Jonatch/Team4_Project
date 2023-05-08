@@ -618,7 +618,7 @@ public class WebController {
                 } catch (Exception ignored) {
                 }
 
-                courseName = data[3];
+                courseName = data[3].toUpperCase();
 
                 //Only if there is time data
                 if(data[4].length()>0){
@@ -728,6 +728,13 @@ public class WebController {
         tempSchedule.getEvents().add(course);
         tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
         return true;
+    }
+
+    @GetMapping("/suggestions")
+    public ResponseEntity<List<String>> getSuggestions(@RequestParam String query) {
+        SearchSuggestions searchSuggestions = new SearchSuggestions(totalCourses);
+        List<String> suggestions = searchSuggestions.getSuggestions(query);
+        return ResponseEntity.ok(suggestions);
     }
 
     public boolean addEvent(ScheduleElement newEvent) {
