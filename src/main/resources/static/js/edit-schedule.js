@@ -96,11 +96,49 @@ function openFilterPopup(){
 }
 
 function closeFilterPopup(){
+    var form = document.getElementById("filterForm");
+    var formData = new FormData(form);
+    var serializedData = new URLSearchParams(formData).toString();
+    $.ajax({
+        url: '/filter',
+        method: 'post',
+        data: serializedData,
+        success: function(response) {
+          // Handle the response from the controller
+          console.log(response);
+          $("#searchResults").html(response); // Update the content of the search results
+        },
+        error: function(xhr, status, error) {
+          // Handle any errors that occurred during the AJAX request
+          console.error(error);
+        }
+      });
+
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
     var popup = document.getElementById("popup-container");
     popup.classList.toggle("active");
+}
+
+function clearFilterPopup(){
+    var form = document.getElementById("filterForm");
+    var formData = new FormData(form);
+    var serializedData = new URLSearchParams(formData).toString();
+    $.ajax({
+        url: '/filter',
+        method: 'post',
+        data: serializedData,
+        success: function(response) {
+          // Handle the response from the controller
+          console.log(response);
+          $("#searchResults").html(response); // Update the content of the search results
+        },
+        error: function(xhr, status, error) {
+          // Handle any errors that occurred during the AJAX request
+          console.error(error);
+        }
+      });
 }
 
 function search() {
@@ -300,50 +338,6 @@ $(document).ready(function() {
 
   var eventForm = $('#eventForm');
       eventForm[0].reset();
-  });
-});
-
-$(document).ready(function() {
-
-  // Submit the form using AJAX when the form is submitted
-  $('#filterForm').submit(function(e) {
-    e.preventDefault(); // Prevent default form submission
-    var form = $(this);
-    $.ajax({
-      url: form.attr('action'),
-      method: form.attr('method'),
-      data: form.serialize(),
-      success: function(response) {
-        // Handle success response
-        console.log(response);
-      },
-      error: function(xhr, status, error) {
-        // Handle error response
-        console.error(error);
-      }
-    });
-  });
-});
-
-$(document).ready(function() {
-
-  // Submit the form using AJAX when the form is submitted
-  $('#filterForm').submit(function(e) {
-    e.preventDefault(); // Prevent default form submission
-    var form = $(this);
-    $.ajax({
-      url: form.attr('action'),
-      method: form.attr('method'),
-      data: form.serialize(),
-      success: function(response) {
-        // Handle success response
-        console.log(response);
-      },
-      error: function(xhr, status, error) {
-        // Handle error response
-        console.error(error);
-      }
-    });
   });
 });
 
