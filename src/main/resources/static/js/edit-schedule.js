@@ -50,24 +50,7 @@ if (document.readyState === 'loading') {
     init();
 }
 
-
-//function init() {
-//    const searchInput = document.getElementById('search-input');
-//
-//    // Call updateSuggestions() when the input field receives input
-//    if (searchInput) {
-//        searchInput.addEventListener('keyup', updateSuggestions);
-//    } else {
-//        console.error('search-input element not found');
-//    }
-//}
-
-//document.getElementById("search-input").onfocus = updateSuggestions();
-
 const dropdownItems = document.querySelectorAll('.dropdown-item');
-
-// Call updateSuggestions() when the input field receives input
-
 
 window.addEventListener("DOMContentLoaded", (event) => {
     const searchInput = document.getElementById('search-input');
@@ -77,24 +60,31 @@ window.addEventListener("DOMContentLoaded", (event) => {
 });
 
 function addCourse(parameter) {
-    $.ajax({
-        url: '/add-course',
-        method: 'POST',
-        data: { parameter: parameter },
-        success: function(response) {
-            // Handle the response from the controller
-            console.log(response);
-             if (response === 'false') {
-                    openConflictPopup();
-             } else {
-                    $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
-             }
-        },
-        error: function(xhr, status, error) {
-            // Handle any errors that occurred during the AJAX request
-            console.error(error);
-        }
-    });
+    if(parameter === 'remove'){
+         $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+         $("#schedInfo").load(window.location.href + " #schedInfo>*", "");
+    }
+    else{
+        $.ajax({
+            url: '/add-course',
+            method: 'POST',
+            data: { parameter: parameter },
+            success: function(response) {
+                // Handle the response from the controller
+                console.log(response);
+                 if (response === 'false') {
+                        openConflictPopup();
+                 } else {
+                        $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+                        $("#schedInfo").load(window.location.href + " #schedInfo>*", "");
+                 }
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors that occurred during the AJAX request
+                console.error(error);
+            }
+        });
+    }
 }
 
 function openFilterPopup(){
@@ -143,23 +133,25 @@ function openConflictPopup(){
     popup.classList.toggle("active");
 
     $.ajax({
-        url: '/handle-conflict',
-        method: 'POST',
-        data: { parameter: parameter },
-        success: function(response) {
-            // Handle the response from the controller
-            console.log(response);
-             if (response === 'false') {
-                    openConflictPopup();
-             } else {
-                    $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
-             }
-        },
-        error: function(xhr, status, error) {
-            // Handle any errors that occurred during the AJAX request
-            console.error(error);
-        }
-    });
+            url: '/handle-conflict',
+            method: 'POST',
+            data: { parameter: parameter },
+            success: function(response) {
+                // Handle the response from the controller
+                console.log(response);
+                 if (response === 'false') {
+                        openConflictPopup();
+                 } else {
+                        $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+                 }
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors that occurred during the AJAX request
+                console.error(error);
+            }
+        });
+
+
 }
 
 function closeConflictPopup(){
@@ -171,19 +163,65 @@ function closeConflictPopup(){
 }
 
 function openRemovePopup() {
-    $.ajax({
-        url: '/remove-courses',
-        method: 'post',
-        success: function(response) {
-            // Handle the response from the controller
-            console.log(response);
-            $("#remove-popup-container").html(response); // Update the content of the popup
-        },
-        error: function(xhr, status, error) {
-            // Handle any errors that occurred during the AJAX request
-            console.error(error);
+  $.ajax({
+    url: '/remove-popup',
+    method: 'post',
+    success: function(response) {
+      // Handle the response from the controller
+      console.log(response);
+      $("#remove-popup-container").html(response); // Update the content of the popup
+    },
+    error: function(xhr, status, error) {
+      // Handle any errors that occurred during the AJAX request
+      console.error(error);
+    }
+  });
+
+  var blur = document.getElementById("blur");
+  blur.classList.toggle("active");
+
+  var popup = document.getElementById("remove-popup-container");
+  popup.classList.toggle("active");
+}
+
+function getSelectedCourses() {
+        var selectedCourses = document.getElementsByName("selectedCourses");
+        var selectedValues = [];
+
+        for (var i = 0; i < selectedCourses.length; i++) {
+            if (selectedCourses[i].checked) {
+                selectedValues.push(selectedCourses[i].value);
+            }
         }
-    });
+        closeRemovePopup(selectedValues);
+}
+
+
+
+
+function closeRemovePopup(selectedCourses){
+
+
+    if(selectedCourses!==""){
+        $.ajax({
+              url: '/remove-course',
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({ selectedCourses: selectedCourses }),
+              success: function(response) {
+                // Handle success response
+                console.log(response);
+                $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+                $("#schedInfo").load(window.location.href + " #schedInfo>*", "");
+              },
+              error: function(xhr, status, error) {
+                // Handle error response
+                console.error(error);
+              }
+        });
+     }
+
+
 
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
@@ -192,18 +230,23 @@ function openRemovePopup() {
     popup.classList.toggle("active");
 }
 
-function closeRemovePopup(){
-    var blur = document.getElementById("blur");
-    blur.classList.toggle("active");
+function openInfoPopup(parameter){
 
-    var popup = document.getElementById("remove-popup-container");
-    popup.classList.toggle("active");
+    $.ajax({
+            url: '/more-info',
+            method: 'POST',
+            data: { parameter: parameter },
+            success: function(response) {
+                // Handle the response from the controller
+                console.log(response);
+                $("#info-popup-container").html(response);
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors that occurred during the AJAX request
+                console.error(error);
+            }
+        });
 
-    var removeForm = $('#remove-form');
-    removeForm[0].reset();
-}
-
-function openInfoPopup(){
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
@@ -258,5 +301,50 @@ $(document).ready(function() {
   var eventForm = $('#eventForm');
       eventForm[0].reset();
   });
-
 });
+
+$(document).ready(function() {
+
+  // Submit the form using AJAX when the form is submitted
+  $('#filterForm').submit(function(e) {
+    e.preventDefault(); // Prevent default form submission
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      method: form.attr('method'),
+      data: form.serialize(),
+      success: function(response) {
+        // Handle success response
+        console.log(response);
+      },
+      error: function(xhr, status, error) {
+        // Handle error response
+        console.error(error);
+      }
+    });
+  });
+});
+
+$(document).ready(function() {
+
+  // Submit the form using AJAX when the form is submitted
+  $('#filterForm').submit(function(e) {
+    e.preventDefault(); // Prevent default form submission
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      method: form.attr('method'),
+      data: form.serialize(),
+      success: function(response) {
+        // Handle success response
+        console.log(response);
+      },
+      error: function(xhr, status, error) {
+        // Handle error response
+        console.error(error);
+      }
+    });
+  });
+});
+
+

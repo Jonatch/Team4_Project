@@ -42,6 +42,8 @@ public class WebController {
     private static ArrayList<Course> totalCourses;
     private static ArrayList<String> unCheckedItems;
 
+    private String major;
+
     @RequestMapping("/")
     public String home(Model model) {
         //Getting all the courses loaded into totalCourses\
@@ -79,7 +81,7 @@ public class WebController {
         }
         return "Form submitted successfully!";
     }
-    @PostMapping("/remove-courses")
+    @PostMapping("/remove-popup")
     public String getRemoveCourses(Model model) {
         ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
         model.addAttribute("coursesRemove", elements);
@@ -93,6 +95,18 @@ public class WebController {
         model.addAttribute("courses", searchBox);
         return "fragments/search :: search-results";
     }
+
+    @PostMapping("/remove-course")
+    @ResponseBody
+    public String doRemoveCourses(@RequestBody Map<String, String[]> requestBody) {
+        String[] selectedCourses = requestBody.get("selectedCourses");
+        for(String s : selectedCourses){
+            int id = Integer.parseInt(s);
+            tempSchedule.removeEventByID(id);
+        }
+        return "Course removed!"; // Return the updated content of the popup
+    }
+
 
     @PostMapping("/add-course")
     @ResponseBody
@@ -112,25 +126,30 @@ public class WebController {
 
     @PostMapping("/create-schedule")
     public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
-        Semester semester = null;
+        boolean selectCourses;
         if (scheduleFormData.getSemester().equalsIgnoreCase("spring")) {
             semester = Semester.SPRING;
         } else if (scheduleFormData.getSemester().equalsIgnoreCase("fall")) {
             semester = Semester.FALL;
         }
+        major = scheduleFormData.getMajor();
+        selectCourses = scheduleFormData.getSuggestCourses();
 
         Schedule newSchedule = new Schedule(scheduleFormData.getName(), semester);
         tempSchedule = newSchedule;
         searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
         currentUser.saveScheduleToUser(tempSchedule);
 
+        if (selectCourses && !major.equals("Other")) {
+            return "redirect:/select-courses-completed/";
+        }
         return "redirect:/edit-schedule/" + newSchedule.getScheduleName();
     }
 
     @GetMapping("/select-courses-completed")
     public String showForm(Model model) {
         ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Psychology BA");
+        c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         model.addAttribute("options", classes);
         return "select-courses";
@@ -140,16 +159,19 @@ public class WebController {
     public String processForm(@RequestParam(value = "selected", required = false) ArrayList<String> selectedStrings, Model model) {
         unCheckedItems = new ArrayList<>();
         ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Psychology BA");
+        c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
             if (!selectedStrings.contains(s)) {
                 unCheckedItems.add(s);
             }
         }
-        c.ClassesSuggest(Semester.FALL);
+        c.ClassesSuggest(semester);
         model.addAttribute("uncheckedItems", unCheckedItems);
-        return "redirect:/login";
+
+        //addEvent
+        //loop through and add all possible
+        return "redirect:/";
     }
 
     @GetMapping("/login")
@@ -216,6 +238,8 @@ public class WebController {
         model.addAttribute("schedule", tempSchedule);
         //Filtering Form
         model.addAttribute("filterForm", new FilterFormData());
+        //Adding all departments for filtering form
+        model.addAttribute("departments", getAllDepartments(totalCourses));
         return "edit-schedule";
     }
 
@@ -223,6 +247,53 @@ public class WebController {
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute FilterFormData filterForm) {
         gettingFilters(filterForm);
         return "redirect:/edit-schedule/" + scheduleName + "";
+    }
+
+
+    public static ArrayList<String> getAllDepartments(ArrayList<Course> totalCourses){
+        ArrayList<String> allDepartments = new ArrayList<>();
+        for (Course c : totalCourses){
+            if (!allDepartments.contains(c.getDepartmentInfo().department())){
+                allDepartments.add(c.getDepartmentInfo().department());
+            }
+        }
+        return allDepartments;
+    }
+
+    @PostMapping("/more-info")
+    public String doLoadMoreInfo(@RequestParam("parameter") int parameter, Model model){
+        Course c = searchBox.searchForRefNum(parameter);
+
+        model.addAttribute("moreInfoCourse", c);
+
+        System.out.println(c.getNameLabel());
+
+        return "fragments/more-info-popup :: info-popup-content";
+    }
+
+    @PostMapping("/filter")
+    @ResponseBody
+    public String doFilterCourses(
+            @RequestParam(value="department", required = false) String department,
+            @RequestParam(value="startTime", required = false) String startTime,
+            @RequestParam(value="endTime", required = false) String endTime,
+            @RequestParam(value = "days", required = false) String[] days,
+            @RequestParam(value="credits", required = false) String credits,
+            @RequestParam(value = "level", required = false) String level
+    ) {
+        System.out.println("Department: " + department);
+        System.out.println("Start Time: " + startTime);
+        System.out.println("End Time: " + endTime);
+        System.out.println("Credits: " + credits);
+        System.out.println("Level: " + level);
+
+        if (days != null) {
+            System.out.println("Days selected:");
+            for (String day : days) {
+                System.out.println(day);
+            }
+        }
+        return "Courses Filtered successfully!";
     }
 
     public static void gettingFilters(FilterFormData form){
@@ -679,7 +750,10 @@ public class WebController {
             }
         }
         tempSchedule.getEvents().add(newEvent);
-        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + newEvent.getCredits());
+        int value1 = newEvent.getCredits();
+        int value2 = tempSchedule.getTotalCredits();
+        int valueTotal = value1 + value2;
+        tempSchedule.setTotalCredits(valueTotal);
         return true;
     }
 
@@ -718,5 +792,8 @@ public class WebController {
         int i = input.nextInt();
 
         return suggestions.get(i);
+    }
+    public String getMajor() {
+        return major;
     }
 }

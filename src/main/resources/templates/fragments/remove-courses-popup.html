@@ -1,9 +1,23 @@
-<div th:fragment="remove-popup-content">
-  <form method="get" id="remove-form">
-    <div th:each="courseRemove : ${coursesRemove}">
-      <div class="course-info" th:text="${courseRemove.getFormattedCourseTitle()}"></div>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:fragment="remove-popup-content">
+    <div class="card-header">
+      <h2>Remove Courses</h2>
     </div>
-    <button class="btn btn-primary" type="button" onclick="closeRemovePopup()">Remove Courses</button>
-    <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
-  </form>
-</div>
+    <div class="card-body">
+      <div id="removeForm">
+        <div th:each="courseRemove : ${coursesRemove}">
+          <div>
+            <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum() != null ? courseRemove.getRefNum() : ''}" th:checked="false" />
+            <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="button" onclick="getSelectedCourses()">Remove Courses</button>
+        <button class="btn btn-secondary" type="button" onclick="closeRemovePopup('cancel')">Cancel</button>
+        <!--            th:onclick="'addCourse('+${course.getRefNum}+')'"-->
+      </div>
+    </div>
+  </div>
+</head>
+

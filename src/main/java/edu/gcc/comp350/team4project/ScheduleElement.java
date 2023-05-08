@@ -12,12 +12,14 @@ public abstract class ScheduleElement {
     protected ArrayList<DayOfWeek> days;
     protected TimeInfo timeInfo;
     protected LocalTime startTime, endTime;
-    public ScheduleElement(String name, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime, String description) {
+    public ScheduleElement(String name, ArrayList<DayOfWeek> days, LocalTime startTime, LocalTime endTime, String description, int credits, int refNum) {
         this.name = name;
         this.days = days;
         this.startTime = startTime;
         this.endTime = endTime;
         this.description = description;
+        this.credits = credits;
+        this.refNum = refNum;
         this.timeInfo = new TimeInfo(days, startTime, endTime);
     }
 
