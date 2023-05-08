@@ -64,14 +64,42 @@
     </div>
 </div>
 <div class="card" id="info-popup-container">
-    <div class="card-header">
-        <h2>More Info</h2>
-    </div>
     <div class="card-body">
-        <form method="post">
+        <div class="row">
+            <div class="col text-center">
+                <h4 th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getFormattedCourseTitle}"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="d-flex align-items-center">
+                    <span class="font-weight-bold">Code:</span>
+                    <p class="mb-0 ml-2" th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getRefNum}"></p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="font-weight-bold">Time:</span>
+                    <p class="mb-0 ml-2" th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getTimeLabel}"></p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="font-weight-bold">Instructor:</span>
+                    <p class="mb-0 ml-2" th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getProfessor}"></p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="d-flex align-items-center">
+                    <span class="font-weight-bold">Credits:</span>
+                    <p class="mb-0 ml-2" th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getCredits}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <span class="font-weight-bold">Description:</span>
+                <p th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getDescription}"></p>
+                <button class="btn float-right" onclick="closeInfoPopup()">back</button>
+            </div>
 
-            <button class="btn btn-secondary" type="button" onclick="closeInfoPopup()">Close</button>
-        </form>
+        </div>
     </div>
 </div>
 <div class="card" id="conflict-popup-container">
@@ -118,36 +146,46 @@
         <h2>Filter</h2>
     </div>
     <div class="card-body">
-        <form th:object="${filterForm}" th:action="@{/edit-schedule/{scheduleName}(scheduleName=${scheduleName})}" method="post">
+        <form id="filterForm" action="/filter" method="post">
             <div class="form-group">
-                <label for="department">Department:</label>
-                <input th:if="${DEPT}" th:field="*{department}" type="text" class="form-control" id="department" name="department" th:value="${DEPT.getValue}">
-                <input th:unless="${DEPT}" th:field="*{department}" type="text" class="form-control" id="department" name="department">
-            </div>
-            <div class="form-group">
-                <label>Time Range:</label>
-                <input th:field="*{startTime}" type="time" id="start-time" name="start-time" step="900">
-                <input th:field="*{endTime}" type="time" id="end-time" name="end-time" step="900">
-            </div>
-            <div class="form-group">
-                <label for="days">Select Days</label>
-                <select class="form-control" id="days" th:field="*{days}">
-                    <option value="MWF">MWF</option>
-                    <option value="TR">TR</option>
-                    <option value="MTWRF">MTWRF</option>
+                <label>Department:</label>
+                <select class="form-control" name="department">
+                    <option value="None">All</option>
+                    <div th:each="department : ${departments}">
+                        <option th:value="${department}" th:text="${department}"></option>
+                    </div>
                 </select>
             </div>
             <div class="form-group">
+                <label>Time:</label>
+                <input type="time" class="form-control" name="startTime" min="08:00" max="21:00" step="900">
+                <input type="time" class="form-control" name="endTime" min="08:00" max="21:00" step="900">
+            </div>
+            <div class="form-group">
+                <label>Days:</label><br>
+                <label><input type="checkbox" name="days" value="Monday"> Monday</label><br>
+                <label><input type="checkbox" name="days" value="Tuesday"> Tuesday</label><br>
+                <label><input type="checkbox" name="days" value="Wednesday"> Wednesday</label><br>
+                <label><input type="checkbox" name="days" value="Thursday"> Thursday</label><br>
+                <label><input type="checkbox" name="days" value="Friday"> Friday</label><br>
+            </div>
+            <div class="form-group">
                 <label for="credits">Credits:</label>
-                <input type="number" class="form-control" id="credits" name="credits" placeholder="12">
+                <input type="number" class="form-control" id="credits" name="credits">
             </div>
             <div class="form-group">
                 <label for="level">Level:</label>
-                <input type="number" class="form-control" id="level" name="level" placeholder="200">
+                <select class="form-control" name="level" id="level">
+                    <option value="None"> All</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                </select>
             </div>
             <button class="btn btn-primary" type="submit" onclick="closeFilterPopup()">Filter</button>
             <button class="btn btn-secondary" type="button" onclick="closeFilterPopup()">Cancel</button>
-            <button class="btn btn-outline-primary" type="reset">Clear All</button>
+            <button class="btn btn-secondary" type="reset">Clear All</button>
         </form>
     </div>
 </div>
@@ -186,7 +224,7 @@
                         </div>
                         <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                         <div class="d-flex justify-content-between">
-                            <button onclick="openInfoPopup()" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                            <button th:onclick="'openInfoPopup(' + ${course.getRefNum} + ')'" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
                             <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
                         </div>
                     </div>

@@ -1,0 +1,39 @@
+<div th:fragment="info-popup-content">
+        <div class="card-body">
+            <div class="row">
+                <div class="col text-center">
+                    <h4 th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getFormattedCourseTitle}"></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <span class="font-weight-bold">Code:</span>
+                        <p class="mb-0 ml-2" th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getRefNum}"></p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="font-weight-bold">Time:</span>
+                        <p class="mb-0 ml-2" th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getTimeLabel}"></p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="font-weight-bold">Instructor:</span>
+                        <p class="mb-0 ml-2" th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getProfessor}"></p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <span class="font-weight-bold">Credits:</span>
+                        <p class="mb-0 ml-2" th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getCredits}"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <span class="font-weight-bold">Description:</span>
+                    <p th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getDescription}"></p>
+                    <button class="btn float-right" onclick="closeInfoPopup()">back</button>
+                </div>
+
+            </div>
+        </div>
+</div>
