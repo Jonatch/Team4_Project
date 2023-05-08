@@ -86,6 +86,14 @@ public class WebController {
         return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
     }
 
+    @PostMapping("/search-box")
+    public String search(@RequestParam("query") String query, Model model) {
+        searchBox.removeSpecificFilter(FilterTypes.PHRASE);
+        searchBox.filterByPhrase(query);
+        model.addAttribute("courses", searchBox);
+        return "fragments/search :: search-results";
+    }
+
     @PostMapping("/remove-course")
     @ResponseBody
     public String doRemoveCourses(@RequestBody Map<String, String[]> requestBody) {
@@ -105,7 +113,6 @@ public class WebController {
 
         if (addEvent(c)) {
             printCalendarView(tempSchedule,model);
-            System.out.println(c.getRefNum());
             return "true";
 
         }
@@ -228,6 +235,12 @@ public class WebController {
     public String doEditSchedule(@PathVariable String scheduleName, @ModelAttribute FilterFormData filterForm) {
         gettingFilters(filterForm);
         return "redirect:/edit-schedule/" + scheduleName + "";
+    }
+
+    @PostMapping("/update-schedule")
+    public String saveAndExit(){
+        updateUser(currentUser);
+        return"redirect:/";
     }
 
     public static void gettingFilters(FilterFormData form){
@@ -648,26 +661,32 @@ public class WebController {
         return unCheckedItems;
     }
 
+    private ScheduleElement newEvent;
+    public boolean addConflictingEvent() {
+        if (newEvent.isAnEvent()) return false;
+        Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
+        SearchController sb = new SearchController(totalCourses, semester);
+
+        HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
+        ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
+        if (suggestions.size() == 0) return false;
+
+        Course course = chooseSuggestions(suggestions);
+        tempSchedule.getEvents().add(course);
+        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
+        return true;
+    }
+
     public boolean addEvent(ScheduleElement newEvent) {
+        this.newEvent = newEvent;
         for (ScheduleElement event : tempSchedule.getEvents()) {
             if (event.equals(newEvent)) { //event is already added, do not add
                 System.out.println("THIS EVENT IS ALREADY ADDED");
                 return false;
             }
-            else if (event.doesCourseConflict(newEvent)) { //
-                if (newEvent.isAnEvent()) {
-                    System.out.println("THERE IS AN EVENT OCCUPYING THIS TIMESLOT");
-                }
+            if (event.doesCourseConflict(newEvent)) { //
+                System.out.println("THIS EVENT TIMESLOT IS OCCUPIED");
                 return false;
-//                Course conflictingCourse = (Course) newEvent; //cast to Course because it has a getSection() method
-//                SearchController sb = new SearchController(totalCourses, semester);
-//                HashSet<Course> potentialCourses = getAllOtherSections(conflictingCourse, sb.getFilteredCourses());
-//
-//                ArrayList<Course> suggestions = suggestOtherCourses(potentialCourses, tempSchedule.getEvents());
-//                Course course = chooseSuggestions(suggestions);
-//                tempSchedule.getEvents().add(course);
-//                tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + course.getCredits());
-//                return true;
             }
         }
         tempSchedule.getEvents().add(newEvent);
@@ -704,14 +723,14 @@ public class WebController {
         return set;
     }
 
-//    private Course chooseSuggestions(ArrayList<Course> suggestions) {
-//        Scanner input = new Scanner(System.in);
-//        for (int i = 0; i < suggestions.size(); i++) {
-//            System.out.println(i + ": " + suggestions.get(i));
-//        }
-//        System.out.println("Input the number corresponding to the course you wish to add: ");
-//        int i = input.nextInt();
-//
-//        return suggestions.get(i);
-//    }
+    private Course chooseSuggestions(ArrayList<Course> suggestions) {
+        Scanner input = new Scanner(System.in);
+        for (int i = 0; i < suggestions.size(); i++) {
+            System.out.println(i + ": " + suggestions.get(i));
+        }
+        System.out.println("Input the number corresponding to the course you wish to add: ");
+        int i = input.nextInt();
+
+        return suggestions.get(i);
+    }
 }

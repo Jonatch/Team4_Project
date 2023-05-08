@@ -163,7 +163,9 @@
 <div class="container-fluid" id="blur">
     <div class="row">
         <div class="col-4 p-5">
-            <button type="button" class="btn btn-danger btn-primary btn-lg">Save and exit</button>
+            <form th:action="@{/update-schedule}" method="post">
+                <button type="submit" class="btn btn-danger btn-primary btn-lg">Save and exit</button>
+            </form>
         </div>
         <div class="col text-center">
             <!--Title-->
@@ -175,19 +177,19 @@
         <div class="col-3">
             <div class="row p-1">
                 <div class="input-group">
-                    <div class="col">
-                        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <div class="col" id="search-form">
+                            <input type="text" name="query" class="form-control rounded" id="search-input" placeholder="Search: " />
                     </div>
                     <div class="col-auto">
-                        <button type="button" class="btn btn-danger btn-primary">search</button>
+                        <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
                     </div>
                     <div class="col-auto">
                         <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
                     </div>
                 </div>
             </div>
-            <div class="row scrollable" style="height: 650px; overflow-y: auto;">
-                <ul class="list-group" >
+            <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
+                <ul class="list-group" id="insertSearch" >
                     <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
                         <div class="course-details">
                             <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
@@ -246,24 +248,37 @@
 </script>
 <script>
     $(document).ready(function() {
-    var formChanged = false;
-    $('form :input').change(function() {
-        formChanged = true;
-    });
+  var formChanged = false;
 
-    // Warn user before leaving the page
-    $(window).on('beforeunload', function(e) {
-        if (formChanged) {
-            var message = "You have unsaved changes. Are you sure you want to leave this page?";
-            e.returnValue = message;
-            return message;
-        }
-    });
+  $('form :input').change(function() {
+    formChanged = true;
+  });
 
-    // Disable warning if the user submits the form
-    $('form').submit(function() {
-        formChanged = false;
-    });
+  // Warn user before leaving the page
+  $(window).on('beforeunload', function(e) {
+    if (formChanged) {
+      var message = "You have unsaved changes. Are you sure you want to leave this page?";
+      e.preventDefault();
+      e.returnValue = message;
+      return message;
+    }
+  });
+
+  // Disable warning if the user saves and exits
+  $('button.save-exit').click(function() {
+    formChanged = false;
+  });
+
+  // Disable warning if the user submits the form
+  $('form').submit(function() {
+    formChanged = false;
+  });
+
+  // Disable back button on the browser
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+      history.go(1);
+  };
 });
 </script>
 <!--this code commented out until we can actually add courses-->

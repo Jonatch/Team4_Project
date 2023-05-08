@@ -42,6 +42,28 @@ function closeFilterPopup(){
     popup.classList.toggle("active");
 }
 
+function search() {
+  // Get the search query from the input field
+  const searchQuery = $("#search-input").val();
+
+  $.ajax({
+    url: '/search-box',
+    method: 'post',
+    data: {
+      query: searchQuery,
+    },
+    success: function(response) {
+      // Handle the response from the controller
+      console.log(response);
+      $("#searchResults").html(response); // Update the content of the search results
+    },
+    error: function(xhr, status, error) {
+      // Handle any errors that occurred during the AJAX request
+      console.error(error);
+    }
+  });
+}
+
 function openConflictPopup(){
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
@@ -203,5 +225,3 @@ $(document).ready(function() {
       eventForm[0].reset();
   });
 });
-
-
