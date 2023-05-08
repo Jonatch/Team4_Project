@@ -20,11 +20,17 @@
             margin: 0;
             padding: 0;
         }
-    </style>
-    <style>
-        .view-toggle.active {
-        background-color: #007bff;
-        border-color: #007bff;
+        .btn.btn-primary {
+        background-color: #CC0000;
+        border-color: #CC0000;
+        font-weight: bold;
+        }
+
+        .btn.btn-primary:hover {
+        background-color: #990000;
+        }
+        .btn.btn-primary:focus {
+              outline: none; /* Remove the default focus outline */
         }
     </style>
 </head>
@@ -35,8 +41,8 @@
 <div class="container my-5">
     <h1 class="text-center mb-5" th:text="${scheduleName}"></h1>
     <div class="row mb-4">
-        <button class="btn btn-primary view-toggle active" data-view="calendar">Calendar View</button>
-        <button class="btn btn-primary view-toggle" data-view="table">Table View</button>
+        <button class="btn view-toggle btn-primary" data-view="calendar">Calendar View</button>
+        <button class="btn view-toggle btn-secondary " data-view="table">Table View</button>
     </div>
     <div class="view-container">
         <!-- Calendar View -->
@@ -157,9 +163,11 @@
       // Toggle active state of buttons
       viewToggleButtons.forEach(function(btn) {
         if (btn === button) {
-          btn.classList.add("active");
+          btn.classList.remove("btn-secondary");
+          btn.classList.add("btn-primary");
         } else {
-          btn.classList.remove("active");
+          btn.classList.remove("btn-primary");
+          btn.classList.add("btn-secondary");
         }
       });
     });
