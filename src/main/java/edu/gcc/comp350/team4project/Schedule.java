@@ -88,6 +88,16 @@ public class Schedule {
         else throw new Exception("Event " + event.getName() + " was not found in the schedule.");
     }
 
+    public void removeEventByID(int id) {
+        for(ScheduleElement e : this.events){
+            if(id == e.getRefNum()){
+                events.remove(e);
+                totalCredits -= e.getCredits();
+                break;
+            }
+        }
+    }
+
     public void removeCourse(Course course) throws Exception{ //removes courses and updates credit amnt
         if(!(this.courses.remove(course))){
             throw new Exception("Course " + course.getName() + " was not found in the schedule and was not removed");
@@ -102,6 +112,8 @@ public class Schedule {
             removeEvent(event);
         }
     }
+
+
     public void removeCourses(ArrayList<Course> courses) throws Exception{//remove multiple courses
         for(Course course : courses){
             try{

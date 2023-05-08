@@ -81,9 +81,8 @@ public class WebController {
         }
         return "Form submitted successfully!";
     }
-    @PostMapping("/remove-courses")
+    @PostMapping("/remove-popup")
     public String getRemoveCourses(Model model) {
-//        searchBox.
         ArrayList<ScheduleElement> elements = tempSchedule.getEvents();
         model.addAttribute("coursesRemove", elements);
         return "fragments/remove-courses-popup :: remove-popup-content"; // Return the updated content of the popup
@@ -97,14 +96,24 @@ public class WebController {
         return "fragments/search :: search-results";
     }
 
+    @PostMapping("/remove-course")
+    @ResponseBody
+    public String doRemoveCourses(@RequestBody Map<String, String[]> requestBody) {
+        String[] selectedCourses = requestBody.get("selectedCourses");
+        for(String s : selectedCourses){
+            int id = Integer.parseInt(s);
+            tempSchedule.removeEventByID(id);
+        }
+        return "Course removed!"; // Return the updated content of the popup
+    }
+
 
     @PostMapping("/add-course")
     @ResponseBody
-    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) throws Exception {
+    public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) {
         Course c = searchBox.searchForRefNum(parameter);
 
         if (addEvent(c)) {
-            tempSchedule.addCourse(c);
             printCalendarView(tempSchedule,model);
             return "true";
 
@@ -734,7 +743,10 @@ public class WebController {
             }
         }
         tempSchedule.getEvents().add(newEvent);
-        tempSchedule.setTotalCredits(tempSchedule.getTotalCredits() + newEvent.getCredits());
+        int value1 = newEvent.getCredits();
+        int value2 = tempSchedule.getTotalCredits();
+        int valueTotal = value1 + value2;
+        tempSchedule.setTotalCredits(valueTotal);
         return true;
     }
 

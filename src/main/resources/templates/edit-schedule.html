@@ -49,18 +49,27 @@
         <h2>Remove Courses</h2>
     </div>
     <div class="card-body">
-        <form method="get" id="remove-form">
-            <div th:each="courseRemove : ${coursesRemove}">
+<!--        <form id="removeForm" action = "/remove-course" method="POST">-->
+<!--            <div th:each="courseRemove : ${coursesRemove}">-->
 <!--                <div>-->
-<!--                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum()}" th:checked="false" />-->
+<!--                    <input type="checkbox" name="selectedCourses" th:value="${String.valueOf(courseRemove.getRefNum())}" th:checked="false" />-->
 <!--                    <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>-->
 <!--                </div>-->
-                    <div class="course-info" th:text="${courseRemove.getFormattedCourseTitle()}" ></div>
-<!--                th:text="${courseRemove.getFormattedCourseTitle()}"-->
+<!--            </div>-->
+<!--            <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>-->
+<!--            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>-->
+<!--        </form>-->
+        <div id="removeForm">
+            <div th:each="courseRemove : ${coursesRemove}">
+                <div>
+                    <input type="checkbox" name="selectedCourses" th:value="${courseRemove.getRefNum() != null ? courseRemove.getRefNum() : ''}" th:checked="false" />
+                    <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>
+                </div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="closeRemovePopup()">Remove Courses</button>
-            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
-        </form>
+            <button class="btn btn-primary" type="button" onclick="getSelectedCourses()">Remove Courses</button>
+            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup('cancel')">Cancel</button>
+<!--            th:onclick="'addCourse('+${course.getRefNum}+')'"-->
+        </div>
     </div>
 </div>
 <div class="card" id="info-popup-container">
@@ -136,7 +145,7 @@
                 <input type="time" class="form-control" name="startTime" min="08:00" max="21:00" step="900">
                 <input type="time" class="form-control" name="endTime" min="08:00" max="21:00" step="900">
             </div>
-            <button class="btn btn-primary" type="submit" onclick="closeEventPopup()">Add Event</button>
+            <button class="btn btn-primary" type="button" onclick="closeEventPopup()">Add Event</button>
             <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Cancel</button>
         </form>
     </div>
@@ -233,7 +242,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-9" id = "allSchedInfo">
             <div class="row p-1">
                 <div class="col-auto">
                     <button type="button" onclick="openEventPopup()" class="btn btn-danger btn-primary" style="display: inline-block;">Add Custom Event</button>
@@ -241,7 +250,7 @@
                 <div class="col-auto">
                     <button class="btn btn-danger btn-primary" type = "submit" onclick="openRemovePopup()" style="display: inline-block;">Remove Courses</button>
                 </div>
-                <div class="col text-right" style="margin-top: -4px;">
+                <div class="col text-right" style="margin-top: -4px;" id = "schedInfo">
                     <p class="mb-0" style="line-height: 1.5;">
                         <span style="font-weight: bold;">Semester:</span> <span th:text="${schedule.getSemesterString}"></span>
                     </p>
