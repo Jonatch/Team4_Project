@@ -249,6 +249,11 @@ public class WebController {
         return "redirect:/edit-schedule/" + scheduleName + "";
     }
 
+    @PostMapping("/update-schedule")
+    public String saveAndExit(){
+        updateUser(currentUser);
+        return"redirect:/";
+    }
 
     public static ArrayList<String> getAllDepartments(ArrayList<Course> totalCourses){
         ArrayList<String> allDepartments = new ArrayList<>();
@@ -281,30 +286,34 @@ public class WebController {
             @RequestParam(value = "level", required = false) String level,
             Model model
     ) {
-        if(!department.equals("")){
-            searchBox.removeSpecificFilter(FilterTypes.DEPT);
-            searchBox.filterByDept(department);
-            System.out.println(searchBox.getFilteredCourses());
+        if(department != null){
+            System.out.println("Department: " + department);
+            if(!department.equals("")){
+                searchBox.removeSpecificFilter(FilterTypes.DEPT);
+                searchBox.filterByDept(department);
+            }else{
+                searchBox.removeSpecificFilter(FilterTypes.DEPT);
+            }
         }
-        else{
-            searchBox.removeSpecificFilter(FilterTypes.DEPT);
-        }
-        if(!startTime.equals("") && !endTime.equals("")){
-            searchBox.removeSpecificFilter(FilterTypes.TIME);
-            searchBox.removeSpecificFilter(FilterTypes.TIME);
-            String[] startTokens = startTime.split(":");
-            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
-            String[] endTokens = endTime.split(":");
-            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
-            searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
-        }
-        else{
-            searchBox.removeSpecificFilter(FilterTypes.TIME);
+        if(startTime != null && endTime != null){
+            System.out.println("Start time: " + startTime);
+            System.out.println("End time: " + endTime);
+            if(!startTime.equals("") && !endTime.equals("")){
+                searchBox.removeSpecificFilter(FilterTypes.TIME);
+                searchBox.removeSpecificFilter(FilterTypes.TIME);
+                String[] startTokens = startTime.split(":");
+                LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+                String[] endTokens = endTime.split(":");
+                LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+                searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
+            }else{
+                searchBox.removeSpecificFilter(FilterTypes.TIME);
+            }
         }
         if(days != null) {
+            System.out.println("Days: " + Arrays.toString(days));
             searchBox.removeSpecificFilter(FilterTypes.DAYS);
-            searchBox.removeSpecificFilter(FilterTypes.DAYS);
-            HashSet<DayOfWeek> setOfDays = new HashSet<>();
+            ArrayList<DayOfWeek> setOfDays = new ArrayList<>();
             for(String s: days){
                 if(s.equals("M")){
                     setOfDays.add(DayOfWeek.MONDAY);
@@ -322,25 +331,33 @@ public class WebController {
                     setOfDays.add(DayOfWeek.FRIDAY);
                 }
             }
+            if(!setOfDays.isEmpty()){
+                searchBox.filterByDays(setOfDays);
+            }
         }
         else{
             searchBox.removeSpecificFilter(FilterTypes.DAYS);
         }
-        if(!credits.equals("")){
-            searchBox.removeSpecificFilter(FilterTypes.CRED);
-            searchBox.filterByCredits(credits);
+        if(credits != null){
+            System.out.println("Credits: " + credits);
+            if(!credits.equals("")){
+                searchBox.removeSpecificFilter(FilterTypes.CRED);
+                searchBox.filterByCredits(credits);
+            }else{
+                searchBox.removeSpecificFilter(FilterTypes.CRED);
+            }
         }
-        else{
-            searchBox.removeSpecificFilter(FilterTypes.CRED);
-        }
-        if(!level.equals("")){
-            searchBox.removeSpecificFilter(FilterTypes.LVL);
-            searchBox.filterByLevel(level);
-        }
-        else{
-            searchBox.removeSpecificFilter(FilterTypes.LVL);
+        if(level != null) {
+            System.out.println("level: " + level);
+            if (!level.equals("")) {
+                searchBox.removeSpecificFilter(FilterTypes.LVL);
+                searchBox.filterByLevel(level);
+            } else {
+                searchBox.removeSpecificFilter(FilterTypes.LVL);
+            }
         }
         model.addAttribute("courses", searchBox);
+        System.out.println("Refreshing course list ...");
         return "fragments/search :: search-results";
     }
 
