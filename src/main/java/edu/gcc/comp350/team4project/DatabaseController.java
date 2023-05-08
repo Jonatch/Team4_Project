@@ -260,8 +260,6 @@ public class DatabaseController {
         }
     }
 
-
-
     //Method responsible for inserting into the sqlite database
     public static void insert(User user) {
         String username = user.getUsername();

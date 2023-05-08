@@ -249,6 +249,11 @@ public class WebController {
         return "redirect:/edit-schedule/" + scheduleName + "";
     }
 
+    @PostMapping("/update-schedule")
+    public String saveAndExit(){
+        updateUser(currentUser);
+        return"redirect:/";
+    }
 
     public static ArrayList<String> getAllDepartments(ArrayList<Course> totalCourses){
         ArrayList<String> allDepartments = new ArrayList<>();
