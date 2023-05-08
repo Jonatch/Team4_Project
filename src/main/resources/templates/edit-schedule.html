@@ -166,19 +166,19 @@
         <div class="col-3">
             <div class="row p-1">
                 <div class="input-group">
-                    <div class="col">
-                        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <div class="col" id="search-form">
+                            <input type="text" name="query" class="form-control rounded" id="search-input" placeholder="Search: " />
                     </div>
                     <div class="col-auto">
-                        <button type="button" class="btn btn-danger btn-primary">search</button>
+                        <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
                     </div>
                     <div class="col-auto">
                         <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
                     </div>
                 </div>
             </div>
-            <div class="row scrollable" style="height: 650px; overflow-y: auto;">
-                <ul class="list-group" >
+            <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
+                <ul class="list-group" id="insertSearch" >
                     <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
                         <div class="course-details">
                             <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
