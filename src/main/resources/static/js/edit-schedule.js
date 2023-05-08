@@ -1,3 +1,81 @@
+async function fetchSuggestions(query) {
+    const response = await fetch(`/suggestions?query=${encodeURIComponent(query)}`);
+    if (response.ok) {
+        return await response.json();
+    } else {
+        console.error('Failed to fetch suggestions:', response.status, response.statusText);
+        return [];
+    }
+}
+
+async function updateSuggestions() {
+    const searchInput = document.getElementById('search-input');
+
+    if (!searchInput) {
+        console.error('search-input element not found');
+        return;
+    }
+
+    const query = searchInput.value;
+    const suggestions = await fetchSuggestions(query);
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    dropdownMenu.innerHTML = '';
+
+    suggestions.forEach(suggestion => {
+        const item = document.createElement('a');
+        item.classList.add('dropdown-item');
+        item.href = '#';
+        item.textContent = suggestion;
+        item.addEventListener('click', () => {
+            searchInput.value = suggestion;
+        });
+        dropdownMenu.appendChild(item);
+    });
+}
+function init() {
+    const searchInput = document.getElementById('search-input');
+
+    // Call updateSuggestions() when the input field receives input
+    if (searchInput) {
+        searchInput.addEventListener('input', updateSuggestions);
+    } else {
+        console.error('search-input element not found');
+    }
+}
+
+// Call the init function when the DOM is fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+
+//function init() {
+//    const searchInput = document.getElementById('search-input');
+//
+//    // Call updateSuggestions() when the input field receives input
+//    if (searchInput) {
+//        searchInput.addEventListener('keyup', updateSuggestions);
+//    } else {
+//        console.error('search-input element not found');
+//    }
+//}
+
+//document.getElementById("search-input").onfocus = updateSuggestions();
+
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+// Call updateSuggestions() when the input field receives input
+
+
+window.addEventListener("DOMContentLoaded", (event) => {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', updateSuggestions);
+    }
+});
+
 function addCourse(parameter) {
     $.ajax({
         url: '/add-course',
@@ -65,25 +143,23 @@ function openConflictPopup(){
     popup.classList.toggle("active");
 
     $.ajax({
-            url: '/handle-conflict',
-            method: 'POST',
-            data: { parameter: parameter },
-            success: function(response) {
-                // Handle the response from the controller
-                console.log(response);
-                 if (response === 'false') {
-                        openConflictPopup();
-                 } else {
-                        $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
-                 }
-            },
-            error: function(xhr, status, error) {
-                // Handle any errors that occurred during the AJAX request
-                console.error(error);
-            }
-        });
-
-
+        url: '/handle-conflict',
+        method: 'POST',
+        data: { parameter: parameter },
+        success: function(response) {
+            // Handle the response from the controller
+            console.log(response);
+             if (response === 'false') {
+                    openConflictPopup();
+             } else {
+                    $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+             }
+        },
+        error: function(xhr, status, error) {
+            // Handle any errors that occurred during the AJAX request
+            console.error(error);
+        }
+    });
 }
 
 function closeConflictPopup(){
@@ -95,25 +171,25 @@ function closeConflictPopup(){
 }
 
 function openRemovePopup() {
-  $.ajax({
-    url: '/remove-courses',
-    method: 'post',
-    success: function(response) {
-      // Handle the response from the controller
-      console.log(response);
-      $("#remove-popup-container").html(response); // Update the content of the popup
-    },
-    error: function(xhr, status, error) {
-      // Handle any errors that occurred during the AJAX request
-      console.error(error);
-    }
-  });
+    $.ajax({
+        url: '/remove-courses',
+        method: 'post',
+        success: function(response) {
+            // Handle the response from the controller
+            console.log(response);
+            $("#remove-popup-container").html(response); // Update the content of the popup
+        },
+        error: function(xhr, status, error) {
+            // Handle any errors that occurred during the AJAX request
+            console.error(error);
+        }
+    });
 
-  var blur = document.getElementById("blur");
-  blur.classList.toggle("active");
+    var blur = document.getElementById("blur");
+    blur.classList.toggle("active");
 
-  var popup = document.getElementById("remove-popup-container");
-  popup.classList.toggle("active");
+    var popup = document.getElementById("remove-popup-container");
+    popup.classList.toggle("active");
 }
 
 function closeRemovePopup(){
@@ -124,7 +200,7 @@ function closeRemovePopup(){
     popup.classList.toggle("active");
 
     var removeForm = $('#remove-form');
-          removeForm[0].reset();
+    removeForm[0].reset();
 }
 
 function openInfoPopup(){
