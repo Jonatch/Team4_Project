@@ -6,8 +6,8 @@
 <body>
 <form th:action="@{/select-courses-completed}" method="post">
     <div th:each="option : ${options}">
-        <input type="checkbox" name= "selected" th:value="${option}" th:checked="false" />
-        <label th:text="${option}"></label>
+        <input class="form-check-input" type="checkbox" name="selected" th:value="${option}" th:checked="false" />
+        <label class="form-check-label" th:text="${option}"></label>
     </div>
     <button type="submit">Submit</button>
 </form>
