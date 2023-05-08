@@ -42,6 +42,8 @@ public class WebController {
     private static ArrayList<Course> totalCourses;
     private static ArrayList<String> unCheckedItems;
 
+    private String major;
+
     @RequestMapping("/")
     public String home(Model model) {
         //Getting all the courses loaded into totalCourses\
@@ -104,25 +106,30 @@ public class WebController {
 
     @PostMapping("/create-schedule")
     public String createSchedule(@ModelAttribute ScheduleFormData scheduleFormData) {
-        Semester semester = null;
+        boolean selectCourses;
         if (scheduleFormData.getSemester().equalsIgnoreCase("spring")) {
             semester = Semester.SPRING;
         } else if (scheduleFormData.getSemester().equalsIgnoreCase("fall")) {
             semester = Semester.FALL;
         }
+        major = scheduleFormData.getMajor();
+        selectCourses = scheduleFormData.getSuggestCourses();
 
         Schedule newSchedule = new Schedule(scheduleFormData.getName(), semester);
         tempSchedule = newSchedule;
         searchBox = new SearchController(totalCourses, tempSchedule.getSemester());
         currentUser.saveScheduleToUser(tempSchedule);
 
+        if (selectCourses && !major.equals("Other")) {
+            return "redirect:/select-courses-completed/";
+        }
         return "redirect:/edit-schedule/" + newSchedule.getScheduleName();
     }
 
     @GetMapping("/select-courses-completed")
     public String showForm(Model model) {
         ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Psychology BA");
+        c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         model.addAttribute("options", classes);
         return "select-courses";
@@ -132,16 +139,19 @@ public class WebController {
     public String processForm(@RequestParam(value = "selected", required = false) ArrayList<String> selectedStrings, Model model) {
         unCheckedItems = new ArrayList<>();
         ClassListRead c = new ClassListRead();
-        c.ReadTextFile("Psychology BA");
+        c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
             if (!selectedStrings.contains(s)) {
                 unCheckedItems.add(s);
             }
         }
-        c.ClassesSuggest(Semester.FALL);
+        c.ClassesSuggest(semester);
         model.addAttribute("uncheckedItems", unCheckedItems);
-        return "redirect:/login";
+
+        //addEvent
+        //loop through and add all possible
+        return "redirect:/";
     }
 
     @GetMapping("/login")
@@ -695,5 +705,8 @@ public class WebController {
         int i = input.nextInt();
 
         return suggestions.get(i);
+    }
+    public String getMajor() {
+        return major;
     }
 }
