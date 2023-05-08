@@ -1,15 +1,15 @@
 <div th:fragment="search-results">
-        <ul class="list-group" >
-            <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
-                <div class="course-details">
-                    <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
-                    <div class="course-info" th:text="${course.getTimeLabel}"></div>
-                </div>
-                <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                <div class="d-flex justify-content-between">
-                    <button onclick="openInfoPopup()" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
-                    <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
-                </div>
+    <ul class="list-group" >
+        <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
+            <div class="course-details">
+                <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
+                <div class="course-info" th:text="${course.getTimeLabel}"></div>
             </div>
-        </ul>
+            <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+            <div class="d-flex justify-content-between">
+                <button onclick="openInfoPopup()" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
+            </div>
+        </div>
+    </ul>
 </div>

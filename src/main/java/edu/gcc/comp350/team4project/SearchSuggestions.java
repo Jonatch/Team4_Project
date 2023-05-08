@@ -9,6 +9,7 @@ public class SearchSuggestions {
     private Scanner input;
     public SearchSuggestions(ArrayList<Course> courses) {
         this.courses = courses;
+        System.out.println(courses.size());
         initTree();
     }
 
@@ -23,8 +24,9 @@ public class SearchSuggestions {
         for (Course c: courses) tree.addCourse(c);
     }
 
-    public List<String> getSuggestions() {
-        getQuery();
+    public List<String> getSuggestions(String query) {
+        System.out.println("getSuggestions called with query: " + query);
+        this.query = query;
         List<String> suggestions = new ArrayList<>();
         TrieNode currNode = tree.getRoot();
         Queue<String> queue = new LinkedList<>();
@@ -63,6 +65,7 @@ public class SearchSuggestions {
     }
 
     private int getIndex(char val) {
+        System.out.println(val);
         return switch (val) {
             case ' ' -> 26;
             case '/' -> 27;
@@ -81,6 +84,8 @@ public class SearchSuggestions {
             case '8' -> 40;
             case '9' -> 41;
             case '0' -> 42;
+            case '(' -> 43;
+            case ')' -> 44;
             default -> val - 'A';
         };
     }
