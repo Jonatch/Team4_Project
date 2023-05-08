@@ -27,6 +27,7 @@ function addCourse(parameter) {
 }
 
 function openFilterPopup(){
+
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
@@ -35,6 +36,22 @@ function openFilterPopup(){
 }
 
 function closeFilterPopup(){
+
+    $.ajax({
+                    url: '/filter',
+                    method: 'POST',
+                    data: { parameter: parameter },
+                    success: function(response) {
+                        // Handle the response from the controller
+                        console.log(response);
+                        $("").html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors that occurred during the AJAX request
+                        console.error(error);
+                    }
+                });
+
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 

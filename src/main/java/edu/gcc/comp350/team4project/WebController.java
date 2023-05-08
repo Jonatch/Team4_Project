@@ -272,28 +272,76 @@ public class WebController {
     }
 
     @PostMapping("/filter")
-    @ResponseBody
     public String doFilterCourses(
             @RequestParam(value="department", required = false) String department,
             @RequestParam(value="startTime", required = false) String startTime,
             @RequestParam(value="endTime", required = false) String endTime,
             @RequestParam(value = "days", required = false) String[] days,
             @RequestParam(value="credits", required = false) String credits,
-            @RequestParam(value = "level", required = false) String level
+            @RequestParam(value = "level", required = false) String level,
+            Model model
     ) {
-        System.out.println("Department: " + department);
-        System.out.println("Start Time: " + startTime);
-        System.out.println("End Time: " + endTime);
-        System.out.println("Credits: " + credits);
-        System.out.println("Level: " + level);
-
-        if (days != null) {
-            System.out.println("Days selected:");
-            for (String day : days) {
-                System.out.println(day);
+        if(!department.equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.DEPT);
+            searchBox.filterByDept(department);
+            System.out.println(searchBox.getFilteredCourses());
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.DEPT);
+        }
+        if(!startTime.equals("") && !endTime.equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.TIME);
+            searchBox.removeSpecificFilter(FilterTypes.TIME);
+            String[] startTokens = startTime.split(":");
+            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+            String[] endTokens = endTime.split(":");
+            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+            searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.TIME);
+        }
+        if(days != null) {
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+            HashSet<DayOfWeek> setOfDays = new HashSet<>();
+            for(String s: days){
+                if(s.equals("M")){
+                    setOfDays.add(DayOfWeek.MONDAY);
+                }
+                if(s.equals("T")){
+                    setOfDays.add(DayOfWeek.TUESDAY);
+                }
+                if(s.equals("W")){
+                    setOfDays.add(DayOfWeek.WEDNESDAY);
+                }
+                if(s.equals("R")){
+                    setOfDays.add(DayOfWeek.THURSDAY);
+                }
+                if(s.equals("F")){
+                    setOfDays.add(DayOfWeek.FRIDAY);
+                }
             }
         }
-        return "Courses Filtered successfully!";
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.DAYS);
+        }
+        if(!credits.equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.CRED);
+            searchBox.filterByCredits(credits);
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.CRED);
+        }
+        if(!level.equals("")){
+            searchBox.removeSpecificFilter(FilterTypes.LVL);
+            searchBox.filterByLevel(level);
+        }
+        else{
+            searchBox.removeSpecificFilter(FilterTypes.LVL);
+        }
+        model.addAttribute("courses", searchBox);
+        return "fragments/search :: search-results";
     }
 
     public static void gettingFilters(FilterFormData form){
