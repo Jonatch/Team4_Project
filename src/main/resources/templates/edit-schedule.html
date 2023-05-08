@@ -32,33 +32,27 @@
         table td {
         font-weight: bold;
         }
-       .btn {
+       .btn.btn-primary {
             background-color: #CC0000;
             border-color: #CC0000;
             font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #990000;
+       }
+
+        .btn.btn-primary:hover {
+             background-color: #990000;
         }
     </style>
 
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Home</a>
+</nav>
 <div class="card" id="remove-popup-container">
     <div class="card-header">
         <h2>Remove Courses</h2>
     </div>
     <div class="card-body">
-<!--        <form id="removeForm" action = "/remove-course" method="POST">-->
-<!--            <div th:each="courseRemove : ${coursesRemove}">-->
-<!--                <div>-->
-<!--                    <input type="checkbox" name="selectedCourses" th:value="${String.valueOf(courseRemove.getRefNum())}" th:checked="false" />-->
-<!--                    <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <button class="btn btn-primary" type="submit" onclick="closeRemovePopup()">Remove Courses</button>-->
-<!--            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>-->
-<!--        </form>-->
         <div id="removeForm">
             <div th:each="courseRemove : ${coursesRemove}">
                 <div>
@@ -68,7 +62,6 @@
             </div>
             <button class="btn btn-primary" type="button" onclick="getSelectedCourses()">Remove Courses</button>
             <button class="btn btn-secondary" type="button" onclick="closeRemovePopup('cancel')">Cancel</button>
-<!--            th:onclick="'addCourse('+${course.getRefNum}+')'"-->
         </div>
     </div>
 </div>
@@ -200,14 +193,13 @@
 </div>
 <div class="container-fluid" id="blur">
     <div class="row">
-        <div class="col-4 p-5">
-            <form th:action="@{/update-schedule}" method="post">
-                <button type="submit" class="btn btn-danger btn-primary btn-lg">Save and exit</button>
-            </form>
+        <div class="col text-center offset-md-2 col-md-8 mt-2">
+            <h1 class="display-3 p-2" th:text="${scheduleName}" style="font-weight: bold; margin-top: -20px;"></h1>
         </div>
-        <div class="col text-center">
-            <!--Title-->
-            <h1 class="display-4" th:text="${scheduleName}"></h1>
+        <div class="col text-right mt-2">
+            <form th:action="@{/update-schedule}" method="post">
+                <button type="submit" class="btn btn-danger btn-primary">Save and exit</button>
+            </form>
         </div>
     </div>
     <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;margin-top: -8px;">
@@ -222,7 +214,7 @@
                         <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
                     </div>
                     <div class="col-auto">
-                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">filters</button>
+                        <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">Filter</button>
                     </div>
                 </div>
             </div>
