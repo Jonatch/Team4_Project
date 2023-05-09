@@ -71,21 +71,23 @@
                 <table class="table table-bordered table-hover">
                     <thead class="thead-light">
                     <tr>
+                        <th>Reference</th>
                         <th>Course</th>
                         <th>Time</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <div class="list-group-item" th:each="course: ${schedule.getEvents()}">
-                        <tr>
-                            <td th:text="${course.getNameLabel()}"></td>
-                            <td>
-                                <ul class="list-unstyled">
-                                    <li class="py-2" th:text="${course.getTimeLabel()}"></li>
-                                </ul>
-                            </td>
-                        </tr>
-                    </div>
+                    <tbody th:each="course: ${schedule.getEvents()}">
+                    <tr>
+                        <td th:text="${course.getRefNum()}"></td>
+                        <td th:text="${course.getNameLabel()}"></td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <li class="py-2" th:text="${course.getTimeLabel()}"></li>
+                            </ul>
+                        </td>
+                    </tr>
+<!--                    <div class="list-group-item" th:each="course: ${schedule.getEvents()}">-->
+<!--                    </div>-->
 <!--                    <tr>-->
 <!--                        <td>Monday</td>-->
 <!--                        <td>-->

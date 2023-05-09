@@ -207,6 +207,9 @@ public class WebController {
 
     @GetMapping("/create-schedule")
     public String createSchedule(Model model) {
+        if(tempSchedule!=null){
+            return "redirect:/";
+        }
         model.addAttribute("scheduleFormData", new ScheduleFormData());
         return "create-schedule";
     }
@@ -253,6 +256,7 @@ public class WebController {
     @PostMapping("/update-schedule")
     public String saveAndExit(){
         updateUser(currentUser);
+        tempSchedule=null;
         return"redirect:/";
     }
 
