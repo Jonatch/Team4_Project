@@ -214,7 +214,7 @@ public class ClassListRead {
         classesToDo = w.getArrayList();
         for (int i = 0; i < classesToDo.size(); i++) {
             String currClass = classesToDo.get(i);
-            if (Pattern.matches("[A-Z]{4}\s\\d{3}", currClass)) {
+            if (Pattern.matches("[A-Z]{4}\s\\d{3}.*", currClass)) {
                 if (sameSemester(currClass, semester)) {
                     int courseCredits = getCredits(currClass, semester);
                     if (credits + courseCredits <= 17) {
@@ -292,10 +292,8 @@ public class ClassListRead {
                 }
             }
         }
-//        for (int i = 0; i < otherCourseTypes.size(); i++) {
-//            System.out.println(otherCourseTypes.get(i));
-//        }
-//        addCourses(otherCourseTypes);
+
+        addCourses(otherCourseTypes, semester);
     }
 
     public boolean sameSemester(String s, Semester semester) {
@@ -348,28 +346,32 @@ public class ClassListRead {
         return sSpring.getFilteredCourses().get(0).getCredits();
     }
 
-//    public void addCourses(ArrayList<String> coursesToAdd)  {
-//        WebController w = new WebController();
-//        for (int i = 0; i < coursesToAdd.size(); i++) {
-//            String courseToAdd = coursesToAdd.get(i);
-//            if (Pattern.matches("[A-Z]{4}\s\\d{3}", courseToAdd)) {
-//                String dept = classes.get(i).substring(0, 4);
-//                sFall.filterByDept(dept);
-//                String courseNum = classes.get(i).substring(5, 8);
-//                sFall.filterByExactLevel(courseNum);
-//                if (!sFall.getFilteredCourses().isEmpty()) {
-//                    Course c  = sFall.getFilteredCourses().get(0);
-//
-//                    if (w.addEvent(c)) {
-//                        System.out.println("work");
-//                    }
-//                    else {
-//                        w.addConflict()
-//                    }
-//
-//                }
-//            }
-//
-//        }
-//    }
+    public void addCourses(ArrayList<String> coursesToAdd, Semester semester)  {
+        ArrayList<Course> classesToAdd = new ArrayList<>();
+        initializeCSVCourses();
+        SearchController searcher = new SearchController(totalCourses, semester);
+        WebController w = new WebController();
+        for (int i = 0; i < coursesToAdd.size(); i++) {
+            searcher.refreshFilteredCourses();
+            String courseToAdd = coursesToAdd.get(i);
+            System.out.println(courseToAdd);
+            if (Pattern.matches("[A-Z]{4}\s\\d{3}.*", courseToAdd)) {
+                String dept = classes.get(i).substring(0, 4);
+                searcher.filterByDept(dept);
+                String courseNum = classes.get(i).substring(5, 8);
+                searcher.filterByExactLevel(courseNum);
+                if (!searcher.getFilteredCourses().isEmpty()) {
+                    classesToAdd.add(searcher.getFilteredCourses().get(0));
+                }
+            }
+        }
+
+        for (int i = 0; i < classesToAdd.size(); i++) {
+            if (w.addEvent(classesToAdd.get(i))) {
+            }
+            else {
+                w.addConflictingEvent();
+            }
+        }
+    }
 }

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/select-courses.css}">
     <title>Select Completed Courses</title>
 </head>
 <body>
-<form th:action="@{/select-courses-completed}" method="post">
+<form class="checkboxgroup" th:action="@{/select-courses-completed}" method="post">
     <div th:each="option : ${options}">
         <input class="form-check-input" type="checkbox" name="selected" th:value="${option}" th:checked="false" />
         <label class="form-check-label" th:text="${option}"></label>

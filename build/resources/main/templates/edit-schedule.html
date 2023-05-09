@@ -46,7 +46,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Home</a>
+    <a class="navbar-brand" href="#">Team 4</a>
 </nav>
 <div class="card" id="remove-popup-container">
     <div class="card-header">
@@ -152,7 +152,7 @@
             <div class="form-group">
                 <label>Department:</label>
                 <select class="form-control" name="department">
-                    <option value="None">All</option>
+                    <option value="">All</option>
                     <div th:each="department : ${departments}">
                         <option th:value="${department}" th:text="${department}"></option>
                     </div>
@@ -165,11 +165,11 @@
             </div>
             <div class="form-group">
                 <label>Days:</label><br>
-                <label><input type="checkbox" name="days" value="Monday"> Monday</label><br>
-                <label><input type="checkbox" name="days" value="Tuesday"> Tuesday</label><br>
-                <label><input type="checkbox" name="days" value="Wednesday"> Wednesday</label><br>
-                <label><input type="checkbox" name="days" value="Thursday"> Thursday</label><br>
-                <label><input type="checkbox" name="days" value="Friday"> Friday</label><br>
+                <label><input type="checkbox" name="days" value="M"> Monday</label><br>
+                <label><input type="checkbox" name="days" value="T"> Tuesday</label><br>
+                <label><input type="checkbox" name="days" value="W"> Wednesday</label><br>
+                <label><input type="checkbox" name="days" value="T"> Thursday</label><br>
+                <label><input type="checkbox" name="days" value="F"> Friday</label><br>
             </div>
             <div class="form-group">
                 <label for="credits">Credits:</label>
@@ -178,16 +178,16 @@
             <div class="form-group">
                 <label for="level">Level:</label>
                 <select class="form-control" name="level" id="level">
-                    <option value="None"> All</option>
+                    <option value=""> All</option>
                     <option value="100">100</option>
                     <option value="200">200</option>
                     <option value="300">300</option>
                     <option value="400">400</option>
                 </select>
             </div>
-            <button class="btn btn-primary" type="submit" onclick="closeFilterPopup()">Filter</button>
+            <button class="btn btn-primary" type="button" onclick="closeFilterPopup()">Filter</button>
             <button class="btn btn-secondary" type="button" onclick="closeFilterPopup()">Cancel</button>
-            <button class="btn btn-secondary" type="reset">Clear All</button>
+            <button class="btn btn-secondary" type="reset" onclick="clearFilterPopup()">Clear All</button>
         </form>
     </div>
 </div>
