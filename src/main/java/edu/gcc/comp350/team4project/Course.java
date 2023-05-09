@@ -51,7 +51,7 @@ public class Course extends ScheduleElement {
         return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section()+ ": " + this.name.toUpperCase();
     }
     public String getNameLabel(){
-        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + " \n" + name;
+        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + ": \n" + name;
     }
     public String getTimeLabel(){
         String daysFormatted = "";
