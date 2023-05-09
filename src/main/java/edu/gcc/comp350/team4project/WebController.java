@@ -113,6 +113,7 @@ public class WebController {
     public String handleButtonClick(@RequestParam("parameter") int parameter, Model model) {
         Course c = searchBox.searchForRefNum(parameter);
 
+        System.out.println(c);
         if (addEvent(c)) {
             printCalendarView(tempSchedule,model);
             return "true";
@@ -206,6 +207,9 @@ public class WebController {
 
     @GetMapping("/create-schedule")
     public String createSchedule(Model model) {
+        if(tempSchedule!=null){
+            return "redirect:/";
+        }
         model.addAttribute("scheduleFormData", new ScheduleFormData());
         return "create-schedule";
     }
@@ -252,6 +256,7 @@ public class WebController {
     @PostMapping("/update-schedule")
     public String saveAndExit(){
         updateUser(currentUser);
+        tempSchedule=null;
         return"redirect:/";
     }
 
@@ -446,30 +451,31 @@ public class WebController {
                 viewSchedule = s;
             }
         }
-        for (Course c : viewSchedule.getCourses()){
-            String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
-            if(c.getDays().contains(DayOfWeek.MONDAY)){
-                mon.add(course_info);
-            }
-            if(c.getDays().contains(DayOfWeek.TUESDAY)){
-                tues.add(course_info);
-            }
-            if(c.getDays().contains(DayOfWeek.WEDNESDAY)){
-                wed.add(course_info);
-            }
-            if(c.getDays().contains(DayOfWeek.THURSDAY)){
-                thur.add(course_info);
-            }
-            if(c.getDays().contains(DayOfWeek.FRIDAY)){
-                fri.add(course_info);
-            }
-        }
+//        for (ScheduleElement c : viewSchedule.getEvents()){
+//            String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
+//            if(c.getDays().contains(DayOfWeek.MONDAY)){
+//                mon.add(course_info);
+//            }
+//            if(c.getDays().contains(DayOfWeek.TUESDAY)){
+//                tues.add(course_info);
+//            }
+//            if(c.getDays().contains(DayOfWeek.WEDNESDAY)){
+//                wed.add(course_info);
+//            }
+//            if(c.getDays().contains(DayOfWeek.THURSDAY)){
+//                thur.add(course_info);
+//            }
+//            if(c.getDays().contains(DayOfWeek.FRIDAY)){
+//                fri.add(course_info);
+//            }
+//        }
         printCalendarView(viewSchedule,model);
-        model.addAttribute("mon", mon);
-        model.addAttribute("tues", tues);
-        model.addAttribute("wed", wed);
-        model.addAttribute("thur", thur);
-        model.addAttribute("fri", fri);
+//        model.addAttribute("mon", mon);
+//        model.addAttribute("tues", tues);
+//        model.addAttribute("wed", wed);
+//        model.addAttribute("thur", thur);
+//        model.addAttribute("fri", fri);
+        model.addAttribute("schedule",viewSchedule);
         return "view-schedule";
     }
 
@@ -679,7 +685,7 @@ public class WebController {
                 departmentName = departmentInfo[0];
                 courseLevel = departmentInfo[1];
                 try {
-                    courseSection = departmentInfo[3].charAt(0);
+                    courseSection = departmentInfo[2].charAt(0);
                 } catch (Exception ignored) {
                 }
 

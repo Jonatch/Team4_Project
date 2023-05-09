@@ -51,7 +51,7 @@ public class Course extends ScheduleElement {
         return this.departmentInfo.department() + " " + this.departmentInfo.courseLevel() + " " + this.departmentInfo.section()+ ": " + this.name.toUpperCase();
     }
     public String getNameLabel(){
-        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + " \n" + name;
+        return departmentInfo.department() + " " + departmentInfo.courseLevel() + " " + departmentInfo.section() + ": \n" + name;
     }
     public String getTimeLabel(){
         String daysFormatted = "";
@@ -71,8 +71,20 @@ public class Course extends ScheduleElement {
             daysFormatted += "F";
         }
 
+        String time;
+        if(timeInfo.startTime()!=null){
+            time = timeInfo.startTime() + "-" + timeInfo.endTime();
+        }else{
+            time = "Online course / No time";
+        }
         return daysFormatted + " \n"
-                + timeInfo.startTime() + "-" + timeInfo.endTime();
+                + time;
     }
+
+    public String getCredLabel(){
+        return "Credits: " + this.credits;
+    }
+
+
 
 }

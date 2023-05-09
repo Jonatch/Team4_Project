@@ -71,51 +71,63 @@
                 <table class="table table-bordered table-hover">
                     <thead class="thead-light">
                     <tr>
-                        <th>Day</th>
-                        <th>Courses</th>
+                        <th>Reference</th>
+                        <th>Course</th>
+                        <th>Time</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody th:each="course: ${schedule.getEvents()}">
                     <tr>
-                        <td>Monday</td>
+                        <td th:text="${course.getRefNum()}"></td>
+                        <td th:text="${course.getNameLabel()}"></td>
                         <td>
                             <ul class="list-unstyled">
-                                <li th:each="course : ${mon}" class="py-2" th:text="${course}"></li>
+                                <li class="py-2" th:text="${course.getTimeLabel()}"></li>
                             </ul>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Tuesday</td>
-                        <td>
-                            <ul class="list-unstyled">
-                                <li th:each="course : ${tues}" class="py-2" th:text="${course}"></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Wednesday</td>
-                        <td>
-                            <ul class="list-unstyled">
-                                <li th:each="course : ${wed}" class="py-2" th:text="${course}"></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Thursday</td>
-                        <td>
-                            <ul class="list-unstyled">
-                                <li th:each="course : ${thur}" class="py-2" th:text="${course}"></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Friday</td>
-                        <td>
-                            <ul class="list-unstyled">
-                                <li th:each="course : ${fri}" class="py-2" th:text="${course}"></li>
-                            </ul>
-                        </td>
-                    </tr>
+<!--                    <div class="list-group-item" th:each="course: ${schedule.getEvents()}">-->
+<!--                    </div>-->
+<!--                    <tr>-->
+<!--                        <td>Monday</td>-->
+<!--                        <td>-->
+<!--                            <ul class="list-unstyled">-->
+<!--                                <li th:each="course : ${mon}" class="py-2" th:text="${course}"></li>-->
+<!--                            </ul>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td>Tuesday</td>-->
+<!--                        <td>-->
+<!--                            <ul class="list-unstyled">-->
+<!--                                <li th:each="course : ${tues}" class="py-2" th:text="${course}"></li>-->
+<!--                            </ul>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td>Wednesday</td>-->
+<!--                        <td>-->
+<!--                            <ul class="list-unstyled">-->
+<!--                                <li th:each="course : ${wed}" class="py-2" th:text="${course}"></li>-->
+<!--                            </ul>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td>Thursday</td>-->
+<!--                        <td>-->
+<!--                            <ul class="list-unstyled">-->
+<!--                                <li th:each="course : ${thur}" class="py-2" th:text="${course}"></li>-->
+<!--                            </ul>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td>Friday</td>-->
+<!--                        <td>-->
+<!--                            <ul class="list-unstyled">-->
+<!--                                <li th:each="course : ${fri}" class="py-2" th:text="${course}"></li>-->
+<!--                            </ul>-->
+<!--                        </td>-->
+<!--                    </tr>-->
                     </tbody>
                 </table>
             </div>
