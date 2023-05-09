@@ -71,8 +71,20 @@ public class Course extends ScheduleElement {
             daysFormatted += "F";
         }
 
+        String time;
+        if(timeInfo.startTime()!=null){
+            time = timeInfo.startTime() + "-" + timeInfo.endTime();
+        }else{
+            time = "Online course / No time";
+        }
         return daysFormatted + " \n"
-                + timeInfo.startTime() + "-" + timeInfo.endTime();
+                + time;
     }
+
+    public String getCredLabel(){
+        return "Credits: " + this.credits;
+    }
+
+
 
 }

@@ -446,7 +446,7 @@ public class WebController {
                 viewSchedule = s;
             }
         }
-        for (Course c : viewSchedule.getCourses()){
+        for (ScheduleElement c : viewSchedule.getEvents()){
             String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
             if(c.getDays().contains(DayOfWeek.MONDAY)){
                 mon.add(course_info);
