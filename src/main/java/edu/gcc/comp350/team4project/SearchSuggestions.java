@@ -9,10 +9,10 @@ public class SearchSuggestions {
     private Scanner input;
     public SearchSuggestions(ArrayList<Course> courses) {
         this.courses = courses;
-        System.out.println(courses.size());
         initTree();
     }
 
+    @Deprecated
     public void getQuery() {
         input = new Scanner(System.in);
         System.out.println("Please enter a search query: ");
@@ -25,11 +25,12 @@ public class SearchSuggestions {
     }
 
     public List<String> getSuggestions(String query) {
-        System.out.println("getSuggestions called with query: " + query);
         this.query = query;
         List<String> suggestions = new ArrayList<>();
         TrieNode currNode = tree.getRoot();
-        Queue<String> queue = new LinkedList<>();
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>( //sort by alphabetical order
+                (s1, s2) -> s1.compareTo(s2)
+        );
 
         //move currNode to the lowest position of query
         //i.e.: if the query is "soft", move currNode from s down to t assuming that is in the trie
@@ -40,16 +41,16 @@ public class SearchSuggestions {
             else return suggestions; //no suggestions found
         }
 
-        dfs(currNode, query.toUpperCase(), queue); //dfs from currNode down
+        dfs(currNode, query.toUpperCase(), priorityQueue); //dfs from currNode down
 
-        while (!queue.isEmpty()) { //add each element form the queue to suggestions
-            String suggestion = queue.poll();
+        while (!priorityQueue.isEmpty()) { //add each element form the queue to suggestions
+            String suggestion = priorityQueue.poll();
             suggestions.add(suggestion);
         }
         return suggestions;
     }
 
-    private void dfs(TrieNode currNode, String currentString, Queue<String> queue) {
+    private void dfs(TrieNode currNode, String currentString, PriorityQueue<String> queue) {
         if (currNode == null) return; //base case
 
         if (currNode.getEndOfWord()) { //if node signals end of course name, add to queue
@@ -65,7 +66,6 @@ public class SearchSuggestions {
     }
 
     private int getIndex(char val) {
-        System.out.println(val);
         return switch (val) {
             case ' ' -> 26;
             case '/' -> 27;
