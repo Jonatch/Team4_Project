@@ -59,7 +59,7 @@ public class ClassListRead {
                 departmentName = departmentInfo[0];
                 courseLevel = departmentInfo[1];
                 try {
-                    courseSection = departmentInfo[3].charAt(0);
+                    courseSection = departmentInfo[2].charAt(0);
                 } catch (Exception ignored) {
                 }
 
