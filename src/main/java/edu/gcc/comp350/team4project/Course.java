@@ -5,6 +5,7 @@ import com.healthmarketscience.jackcess.Database;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 record DepartmentInfo(String department, String courseLevel, char section) {}
@@ -73,7 +74,10 @@ public class Course extends ScheduleElement {
 
         String time;
         if(timeInfo.startTime()!=null){
-            time = timeInfo.startTime() + "-" + timeInfo.endTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+            String start = timeInfo.startTime().format(formatter);
+            String end = timeInfo.endTime().format(formatter);
+            time = start + "-" + end;
         }else{
             time = "Online course / No time";
         }
