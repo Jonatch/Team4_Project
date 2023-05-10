@@ -43,7 +43,6 @@ public class WordTree {
     }
 
     private int getIndex(char val) {
-        System.out.println(val);
         return switch (val) {
             case ' ' -> 26;
             case '/' -> 27;
