@@ -170,13 +170,16 @@ public class WebController {
                     }
                 }
             }
+            else {
+                unCheckedItems = c.classes;
+            }
         }
         c.ClassesSuggest(semester);
         model.addAttribute("uncheckedItems", unCheckedItems);
 
         //addEvent
         //loop through and add all possible
-        return "redirect:/";
+        return "redirect:/edit-schedule/" + tempSchedule.getScheduleName();
     }
 
     @GetMapping("/login")
