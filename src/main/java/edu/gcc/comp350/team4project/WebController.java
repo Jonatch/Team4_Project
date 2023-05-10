@@ -163,8 +163,10 @@ public class WebController {
         c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
-            if (!selectedStrings.contains(s)) {
-                unCheckedItems.add(s);
+            if (selectedStrings.size() != 0) {
+                if (!selectedStrings.contains(s)) {
+                    unCheckedItems.add(s);
+                }
             }
         }
         c.ClassesSuggest(semester);
@@ -172,7 +174,7 @@ public class WebController {
 
         //addEvent
         //loop through and add all possible
-        return "redirect:/";
+        return "redirect:/edit-schedule/" + tempSchedule.getScheduleName();
     }
 
     @GetMapping("/login")
