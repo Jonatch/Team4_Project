@@ -59,4 +59,11 @@ public abstract class ScheduleElement {
     public LocalTime getStartTime() { return startTime; }
     public LocalTime getEndTime() { return endTime; }
 
+    public abstract String getFormattedCourseTitle();
+
+    public abstract String getNameLabel();
+
+    public abstract String getTimeLabel();
+
+
 }

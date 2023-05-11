@@ -1,3 +1,49 @@
+function sendEventData() {
+    // Get the input values
+    var eventName = document.getElementById("eventName").value;
+    var days = [];
+    var checkboxes = document.getElementsByName("days");
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            days.push(checkboxes[i].value);
+        }
+    }
+    var startTime = document.getElementById("startTime").value;
+    var endTime = document.getElementById("endTime").value;
+
+    // Create an object to hold the data
+    var eventData = {
+        name: eventName,
+        days: days,
+        startTime: startTime,
+        endTime: endTime
+    };
+
+    // Send the data to the server using an HTTP request
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/create-event", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log(xhr.responseText);
+                        // Display success message to the user
+                        $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
+//                        alert("Event added successfully");
+                        closeEventPopup();
+                    } else {
+                        // Display error message to the user
+                        var errorContainer = document.getElementById("errorContainer");
+                        errorContainer.textContent = "Error: " + xhr.responseText;
+
+//                        $("#event-popup-container").load(window.location.href + " #event-popup-container>*", "");
+
+                    }
+                }
+    };
+    xhr.send(JSON.stringify(eventData));
+}
+
 async function fetchSuggestions(query) {
     const response = await fetch(`/suggestions?query=${encodeURIComponent(query)}`);
     if (response.ok) {
@@ -309,6 +355,18 @@ function openEventPopup(){
 }
 
 function closeEventPopup(){
+
+     var checkboxes = document.getElementsByName("days");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+    document.getElementById("eventName").value = "";
+    document.getElementById("startTime").value = "";
+    document.getElementById("endTime").value = "";
+
+    // Clear any error messages
+    document.getElementById("errorContainer").textContent = "";
+
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
@@ -316,29 +374,6 @@ function closeEventPopup(){
     popup.classList.toggle("active");
 }
 
-$(document).ready(function() {
 
-  // Submit the form using AJAX when the form is submitted
-  $('#eventForm').submit(function(e) {
-    e.preventDefault(); // Prevent default form submission
-    var form = $(this);
-    $.ajax({
-      url: form.attr('action'),
-      method: form.attr('method'),
-      data: form.serialize(),
-      success: function(response) {
-        // Handle success response
-        console.log(response);
-      },
-      error: function(xhr, status, error) {
-        // Handle error response
-        console.error(error);
-      }
-    });
-
-  var eventForm = $('#eventForm');
-      eventForm[0].reset();
-  });
-});
 
 

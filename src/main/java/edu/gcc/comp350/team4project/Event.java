@@ -2,6 +2,7 @@ package edu.gcc.comp350.team4project;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
@@ -43,4 +44,42 @@ public class Event extends ScheduleElement {
     public void setEndTime(LocalTime endTime) { this.endTime = endTime; }
     public void setDays(ArrayList<DayOfWeek> days) { this.days = days; }
 
+    public String getFormattedCourseTitle(){
+        return "Event: " + this.name.toUpperCase() + " (" + this.refNum + ")";
+    }
+
+    public String getNameLabel(){
+        return this.name;
+    }
+
+    public String getTimeLabel(){
+        String daysFormatted = "";
+        if(days.contains(DayOfWeek.MONDAY)){
+            daysFormatted += "M";
+        }
+        if(days.contains(DayOfWeek.TUESDAY)){
+            daysFormatted += "T";
+        }
+        if(days.contains(DayOfWeek.WEDNESDAY)){
+            daysFormatted += "W";
+        }
+        if(days.contains(DayOfWeek.THURSDAY)){
+            daysFormatted += "R";
+        }
+        if(days.contains(DayOfWeek.FRIDAY)){
+            daysFormatted += "F";
+        }
+
+        String time;
+        if(timeInfo.startTime()!=null){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+            String start = timeInfo.startTime().format(formatter);
+            String end = timeInfo.endTime().format(formatter);
+            time = start + "-" + end;
+        }else{
+            time = "Online course / No time";
+        }
+        return daysFormatted + " \n"
+                + time;
+    }
 }
