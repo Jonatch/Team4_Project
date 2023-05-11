@@ -50,7 +50,7 @@
 </nav>
 <div class="card" id="remove-popup-container">
     <div class="card-header">
-        <h2>Remove Courses</h2>
+        <h2>Remove</h2>
     </div>
     <div class="card-body">
         <div id="removeForm">
@@ -60,7 +60,7 @@
                     <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>
                 </div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="getSelectedCourses()">Remove Courses</button>
+            <button class="btn btn-primary" type="button" onclick="getSelectedCourses()">Remove</button>
             <button class="btn btn-secondary" type="button" onclick="closeRemovePopup('cancel')">Cancel</button>
         </div>
     </div>
@@ -120,29 +120,35 @@
         <h2>Add Event</h2>
     </div>
     <div class="card-body">
-        <form id="eventForm" action="/create-event" method="POST">
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" class="form-control" name="name" placeholder="Enter event name" required>
-            </div>
-            <div class="form-group">
-                <label>Days:</label><br>
-                <label><input type="checkbox" name="days" value="Monday"> Monday</label><br>
-                <label><input type="checkbox" name="days" value="Tuesday"> Tuesday</label><br>
-                <label><input type="checkbox" name="days" value="Wednesday"> Wednesday</label><br>
-                <label><input type="checkbox" name="days" value="Thursday"> Thursday</label><br>
-                <label><input type="checkbox" name="days" value="Friday"> Friday</label><br>
-            </div>
-            <div class="form-group">
-                <label>Time:</label>
-                <input type="time" class="form-control" name="startTime" min="08:00" max="21:00" step="900">
-                <input type="time" class="form-control" name="endTime" min="08:00" max="21:00" step="900">
-            </div>
-            <button class="btn btn-primary" type="button" onclick="closeEventPopup()">Add Event</button>
-            <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Cancel</button>
-        </form>
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" class="form-control" id="eventName" placeholder="Enter event name" required>
+        </div>
+        <div class="form-group">
+            <label>Days:</label><br>
+            <label><input type="checkbox" name="days" value="Monday"> Monday</label><br>
+            <label><input type="checkbox" name="days" value="Tuesday"> Tuesday</label><br>
+            <label><input type="checkbox" name="days" value="Wednesday"> Wednesday</label><br>
+            <label><input type="checkbox" name="days" value="Thursday"> Thursday</label><br>
+            <label><input type="checkbox" name="days" value="Friday"> Friday</label><br>
+        </div>
+        <div class="form-group">
+            <label>Start Time:</label>
+            <input type="time" class="form-control" id="startTime" min="08:00" max="21:00" step="900">
+        </div>
+        <div class="form-group">
+            <label>End Time:</label>
+            <input type="time" class="form-control" id="endTime" min="08:00" max="21:00" step="900">
+        </div>
+        <button class="btn btn-primary" type="button" onclick="sendEventData()">Add Event</button>
+        <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Cancel</button>
+        <div id="errorContainer" style="color: red;"></div>
     </div>
 </div>
+
+
+<!--    <form id="eventForm" action="/create-event" method="POST">-->
+<!--    </form>-->
 <div class="card" id="popup-container">
     <div class="card-header">
         <h2>Filter</h2>
@@ -257,7 +263,7 @@
                     <button type="button" onclick="openEventPopup()" class="btn btn-danger btn-primary" style="display: inline-block;">Add Custom Event</button>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-danger btn-primary" type = "submit" onclick="openRemovePopup()" style="display: inline-block;">Remove Courses</button>
+                    <button class="btn btn-danger btn-primary" type = "submit" onclick="openRemovePopup()" style="display: inline-block;">Remove</button>
                 </div>
                 <div class="col text-right" style="margin-top: -4px;" id = "schedInfo">
                     <p class="mb-0" style="line-height: 1.5;">

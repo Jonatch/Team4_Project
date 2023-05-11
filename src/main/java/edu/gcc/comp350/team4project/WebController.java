@@ -63,23 +63,64 @@ public class WebController {
 
     @PostMapping("/create-event")
     @ResponseBody
-    public String doCreateEvent(
-            @RequestParam("name") String name,
-            @RequestParam("startTime") String startTime,
-            @RequestParam("endTime") String endTime,
-            @RequestParam(value = "days", required = false) String[] days
-    ) {
-        System.out.println("Name: " + name);
-        System.out.println("Start Time: " + startTime);
-        System.out.println("End Time: " + endTime);
-
-        if (days != null) {
-            System.out.println("Days selected:");
-            for (String day : days) {
-                System.out.println(day);
-            }
+    public ResponseEntity<String> addEvent(@RequestBody Map<String, Object> eventData) {
+        // Process the received data
+        String eventName = (String) eventData.get("name");
+        if(eventName.isEmpty() || eventName.length()>20){
+            return ResponseEntity.badRequest().body("Name must be 1-20 characters");
         }
-        return "Form submitted successfully!";
+
+
+        ArrayList<String> tempDays = (ArrayList<String>) eventData.get("days");
+        if(tempDays.size()==0){
+            return ResponseEntity.badRequest().body("Must select a day");
+        }
+        ArrayList<DayOfWeek> days = new ArrayList<>();
+        for(String s : tempDays){
+            days.add(DayOfWeek.valueOf(s.toUpperCase()));
+        }
+
+        String tempStartTime;
+        String tempEndTime;
+        try {
+            tempStartTime = (String) eventData.get("startTime");
+            tempEndTime = (String) eventData.get("endTime");
+        }catch(Exception ignored){
+            return ResponseEntity.badRequest().body("Must input times fully");
+        }
+
+        if(tempEndTime.isEmpty() || tempEndTime.isEmpty()){
+            return ResponseEntity.badRequest().body("Must select start and end time");
+        }
+
+        LocalTime startTime = LocalTime.parse(tempStartTime);
+        LocalTime endTime = LocalTime.parse(tempEndTime);
+
+        if(startTime.isBefore(LocalTime.of(8,0))){
+            return ResponseEntity.badRequest().body("Events must start after 7:59 AM");
+        }
+
+        if(endTime.isAfter(LocalTime.of(21,0))){
+            return ResponseEntity.badRequest().body("Event must end before 9 PM");
+        }
+
+        if(endTime.isBefore(startTime) || startTime.isAfter(endTime)){
+            return ResponseEntity.badRequest().body("Time input must make sense");
+        }
+
+//
+//
+//        System.out.println("Event Name: " + eventName);
+//        System.out.println("Days: " + days);
+//        System.out.println("Start Time: " + startTime);
+//        System.out.println("End Time: " + endTime);
+
+        ScheduleElement temp = new Event(eventName, days,startTime,endTime, "");
+        if(addEvent(temp)){
+            return ResponseEntity.ok("Event added successfully");
+        }else{
+            return ResponseEntity.badRequest().body("Event conflicts with schedule!");
+        }
     }
     @PostMapping("/remove-popup")
     public String getRemoveCourses(Model model) {
@@ -440,12 +481,6 @@ public class WebController {
 
     @GetMapping("/view-schedule/{scheduleName}")
     public String viewSchedule(@PathVariable String scheduleName, Model model) {
-        List<String> mon = new ArrayList<>();
-        List<String> tues = new ArrayList<>();
-        List<String> wed = new ArrayList<>();
-        List<String> thur = new ArrayList<>();
-        List<String> fri = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
         Schedule viewSchedule = null;
         for (Schedule s : currentUser.getSchedules()){
@@ -453,30 +488,15 @@ public class WebController {
                 viewSchedule = s;
             }
         }
-//        for (ScheduleElement c : viewSchedule.getEvents()){
-//            String course_info = c.getName() + " " + c.startTime.format(formatter) + " - " + c.endTime.format(formatter);
-//            if(c.getDays().contains(DayOfWeek.MONDAY)){
-//                mon.add(course_info);
-//            }
-//            if(c.getDays().contains(DayOfWeek.TUESDAY)){
-//                tues.add(course_info);
-//            }
-//            if(c.getDays().contains(DayOfWeek.WEDNESDAY)){
-//                wed.add(course_info);
-//            }
-//            if(c.getDays().contains(DayOfWeek.THURSDAY)){
-//                thur.add(course_info);
-//            }
-//            if(c.getDays().contains(DayOfWeek.FRIDAY)){
-//                fri.add(course_info);
-//            }
-//        }
         printCalendarView(viewSchedule,model);
-//        model.addAttribute("mon", mon);
-//        model.addAttribute("tues", tues);
-//        model.addAttribute("wed", wed);
-//        model.addAttribute("thur", thur);
-//        model.addAttribute("fri", fri);
+
+        for(ScheduleElement e : viewSchedule.getEvents()){
+            if (e.isAnEvent()){
+                try {
+                    viewSchedule.removeEvent(e);
+                }catch(Exception ignored){}
+            }
+        }
         model.addAttribute("schedule",viewSchedule);
         return "view-schedule";
     }
@@ -604,6 +624,7 @@ public class WebController {
                         break;
                 }
             }
+            //Print TR classes
             for (int i = start_row; i <= end_row; i++) {
                 for (int k = 0; k < columns.length; k++) {
                     if (columns[k] == 0 || columns[k] % 6 == 0) {
@@ -630,6 +651,7 @@ public class WebController {
                 }
             }
 
+            //Print MWF classes
             for (int i = start_row; i <= end_row; i++) {
                 for (int k = 0; k < tr_columns.length; k++) {
                     if (tr_columns[k] == 0 || tr_columns[k] % 6 == 0) {
