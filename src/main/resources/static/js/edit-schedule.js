@@ -117,7 +117,7 @@ function addCourse(parameter) {
             data: { parameter: parameter },
             success: function(response) {
                 // Handle the response from the controller
-                console.log(response);
+                //console.log(response);
                  if (response === 'false') {
                         openConflictPopup();
                  } else {
@@ -151,7 +151,7 @@ function closeFilterPopup(){
         data: serializedData,
         success: function(response) {
           // Handle the response from the controller
-          console.log(response);
+          //console.log(response);
           $("#searchResults").html(response); // Update the content of the search results
         },
         error: function(xhr, status, error) {
@@ -177,7 +177,7 @@ function clearFilterPopup(){
         data: serializedData,
         success: function(response) {
           // Handle the response from the controller
-          console.log(response);
+          //console.log(response);
           $("#searchResults").html(response); // Update the content of the search results
         },
         error: function(xhr, status, error) {
@@ -199,7 +199,7 @@ function search() {
     },
     success: function(response) {
       // Handle the response from the controller
-      console.log(response);
+      //console.log(response);
       $("#searchResults").html(response); // Update the content of the search results
     },
     error: function(xhr, status, error) {
@@ -222,7 +222,7 @@ function openConflictPopup(){
             data: { parameter: parameter },
             success: function(response) {
                 // Handle the response from the controller
-                console.log(response);
+                //console.log(response);
                  if (response === 'false') {
                         openConflictPopup();
                  } else {
@@ -252,7 +252,7 @@ function openRemovePopup() {
     method: 'post',
     success: function(response) {
       // Handle the response from the controller
-      console.log(response);
+      //console.log(response);
       $("#remove-popup-container").html(response); // Update the content of the popup
     },
     error: function(xhr, status, error) {
@@ -294,7 +294,7 @@ function closeRemovePopup(selectedCourses){
               data: JSON.stringify({ selectedCourses: selectedCourses }),
               success: function(response) {
                 // Handle success response
-                console.log(response);
+                //console.log(response);
                 $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
                 $("#schedInfo").load(window.location.href + " #schedInfo>*", "");
               },
@@ -322,7 +322,7 @@ function openInfoPopup(parameter){
             data: { parameter: parameter },
             success: function(response) {
                 // Handle the response from the controller
-                console.log(response);
+                //console.log(response);
                 $("#info-popup-container").html(response);
             },
             error: function(xhr, status, error) {
