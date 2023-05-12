@@ -315,6 +315,7 @@ public class WebController {
 
     @PostMapping("/more-info")
     public String doLoadMoreInfo(@RequestParam("parameter") int parameter, Model model){
+        System.out.println(parameter);
         Course c = searchBox.searchForRefNum(parameter);
 
         model.addAttribute("moreInfoCourse", c);
