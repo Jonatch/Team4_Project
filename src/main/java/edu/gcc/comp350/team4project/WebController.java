@@ -60,7 +60,6 @@ public class WebController {
         return "home";
     }
 
-
     @PostMapping("/create-event")
     @ResponseBody
     public ResponseEntity<String> addEvent(@RequestBody Map<String, Object> eventData) {

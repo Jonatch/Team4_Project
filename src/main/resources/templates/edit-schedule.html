@@ -260,17 +260,24 @@
             </div>
             <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
                 <ul class="list-group" id="insertSearch" >
-                    <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
-                        <div class="course-details">
-                            <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
-                            <div class="course-info" th:text="${course.getTimeLabel}"></div>
-                            <div class="course-info" th:text="${course.getCredLabel}"></div>
+                    <div th:if="${!(courses.getFilteredCourses().isEmpty())}">
+                        <!-- Content to be displayed when the condition is true -->
+                        <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
+                            <div class="course-details">
+                                <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
+                                <div class="course-info" th:text="${course.getTimeLabel}"></div>
+                                <div class="course-info" th:text="${course.getCredLabel}"></div>
+                            </div>
+                            <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <div class="d-flex justify-content-between">
+                                <button th:onclick="'openInfoPopup(' + ${course.getRefNum} + ')'" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                                <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
+                            </div>
                         </div>
-                        <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                        <div class="d-flex justify-content-between">
-                            <button th:onclick="'openInfoPopup(' + ${course.getRefNum} + ')'" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
-                            <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
-                        </div>
+                    </div>
+                    <div th:unless="${!(courses.getFilteredCourses().isEmpty())}"  style="text-align: center; margin-top: 20px;">
+                        <!-- Content to be displayed when the condition is false -->
+                        <p id = "noResultsTag" style="font-weight: bold; display: inline-block;">No results found</p>
                     </div>
                 </ul>
             </div>
