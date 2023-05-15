@@ -204,10 +204,13 @@ public class WebController {
         c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
-            if (selectedStrings.size() != 0) {
+            if (selectedStrings != null) {
                 if (!selectedStrings.contains(s)) {
                     unCheckedItems.add(s);
                 }
+            }
+            else {
+                unCheckedItems = classes;
             }
         }
         c.ClassesSuggest(semester);
