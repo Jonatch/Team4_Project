@@ -786,6 +786,8 @@ public class WebController {
                             }
                         }
                     }catch(Exception ignored){}
+                }else{ //This else statement gets rid of online courses or courses without time info
+                    continue;
                 }
                 try {
                     numCredits = Integer.parseInt(data[5]);
