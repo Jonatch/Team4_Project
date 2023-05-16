@@ -355,7 +355,6 @@ public class WebController {
                 System.out.println("Startime is: " + startTime);
                 LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[1]));
                 String[] endTokens = endTime.split(":");
-                System.out.println("Endtime is: " + endTime);
                 LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[1]));
                 searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
             }else{
