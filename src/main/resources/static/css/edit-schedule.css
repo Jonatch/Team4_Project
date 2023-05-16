@@ -76,3 +76,9 @@
     pointer-events: none;
     user-select: none;
 }
+
+#noResultsTag{
+    text-indent: 130px;
+
+
+}

@@ -47,6 +47,15 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Team 4</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <form th:action="@{/update-schedule}" method="post">
+                    <button type="submit" class="btn btn-secondary">Save and Exit</button>
+                </form>
+            </li>
+        </ul>
+    </div>
 </nav>
 <div class="card" id="remove-popup-container">
     <div class="card-header">
@@ -60,8 +69,8 @@
                     <label th:text="${courseRemove.getFormattedCourseTitle()}"></label>
                 </div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="getSelectedCourses()">Remove</button>
-            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup('cancel')">Cancel</button>
+            <button class="btn btn-danger btn-primary" type="button" onclick="getSelectedCourses()">Remove</button>
+            <button class="btn btn-secondary" type="button" onclick="closeRemovePopup()">Cancel</button>
         </div>
     </div>
 </div>
@@ -98,7 +107,7 @@
             <div class="col">
                 <span class="font-weight-bold">Description:</span>
                 <p th:if="${moreInfoCourses != null}" th:text="${moreInfoCourse.getDescription}"></p>
-                <button class="btn btn-primary float-right" onclick="closeInfoPopup()">back</button>
+                <button class="btn btn-danger btn-primary float-right" onclick="closeInfoPopup()">Back</button>
             </div>
         </div>
     </div>
@@ -114,18 +123,6 @@
         </div>
     </div>
 </div>
-<!--<script>-->
-<!--    function handleAddCourse() {-->
-<!--        var selectedCourse = $('input[name=selectedCourse]:checked').val();-->
-<!--        if(selectedCourse) {-->
-<!--            addCourse(selectedCourse);-->
-<!--        } else {-->
-<!--            alert('Please select a course');-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
-
-
 <div class="card" id="event-popup-container">
     <div class="card-header">
         <h2>Add Event</h2>
@@ -151,56 +148,78 @@
             <label>End Time:</label>
             <input type="time" class="form-control" id="endTime" min="08:00" max="21:00" step="900">
         </div>
-        <button class="btn btn-primary" type="button" onclick="sendEventData()">Add Event</button>
+        <button class="btn btn-danger btn-primary" type="button" onclick="sendEventData()">Add Event</button>
         <button class="btn btn-secondary" type="button" onclick="closeEventPopup()">Cancel</button>
         <div id="errorContainer" style="color: red;"></div>
     </div>
 </div>
+
+
+<!--    <form id="eventForm" action="/create-event" method="POST">-->
+<!--    </form>-->
 <div class="card" id="popup-container">
-    <div class="card-header">
+    <div class="card-header text-center">
         <h2>Filter</h2>
     </div>
     <div class="card-body">
         <form id="filterForm" action="/filter" method="post">
-            <div class="form-group">
-                <label>Department:</label>
-                <select class="form-control" name="department">
-                    <option value="">All</option>
-                    <div th:each="department : ${departments}">
-                        <option th:value="${department}" th:text="${department}"></option>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>Department:</label>
+                            <select class="form-control" name="department">
+                                <option value="">All</option>
+                                <div th:each="department : ${departments}">
+                                    <option th:value="${department}" th:text="${department}"></option>
+                                </div>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3 ">
+                            <label for="credits">Credits:</label>
+                            <input type="number" class="form-control" id="credits" name="credits"  min="0" max="16">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="level">Level:</label>
+                            <select class="form-control" name="level" id="level">
+                                <option value="">All</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                                <option value="300">300</option>
+                                <option value="400">400</option>
+                            </select>
+                        </div>
                     </div>
-                </select>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3 d-flex align-items-center" style="display: flex; align-items: center;">
+                            <div style="flex: 1;">
+                                <label>Days:</label><br>
+                                <label><input type="checkbox" name="days" value="M"> Monday</label><br>
+                                <label><input type="checkbox" name="days" value="T"> Tuesday</label><br>
+                                <label><input type="checkbox" name="days" value="W"> Wednesday</label><br>
+                                <label><input type="checkbox" name="days" value="T"> Thursday</label><br>
+                                <label><input type="checkbox" name="days" value="F"> Friday</label><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="form-group mb-3" style="display: flex; justify-content: center;">
+                        <div style="flex: 1;">
+                            <label>Time:</label>
+                            <div style="display: flex;">
+                                <input type="time" class="form-control" name="startTime" min="08:00" max="21:00" step="900" style="margin-right: 10px;">
+                                <input type="time" class="form-control" name="endTime" min="08:00" max="21:00" step="900">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Time:</label>
-                <input type="time" class="form-control" name="startTime" min="08:00" max="21:00" step="900">
-                <input type="time" class="form-control" name="endTime" min="08:00" max="21:00" step="900">
+            <div class="text-center mt-3">
+                <button class="btn btn-danger btn-primary mx-2" type="button" onclick="closeFilterPopup()">Filter</button>
+                <button class="btn btn-secondary mx-2" type="button" onclick="closeFilterPopup()">Cancel</button>
+                <button class="btn btn-secondary mx-2" type="reset" onclick="clearFilterPopup()">Clear All</button>
             </div>
-            <div class="form-group">
-                <label>Days:</label><br>
-                <label><input type="checkbox" name="days" value="M"> Monday</label><br>
-                <label><input type="checkbox" name="days" value="T"> Tuesday</label><br>
-                <label><input type="checkbox" name="days" value="W"> Wednesday</label><br>
-                <label><input type="checkbox" name="days" value="T"> Thursday</label><br>
-                <label><input type="checkbox" name="days" value="F"> Friday</label><br>
-            </div>
-            <div class="form-group">
-                <label for="credits">Credits:</label>
-                <input type="number" class="form-control" id="credits" name="credits">
-            </div>
-            <div class="form-group">
-                <label for="level">Level:</label>
-                <select class="form-control" name="level" id="level">
-                    <option value=""> All</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="300">300</option>
-                    <option value="400">400</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" type="button" onclick="closeFilterPopup()">Filter</button>
-            <button class="btn btn-secondary" type="button" onclick="closeFilterPopup()">Cancel</button>
-            <button class="btn btn-secondary" type="reset" onclick="clearFilterPopup()">Clear All</button>
         </form>
     </div>
 </div>
@@ -210,9 +229,9 @@
             <h1 class="display-3 p-2" th:text="${scheduleName}" style="font-weight: bold; margin-top: -20px;"></h1>
         </div>
         <div class="col text-right mt-2">
-            <form th:action="@{/update-schedule}" method="post">
-                <button type="submit" class="btn btn-danger btn-primary">Save and exit</button>
-            </form>
+<!--            <form th:action="@{/update-schedule}" method="post">-->
+<!--                <button type="submit" class="btn btn-danger btn-primary">Save and exit</button>-->
+<!--            </form>-->
         </div>
     </div>
 <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;margin-top: -8px;"/>
@@ -224,11 +243,12 @@
                         <div class="col">
                             <div class="dropdown">
                                 <input type="text" autocomplete="off" name="query" class="form-control rounded dropdown-toggle" data-toggle="dropdown" id="search-input" placeholder="Search:"/>
-                                <div class="dropdown-menu" aria-labelledby="search-input"></div>
+                                <div class="dropdown-menu" aria-labelledby="search-input">
+                                </div>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <button onclick="search()" class="btn btn-danger btn-primary">Search</button>
+                            <button onclick="search()" class="btn btn-danger btn-primary" id="search-button">Search</button>
                         </div>
                         <div class="col-auto">
                             <button type="button" onclick="openFilterPopup()" class="btn btn-danger btn-primary">Filter</button>
@@ -247,17 +267,24 @@
             </div>
             <div class="row scrollable" id = "searchResults" style="height: 650px; overflow-y: auto;">
                 <ul class="list-group" id="insertSearch" >
-                    <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
-                        <div class="course-details">
-                            <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
-                            <div class="course-info" th:text="${course.getTimeLabel}"></div>
-                            <div class="course-info" th:text="${course.getCredLabel}"></div>
+                    <div th:if="${!(courses.getFilteredCourses().isEmpty())}">
+                        <!-- Content to be displayed when the condition is true -->
+                        <div class="list-group-item" th:each="course: ${courses.getFilteredCourses}">
+                            <div class="course-details">
+                                <div class="course-info" style = "font-weight: bold" th:text="${course.getNameLabel}"></div>
+                                <div class="course-info" th:text="${course.getTimeLabel}"></div>
+                                <div class="course-info" th:text="${course.getCredLabel}"></div>
+                            </div>
+                            <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <div class="d-flex justify-content-between">
+                                <button th:onclick="'openInfoPopup(' + ${course.getRefNum} + ')'" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
+                                <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
+                            </div>
                         </div>
-                        <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                        <div class="d-flex justify-content-between">
-                            <button th:onclick="'openInfoPopup(' + ${course.getRefNum} + ')'" th:id="'info-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">More Info</button>
-                            <button th:onclick="'addCourse('+${course.getRefNum}+')'" th:id="'plus-button-' + ${course.getRefNum()}" class="btn btn-danger btn-primary btn-sm">Add</button>
-                        </div>
+                    </div>
+                    <div th:unless="${!(courses.getFilteredCourses().isEmpty())}"  style="text-align: center; margin-top: 20px;">
+                        <!-- Content to be displayed when the condition is false -->
+                        <p id = "noResultsTag" style="font-weight: bold; display: inline-block;">No results found</p>
                     </div>
                 </ul>
             </div>

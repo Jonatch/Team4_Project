@@ -77,6 +77,13 @@ async function updateSuggestions() {
         });
         dropdownMenu.appendChild(item);
     });
+
+    searchInput.addEventListener("keydown", function(event){
+        if(event.key === "Enter"){
+            document.getElementById("search-button").click();
+        }
+    });
+
 }
 function init() {
     const searchInput = document.getElementById('search-input');
@@ -84,6 +91,7 @@ function init() {
     // Call updateSuggestions() when the input field receives input
     if (searchInput) {
         searchInput.addEventListener('input', updateSuggestions);
+
     } else {
         console.error('search-input element not found');
     }
@@ -98,12 +106,6 @@ if (document.readyState === 'loading') {
 
 const dropdownItems = document.querySelectorAll('.dropdown-item');
 
-window.addEventListener("DOMContentLoaded", (event) => {
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', updateSuggestions);
-    }
-});
 
 function addCourse(parameter) {
     if(parameter === 'remove'){
@@ -289,7 +291,7 @@ function getSelectedCourses() {
 function closeRemovePopup(selectedCourses){
 
 
-    if(selectedCourses!==""){
+    if(typeof selectedCourses !== 'undefined'){
         $.ajax({
               url: '/remove-course',
               method: 'POST',

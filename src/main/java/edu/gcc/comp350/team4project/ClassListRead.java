@@ -63,7 +63,7 @@ public class ClassListRead {
                 } catch (Exception ignored) {
                 }
 
-                courseName = data[3];
+                courseName = data[3].toUpperCase();
 
                 //Only if there is time data
                 if(data[4].length()>0){
@@ -133,6 +133,8 @@ public class ClassListRead {
                             }
                         }
                     }catch(Exception ignored){}
+                }else{ //This else statement gets rid of online courses or courses without time info
+                    continue;
                 }
                 try {
                     numCredits = Integer.parseInt(data[5]);

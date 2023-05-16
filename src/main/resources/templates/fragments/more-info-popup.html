@@ -1,10 +1,10 @@
 <div th:fragment="info-popup-content">
+    <div class="card-header">
+        <div class="col text-center">
+            <h4 th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getFormattedCourseTitle}"></h4>
+        </div>
+    </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col text-center">
-                    <h4 th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getFormattedCourseTitle}"></h4>
-                </div>
-            </div>
             <div class="row">
                 <div class="col">
                     <div class="d-flex align-items-center">
@@ -31,7 +31,7 @@
                 <div class="col">
                     <span class="font-weight-bold">Description:</span>
                     <p th:if="${moreInfoCourse != null}" th:text="${moreInfoCourse.getDescription}"></p>
-                    <button class="btn float-right" onclick="closeInfoPopup()">back</button>
+                    <button class="btn btn-primary float-right" onclick="closeInfoPopup()">Back</button>
                 </div>
 
             </div>

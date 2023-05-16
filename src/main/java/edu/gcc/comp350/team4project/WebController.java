@@ -59,7 +59,6 @@ public class WebController {
         return "home";
     }
 
-
     @PostMapping("/create-event")
     @ResponseBody
     public ResponseEntity<String> addEvent(@RequestBody Map<String, Object> eventData) {
@@ -192,10 +191,13 @@ public class WebController {
         c.ReadTextFile(major);
         ArrayList<String> classes = c.classes;
         for (String s : classes) {
-            if (selectedStrings.size() != 0) {
+            if (selectedStrings != null) {
                 if (!selectedStrings.contains(s)) {
                     unCheckedItems.add(s);
                 }
+            }
+            else {
+                unCheckedItems = classes;
             }
         }
         c.ClassesSuggest(semester);
@@ -333,11 +335,11 @@ public class WebController {
             System.out.println("End time: " + endTime);
             if(!startTime.equals("") && !endTime.equals("")){
                 searchBox.removeSpecificFilter(FilterTypes.TIME);
-                searchBox.removeSpecificFilter(FilterTypes.TIME);
                 String[] startTokens = startTime.split(":");
-                LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+                System.out.println("Startime is: " + startTime);
+                LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[1]));
                 String[] endTokens = endTime.split(":");
-                LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+                LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[1]));
                 searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
             }else{
                 searchBox.removeSpecificFilter(FilterTypes.TIME);
@@ -404,18 +406,16 @@ public class WebController {
         }
         if(!form.getStartTime().equals("") && !form.getEndTime().equals("")){
             searchBox.removeSpecificFilter(FilterTypes.TIME);
-            searchBox.removeSpecificFilter(FilterTypes.TIME);
             String[] startTokens = form.getStartTime().split(":");
-            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[1]), Integer.parseInt(startTokens[2]));
             String[] endTokens = form.getEndTime().split(":");
-            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[1]), Integer.parseInt(endTokens[2]));
             searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
         }
         else{
             searchBox.removeSpecificFilter(FilterTypes.TIME);
         }
         if(!form.getDays().isEmpty()) {
-            searchBox.removeSpecificFilter(FilterTypes.DAYS);
             searchBox.removeSpecificFilter(FilterTypes.DAYS);
             HashSet<DayOfWeek> setOfDays = new HashSet<>();
             for(String s: form.getDays()){
@@ -767,6 +767,8 @@ public class WebController {
                             }
                         }
                     }catch(Exception ignored){}
+                }else{ //This else statement gets rid of online courses or courses without time info
+                    continue;
                 }
                 try {
                     numCredits = Integer.parseInt(data[5]);
