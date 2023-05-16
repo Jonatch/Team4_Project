@@ -20,17 +20,20 @@ public class SearchSuggestions {
     }
 
     private void initTree() {
-        tree = new WordTree();
-        for (Course c: courses) tree.addCourse(c);
+        tree = new WordTree(); //initialize the tree
+        for (Course c: courses) tree.addCourse(c); //add every course to the tree
     }
 
+    /**
+     * @description: This method will give the user suggestions based on the search query
+     * @param query A string that the user is searching for
+     * @return A list of suggested courses based on the query
+     */
     public List<String> getSuggestions(String query) {
         this.query = query;
         List<String> suggestions = new ArrayList<>();
-        TrieNode currNode = tree.getRoot();
-        PriorityQueue<String> priorityQueue = new PriorityQueue<>( //sort by alphabetical order
-                (s1, s2) -> s1.compareTo(s2)
-        );
+        TrieNode currNode = tree.getRoot(); //set currNode to root of the tree
+        Queue<String> queue = new LinkedList<>(); //use a queue to hold suggestions while filtering them
 
         //move currNode to the lowest position of query
         //i.e.: if the query is "soft", move currNode from s down to t assuming that is in the trie
@@ -41,16 +44,16 @@ public class SearchSuggestions {
             else return suggestions; //no suggestions found
         }
 
-        dfs(currNode, query.toUpperCase(), priorityQueue); //dfs from currNode down
+        dfs(currNode, query.toUpperCase(), queue); //dfs from currNode down
 
-        while (!priorityQueue.isEmpty()) { //add each element form the queue to suggestions
-            String suggestion = priorityQueue.poll();
-            suggestions.add(suggestion);
+        while (!queue.isEmpty()) { //add each element from the queue to suggestions
+            String suggestion = queue.poll(); //remove the oldest suggestion if full
+            suggestions.add(suggestion); //add the latest suggestion
         }
-        return suggestions;
+        return suggestions; //return the list of suggestions
     }
 
-    private void dfs(TrieNode currNode, String currentString, PriorityQueue<String> queue) {
+    private void dfs(TrieNode currNode, String currentString, Queue<String> queue) {
         if (currNode == null) return; //base case
 
         if (currNode.getEndOfWord()) { //if node signals end of course name, add to queue

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:fragment="conflict-other-sections">
+      <div>
+          <p>Select a different section:</p>
+      </div>
+      <div >
+          <div th:each="conCourse : ${suggestions}">
+              <div>
+                  <input type="radio" name="selectedConCourses" th:value="${conCourse.getRefNum() != null ? conCourse.getRefNum() : ''}"/>
+                  <label th:text="${conCourse.getFormattedCourseTitle()}"></label>
+              </div>
+          </div>
+      </div>
+      <div style="text-align:center;">
+          <button type="button" class="btn btn-danger btn-primary" onclick="closeConflictPopup()">Add Course</button>
+            <button type="button" class="btn btn-secondary" onclick="closeConflictPopup()">Cancel</button>
+      </div>
+  </div>
+    <div th:fragment="conflict-default">
+        <div style="text-align:center;">
+            <button type="button" class="btn btn-danger btn-primary" onclick="closeConflictPopup()">Close</button>
+        </div>
+    </div>
+
+
+
+
+
+</head>
+
