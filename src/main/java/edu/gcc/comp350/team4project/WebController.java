@@ -351,11 +351,12 @@ public class WebController {
             System.out.println("End time: " + endTime);
             if(!startTime.equals("") && !endTime.equals("")){
                 searchBox.removeSpecificFilter(FilterTypes.TIME);
-                searchBox.removeSpecificFilter(FilterTypes.TIME);
                 String[] startTokens = startTime.split(":");
-                LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+                System.out.println("Startime is: " + startTime);
+                LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[1]));
                 String[] endTokens = endTime.split(":");
-                LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+                System.out.println("Endtime is: " + endTime);
+                LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[1]));
                 searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
             }else{
                 searchBox.removeSpecificFilter(FilterTypes.TIME);
@@ -423,18 +424,16 @@ public class WebController {
         }
         if(!form.getStartTime().equals("") && !form.getEndTime().equals("")){
             searchBox.removeSpecificFilter(FilterTypes.TIME);
-            searchBox.removeSpecificFilter(FilterTypes.TIME);
             String[] startTokens = form.getStartTime().split(":");
-            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[0]));
+            LocalTime start = LocalTime.of(Integer.parseInt(startTokens[0]), Integer.parseInt(startTokens[1]), Integer.parseInt(startTokens[2]));
             String[] endTokens = form.getEndTime().split(":");
-            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[0]));
+            LocalTime end = LocalTime.of(Integer.parseInt(endTokens[0]), Integer.parseInt(endTokens[1]), Integer.parseInt(endTokens[2]));
             searchBox.filterByTime(new ArrayList<>(List.of(start,end)));
         }
         else{
             searchBox.removeSpecificFilter(FilterTypes.TIME);
         }
         if(!form.getDays().isEmpty()) {
-            searchBox.removeSpecificFilter(FilterTypes.DAYS);
             searchBox.removeSpecificFilter(FilterTypes.DAYS);
             HashSet<DayOfWeek> setOfDays = new HashSet<>();
             for(String s: form.getDays()){
