@@ -5,11 +5,11 @@ public class WordTree {
     public WordTree() { root = new TrieNode(' '); }
 
     public void addCourse(ScheduleElement c) {
-        String courseName = c.getName().toUpperCase();
-        TrieNode ptr = root;
-        for (int i = 0; i < courseName.length(); i++) {
+        String courseName = c.getName().toUpperCase(); //get the name of the course, we work with only uppercase letters
+        TrieNode ptr = root; //set a pointer to the root of the tree
+        for (int i = 0; i < courseName.length(); i++) { //loop over the course name
             char val = courseName.charAt(i);
-            int index = getIndex(val);
+            int index = getIndex(val); //get the index of the letter in the course
             if (ptr.getChildren()[index] == null) {
                 TrieNode s = new TrieNode(val);
                 ptr.getChildren()[index] = s;
@@ -17,10 +17,10 @@ public class WordTree {
             }
             else ptr = ptr.getChildren()[index];
         }
-        ptr.setEndOfWord(true);
+        ptr.setEndOfWord(true); //after adding the whole course name to the tree, set the last character as the end of a course
     }
 
-    public boolean containsCourse(ScheduleElement c) { //for testing
+    public boolean containsCourse(ScheduleElement c) { //for testing, basically checks if a course name is in the tree
         String elementName = c.getName().toUpperCase();
         TrieNode ptr = root;
         for (int i = 0; i < elementName.length(); i++) {
@@ -33,7 +33,7 @@ public class WordTree {
         return true;
     }
 
-    public void printContents(String subWord, TrieNode c) { //for testing
+    public void printContents(String subWord, TrieNode c) { //for testing, prints every course name in the tree
         if (c.getEndOfWord()) System.out.println(subWord);
 
         for (int i = 0; i < c.getChildren().length; i++) {

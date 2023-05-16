@@ -26,7 +26,6 @@ public class Course extends ScheduleElement {
 
     @Override
     public boolean equals(Object obj) {
-        //TODO: Test!
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Course other = (Course) obj;
@@ -88,7 +87,4 @@ public class Course extends ScheduleElement {
     public String getCredLabel(){
         return "Credits: " + this.credits;
     }
-
-
-
 }

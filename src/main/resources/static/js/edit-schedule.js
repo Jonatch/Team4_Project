@@ -116,10 +116,8 @@ function addCourse(parameter) {
             method: 'POST',
             data: { parameter: parameter },
             success: function(response) {
-                // Handle the response from the controller
-                //console.log(response);
                  if (response === 'false') {
-                        openConflictPopup();
+                        openConflictPopup(parameter);
                  } else {
                         $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
                         $("#schedInfo").load(window.location.href + " #schedInfo>*", "");
@@ -210,24 +208,19 @@ function search() {
 }
 
 function openConflictPopup(){
-    var blur = document.getElementById("blur");
+   var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 
     var popup = document.getElementById("conflict-popup-container");
     popup.classList.toggle("active");
 
     $.ajax({
-            url: '/handle-conflict',
-            method: 'POST',
-            data: { parameter: parameter },
+            url: '/getConflictingPopup',
+            method: 'post',
             success: function(response) {
                 // Handle the response from the controller
                 //console.log(response);
-                 if (response === 'false') {
-                        openConflictPopup();
-                 } else {
-                        $("#scheduleTable").load(window.location.href + " #scheduleTable>*", "");
-                 }
+                $("#conflict-card-contents").html(response);
             },
             error: function(xhr, status, error) {
                 // Handle any errors that occurred during the AJAX request
@@ -235,10 +228,20 @@ function openConflictPopup(){
             }
         });
 
-
 }
 
 function closeConflictPopup(){
+       var selectedConCourses = document.getElementsByName("selectedConCourses");
+              var selectedConCourse = '';
+
+              for (var i = 0; i < selectedConCourses.length; i++) {
+                  if (selectedConCourses[i].checked) {
+                      selectedConCourse=selectedConCourses[i].value;
+                  }
+              }
+             addCourse(selectedConCourse);
+
+
     var blur = document.getElementById("blur");
     blur.classList.toggle("active");
 

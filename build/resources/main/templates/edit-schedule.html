@@ -103,17 +103,29 @@
         </div>
     </div>
 </div>
-<div class="card" id="conflict-popup-container">
+
+<div id="conflict-popup-container" class="card">
     <div class="card-header">
         <h2>Schedule Conflict!</h2>
     </div>
     <div class="card-body">
-        <form method="post">
-
-            <button class="btn btn-secondary" type="button" onclick="closeConflictPopup()">Close</button>
-        </form>
+        <div id="conflict-card-contents">
+<!--                this is where fragment gets pasted-->
+        </div>
     </div>
 </div>
+<!--<script>-->
+<!--    function handleAddCourse() {-->
+<!--        var selectedCourse = $('input[name=selectedCourse]:checked').val();-->
+<!--        if(selectedCourse) {-->
+<!--            addCourse(selectedCourse);-->
+<!--        } else {-->
+<!--            alert('Please select a course');-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+
+
 <div class="card" id="event-popup-container">
     <div class="card-header">
         <h2>Add Event</h2>
@@ -144,10 +156,6 @@
         <div id="errorContainer" style="color: red;"></div>
     </div>
 </div>
-
-
-<!--    <form id="eventForm" action="/create-event" method="POST">-->
-<!--    </form>-->
 <div class="card" id="popup-container">
     <div class="card-header">
         <h2>Filter</h2>
@@ -207,7 +215,7 @@
             </form>
         </div>
     </div>
-    <hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;margin-top: -8px;">
+<hr class="divider" style="margin-top: 0.5rem; margin-bottom: 0.5rem;margin-top: -8px;"/>
     <div class="row">
         <div class="col-3">
             <div class="row p-1">
@@ -216,9 +224,7 @@
                         <div class="col">
                             <div class="dropdown">
                                 <input type="text" autocomplete="off" name="query" class="form-control rounded dropdown-toggle" data-toggle="dropdown" id="search-input" placeholder="Search:"/>
-                                <div class="dropdown-menu" aria-labelledby="search-input">
-
-                                </div>
+                                <div class="dropdown-menu" aria-labelledby="search-input"></div>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -333,29 +339,5 @@
   };
 });
 </script>
-<!--this code commented out until we can actually add courses-->
-<!--<script>-->
-<!--    $(document).ready(function() {-->
-<!--        var formChanged = false;-->
-<!--        $('form :input').change(function() {-->
-<!--        formChanged = true;-->
-<!--    });-->
-<!--    $(window).bind('beforeunload', function() {-->
-<!--        if (formChanged) {-->
-<!--            return "You have unsaved changes. Are you sure you want to leave this page?";-->
-<!--        }-->
-<!--    });-->
-<!--    $('form').submit(function(event) {-->
-<!--        var credits = 0;-->
-<!--        $('input[name="selectedCourses"]:checked').each(function() {-->
-<!--        credits += parseInt($(this).closest('div').find('.credits').text());-->
-<!--    });-->
-<!--        if (credits > 17 || credits < 12) {-->
-<!--            event.preventDefault();-->
-<!--            alert('Your schedule must be between 12 and 17 credits');-->
-<!--        }-->
-<!--    });-->
-<!--});-->
-<!--</script>-->
 </body>
 </html>
