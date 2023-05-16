@@ -286,7 +286,7 @@ function getSelectedCourses() {
 function closeRemovePopup(selectedCourses){
 
 
-    if(selectedCourses!==""){
+    if(typeof selectedCourses !== 'undefined'){
         $.ajax({
               url: '/remove-course',
               method: 'POST',

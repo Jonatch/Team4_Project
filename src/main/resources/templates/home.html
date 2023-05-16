@@ -10,7 +10,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
 <body>
+<style>
+       .btn.btn-primary:not(#editBtn) {
+            background-color: #CC0000;
+            border-color: #CC0000;
+            font-weight: bold;
+       }
 
+        .btn.btn-primary:not(#editBtn):hover {
+             background-color: #990000;
+        }
+    </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Team 4</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +57,7 @@
             <td>
                 <div class="btn-group" role="group">
                     <form th:action="@{/edit-schedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
-                        <button class="btn btn-primary mr-2" type="submit">Edit</button>
+                        <button class="btn btn-primary mr-2" id = "editBtn" type="submit">Edit</button>
                     </form>
                     <form th:action="@{/view-schedule/{scheduleName}(scheduleName=${schedule.scheduleName})}">
                         <button class="btn btn-success mr-2" type="submit">View</button>
@@ -60,7 +70,7 @@
         </tr>
         </tbody>
     </table>
-    <button class="btn btn-primary" onclick="location.href='/create-schedule'" style="background-color: #CC0000; border-color: #cc0000; font-weight: bold;" onmouseover="this.style.backgroundColor='#990000';" onmouseout="this.style.backgroundColor='#CC0000';">Create New</button>
+    <button class="btn btn-danger btn-primary" type="button" onclick="location.href='/create-schedule'" >Create New</button>
 </div>
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -92,7 +102,7 @@
                 var dateCell = $('<td>').text(schedule.semester);
                 var actionsCell = $('<td>');
             // Add edit and delete buttons to the actions cell
-                var editButton = $('<button>').addClass('btn btn-primary mr-2')
+                var editButton = $('<button>').addClass('btn btn-danger btn-primary mr-2')
                 .attr('onclick', "edit(" + schedule.id + ")")
                 .text('Edit');
                 var deleteButton = $('<button>').addClass('btn btn-danger')
