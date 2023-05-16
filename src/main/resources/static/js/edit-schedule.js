@@ -78,11 +78,11 @@ async function updateSuggestions() {
         dropdownMenu.appendChild(item);
     });
 
-    searchInput.addEventListener("keydown", function(event){
-        if(event.key === "Enter"){
-            document.getElementById("search-button").click();
-        }
-    });
+//    searchInput.addEventListener("keydown", function(event){
+//        if(event.key === "Enter"){
+//            document.getElementById("search-button").click();
+//        }
+//    });
 
 }
 function init() {
@@ -104,7 +104,7 @@ if (document.readyState === 'loading') {
     init();
 }
 
-const dropdownItems = document.querySelectorAll('.dropdown-item');
+//const dropdownItems = document.querySelectorAll('.dropdown-item');
 
 
 function addCourse(parameter) {
